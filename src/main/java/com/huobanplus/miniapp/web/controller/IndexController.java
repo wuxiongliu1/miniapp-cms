@@ -1,5 +1,6 @@
 package com.huobanplus.miniapp.web.controller;
 
+import com.baidu.ueditor.ActionEnter;
 import com.huobanplus.miniapp.web.annotations.UserAuthenticationPrincipal;
 import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.service.UserService;
@@ -7,8 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Created by wuxiongliu on 2017-02-10.
@@ -47,5 +53,23 @@ public class IndexController {
     public String logout(HttpServletRequest request) {
         request.getSession().removeAttribute("user");
         return "login";
+    }
+
+    @RequestMapping(value = "/ueditor")
+    public String ueditor(){
+        return "ueditordemo";
+    }
+
+    @RequestMapping(value = "/ueditor/upload")
+    public void upload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        request.setCharacterEncoding( "utf-8" );
+        response.setHeader("Content-Type" , "text/html");
+
+        WebApplicationContext webApplicationContext = ContextLoader.getCurrentWebApplicationContext();
+        ServletContext application = webApplicationContext.getServletContext();
+        String rootPath = application.getRealPath( "/" );
+
+        response.getWriter().write( new ActionEnter( request, rootPath ).exec() );
     }
 }
