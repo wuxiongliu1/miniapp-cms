@@ -37,28 +37,28 @@ summary:<textarea id="summary" cols="30" rows="10"></textarea><br />
     });
 
     $(document).ready(function(){
-       $("#saveArticle").click(function(){
+        $("#saveArticle").click(function(){
             var title = $("#title").val();
-           var summary = $("#summary").val();
-           var content = ue.getContent();
-           console.log(title);
-           console.log(summary);
-           console.log(content);
+            var summary = $("#summary").val();
+            var content = ue.getContent();
+            console.log(title);
+            console.log(summary);
+            console.log(content);
 
-           $.ajax({
-               url:"/article",
-               type:"POST",
-               data:{title:title,summary:summary,content:content},
-               success:function(resp){
-                   if(resp.resultCode == 200){
-                       console.log("success");
-                   }
-               },
-               error:function(resp){
+            $.ajax({
+                url:"/article",
+                type:"POST",
+                data:{title:title,summary:summary,content:content},
+                success:function(resp){
+                    if(resp.resultCode == 200){
+                        console.log("success");
+                    }
+                },
+                error:function(resp){
 
-               }
-           })
-       });
+                }
+            })
+        });
     });
 
 </script>

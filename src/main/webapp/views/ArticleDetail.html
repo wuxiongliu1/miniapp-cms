@@ -1,0 +1,21 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>Detail</title>
+
+</head>
+<body>
+    <div class="title">
+        <span th:text="${article.title}"></span>
+    </div>
+
+    <div class="summary">
+        <span th:text="${article.summary}"></span>
+    </div>
+
+    <div class="content">
+        <span th:text="${article.content}"></span>
+    </div>
+</body>
+</html>

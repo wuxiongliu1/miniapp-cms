@@ -7,8 +7,8 @@
 </head>
 <body>
 
-title:<input type="text" id="title" /><br/>
-summary:<textarea id="summary" cols="30" rows="10"></textarea><br />
+title:<input type="text" id="title" th:value="${article.title}" /><br/>
+summary:<textarea id="summary" cols="30" rows="10" th:text="${article.summary}"></textarea><br />
 
 <!-- 加载编辑器的容器 -->
 <script id="container" name="content" type="text/plain">
@@ -22,14 +22,19 @@ summary:<textarea id="summary" cols="30" rows="10"></textarea><br />
 <!-- 编辑器源码文件 -->
 <script type="text/javascript" src="../resources/ueditor/ueditor.all.js" th:src="@{/resources/ueditor/ueditor.all.js}"></script>
 <!-- 实例化编辑器 -->
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+
+    var content = /*[[${article.content}]]*/ "";
+    var id = /*[[${article.id}]]*/ -1;
+
     var ue = UE.getEditor('container',{
         autoWidth:true
     });
 
     ue.ready(function() {
         //设置编辑器的内容
-        ue.setContent('hello');
+        ue.setContent(content);
         //获取html内容，返回: <p>hello</p>
         var html = ue.getContent();
         //获取纯文本内容，返回: hello
@@ -37,30 +42,31 @@ summary:<textarea id="summary" cols="30" rows="10"></textarea><br />
     });
 
     $(document).ready(function(){
-       $("#saveArticle").click(function(){
+        $("#saveArticle").click(function(){
             var title = $("#title").val();
-           var summary = $("#summary").val();
-           var content = ue.getContent();
-           console.log(title);
-           console.log(summary);
-           console.log(content);
+            var summary = $("#summary").val();
+            var content = ue.getContent();
+            console.log(title);
+            console.log(summary);
+            console.log(content);
 
-           $.ajax({
-               url:"/article",
-               type:"POST",
-               data:{title:title,summary:summary,content:content},
-               success:function(resp){
-                   if(resp.resultCode == 200){
-                       console.log("success");
-                   }
-               },
-               error:function(resp){
+            $.ajax({
+                url:"/article/"+id,
+                type:"put",
+                data:{title:title,summary:summary,content:content},
+                success:function(resp){
+                    if(resp.resultCode == 200){
+                        console.log("success");
+                    }
+                },
+                error:function(resp){
 
-               }
-           })
-       });
+                }
+            })
+        });
     });
 
+    /*]]>*/
 </script>
 </body>
 </html>

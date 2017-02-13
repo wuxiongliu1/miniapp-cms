@@ -2,6 +2,7 @@ package com.huobanplus.miniapp.web.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.huobanplus.miniapp.web.exception.CmsExceptionHandler;
 import com.huobanplus.miniapp.web.inteceptor.RequestInteceptor;
 import com.huobanplus.miniapp.web.resolver.AuthArgumentResolver;
 import com.huobanplus.miniapp.web.util.StringUtil;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -113,5 +115,14 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         resolver.setCache(false);
         resolver.setContentType("text/html;charset=utf-8");
         return resolver;
+    }
+
+    /**
+     * 异常统一处理bean
+     * @return
+     */
+    @Bean
+    public HandlerExceptionResolver handlerExceptionResolver(){
+        return new CmsExceptionHandler();
     }
 }

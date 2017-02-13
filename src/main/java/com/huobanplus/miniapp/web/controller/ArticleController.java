@@ -39,6 +39,24 @@ public class ArticleController {
     }
 
     /**
+     * 跳转到编辑文章页面
+     * @param articleId
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/edit/{id}",method = RequestMethod.GET)
+    public String toEditArticle(@PathVariable(value = "id") Long articleId,Model model) throws Exception {
+        Article article = articleService.findArticle(articleId);
+        if(article == null){
+            throw new Exception("未找到该文章");
+        }
+        model.addAttribute("article",article);
+        return "ArticleEdit";
+
+    }
+
+    /**
      * 开放接口
      *
      * @param articleSearch
@@ -59,24 +77,54 @@ public class ArticleController {
         return ApiResult.resultWith(ResultCode.SUCCESS, articleList);
     }
 
+    /**
+     * 新增文章
+     * @param user
+     * @param title
+     * @param summary
+     * @param content
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public ApiResult addArticle(@UserAuthenticationPrincipal User user, String title, String summary, String content, String rawContent) {
-        return articleService.addArticle(user, title, summary, content, rawContent);
+    public ApiResult addArticle(@UserAuthenticationPrincipal User user, String title, String summary, String content) {
+        return articleService.addArticle(user, title, summary, content);
     }
 
+    /**
+     * 文章详情
+     * @param articleId
+     * @param model
+     * @return
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String articleDetail(@PathVariable(value = "id") Long articleId) {
+    public String articleDetail(@PathVariable(value = "id") Long articleId,Model model) {
         Article article = articleService.findArticle(articleId);
-        return "";
+        model.addAttribute("article",article);
+        return "ArticleDetail";
     }
 
+    /**
+     *  删除文章
+     * @param user
+     * @param articleId
+     * @return
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public ApiResult deleteArticle(@UserAuthenticationPrincipal(value = "user") User user, @PathVariable(value = "id") Long articleId) {
         return articleService.deleteArticle(user.getId(), articleId);
     }
 
+    /**
+     * 更新文章
+     * @param articleId
+     * @param title
+     * @param summary
+     * @param content
+     * @param rawContent
+     * @return
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseBody
     public ApiResult updateArticle(@PathVariable(value = "id") Long articleId, String title, String summary, String content, String rawContent) {

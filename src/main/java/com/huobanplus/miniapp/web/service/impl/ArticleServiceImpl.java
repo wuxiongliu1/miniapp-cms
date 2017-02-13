@@ -32,7 +32,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article findArticle(Long id) {
-        return null;
+        return articleRepository.findOne(id);
     }
 
     @Override
@@ -42,12 +42,11 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ApiResult addArticle(User user, String title, String summary, String content, String rawContent) {
+    public ApiResult addArticle(User user, String title, String summary, String content) {
         Article article = new Article();
         article.setTitle(title);
         article.setSummary(summary);
         article.setContent(content);
-        article.setRawContent(rawContent);
         article.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUser(user);

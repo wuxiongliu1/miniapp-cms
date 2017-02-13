@@ -65,7 +65,7 @@ public class ArticleServiceTest extends MiniAppTestBase {
         article = (Article) apiResult.getData();
         Assert.assertNotNull(article.getId());
 
-        articleService.addArticle(user, "title2", "test2", "content2", "rawContent2");
+        articleService.addArticle(user, "title2", "test2", "content2");
     }
 
     private User initUser() {
