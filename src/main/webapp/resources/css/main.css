@@ -1,0 +1,152 @@
+.head-box {
+    background-color: #fff;
+    border-top: 4px solid #009688;
+}
+
+.head-box .inner {
+    height: 60px;
+}
+
+.head-box .inner.wrp {
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.head-box .inner .logo a {
+    display: inline-block;
+    margin-top: 10px;
+    height: 50px;
+    font-size: 20px;
+    font-family: "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "\9ED1\4F53", Arial, sans-serif;
+    color: #ccc;
+    vertical-align: baseline;
+}
+
+.head-box .logo-image {
+    width: 40px;
+    height: 40px;
+}
+
+.head-box .banner {
+    height: 460px;
+    background: transparent url("../images/page/bg.jpg") no-repeat center center;
+    background-size: cover;
+}
+
+.head-box .banner .inner {
+    height: 460px;
+}
+
+.login-frame {
+    padding: 25px 35px 20px;
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    background-color: #fff;
+}
+
+.head-box .banner .login-frame {
+    width: 330px;
+    float: right;
+    margin-top: 25px;
+    padding: 36px 35px 40px;
+}
+
+.head-box .banner .login-frame h3 {
+    margin-left: 20px;
+    margin-bottom: 10px;
+    padding: 0 10px;
+    font-size: 20px;
+    font-weight: 300;
+}
+
+.layui-reset .layui-form-checkbox {
+    margin: 0;
+}
+
+.layui-reset .layui-form-label {
+    padding: 8px 0;
+}
+
+.layui-reset .layui-input-block {
+    margin-left: 82px;
+}
+
+.layui-reset .layui-form-checkbox {
+    height: 20px;
+    line-height: 18px;
+    padding-right: 20px;
+}
+
+.layui-reset .layui-form-checkbox span {
+    padding: 0 4px;
+    font-size: 12px;
+}
+
+.layui-reset .layui-form-checkbox i {
+    width: 26px;
+    font-size: 14px;
+}
+
+.layui-reset .layui-input-inline {
+    margin-left: 0;
+}
+
+.layui-reset .layui-btn {
+    width: 120px;
+}
+
+.layui-custom  {
+    height: 65px;
+    color: #fff;
+    background-color: #fff;
+    border-bottom: 5px solid #009688;
+}
+
+.layui-custom .logo {
+    position: absolute;
+    left: 40px;
+    top: 18px;
+}
+
+.layui-custom .logo img {
+    width: 82px;
+    height: 31px;
+}
+
+.layui-custom .layui-nav {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 0;
+    background: none;
+}
+
+.layui-custom .layui-nav .layui-nav-item {
+    margin: 0 10px;
+    line-height: 70px;
+}
+
+.layui-custom .layui-nav .layui-this {
+    background-color: #f2f2f2;
+}
+
+.layui-custom .layui-nav .layui-this a {
+    color: #000;
+}
+
+.layui-custom .layui-nav .layui-this:after,
+.layui-custom .layui-nav-bar {
+    background-color: #393D49;
+}
+
+.layui-custom .layui-nav .layui-this a {
+    padding: 0 30px;
+}
+.layui-side .list-items i {
+    font-size: 20px;
+}
+.layui-side .list-items cite {
+    padding: 0 10px;
+}
