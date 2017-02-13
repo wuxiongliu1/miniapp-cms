@@ -2,12 +2,15 @@ package com.huobanplus.miniapp.web.controller;
 
 import com.baidu.ueditor.ActionEnter;
 import com.huobanplus.miniapp.web.annotations.UserAuthenticationPrincipal;
+import com.huobanplus.miniapp.web.common.ApiResult;
+import com.huobanplus.miniapp.web.common.ResultCode;
 import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -36,17 +39,18 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/login")
-    public String login(HttpServletRequest request, String username, String password, Model model, boolean savedPassword) {
+    @ResponseBody
+    public ApiResult login(HttpServletRequest request, String username, String password, Model model, boolean savedPassword) {
         User user = userService.findUser(username, password);
         if (user == null) {
             model.addAttribute("errorMsg", "用户名或密码错误");
-            return "login";
+            return ApiResult.resultWith(ResultCode.NO_USER);
         }
 
         request.getSession().setAttribute("user", user);
         request.getSession().setMaxInactiveInterval(1200);// session过期时间20分钟
 
-        return "index";
+        return ApiResult.resultWith(ResultCode.SUCCESS);
     }
 
     @RequestMapping(value = "/logout")

@@ -9,6 +9,7 @@ import com.huobanplus.miniapp.web.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 
 /**
@@ -19,6 +20,19 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    /**
+     * 初始化一个管理员
+     */
+    @PostConstruct
+    public void initAdmin(){
+        User user = new User();
+        user.setUsername("admin");
+        user.setPassword("12345");
+        user.setEnabled(true);
+        user.setCreateTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
+        userRepository.save(user);
+    }
 
     @Override
     public User findUser(String username, String password) {
