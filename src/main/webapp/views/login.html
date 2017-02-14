@@ -64,8 +64,8 @@
 <script src="http://resali.huobanplus.com/cdn/jquery/2.2.4/jquery.min.js"></script>
 <script src="http://resali.huobanplus.com/cdn/layui/1.0.7/layui.js"></script>
 <script src="http://resali.huobanplus.com/cdn/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-<script>
-
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
     layui.config({
         version: false //一般用于更新组件缓存，默认不开启。设为true即让浏览器不缓存。也可以设为一个固定的值，如：201610
         ,debug: true
@@ -77,8 +77,8 @@
 
     // thymeleaf 代码
     var remember = true;
-    var username = 'wuxiongliu';
-    var password = '12345';
+    var username = /*[[${user.username}]]*/ "wuxiongliu" ;
+    var password = /*[[${user.password}]]*/ "12345";
 
     if (remember === true) {
         $('#js-username').val(username);
@@ -127,6 +127,6 @@
     });
 
 
-
+    /*]]>*/
 </script>
 </html>

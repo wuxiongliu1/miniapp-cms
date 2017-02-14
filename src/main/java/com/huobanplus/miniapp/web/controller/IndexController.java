@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
@@ -28,8 +29,12 @@ public class IndexController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/toLogin")
-    public String toLogin() {
+    @RequestMapping(value = "/login",method = RequestMethod.GET)
+    public String toLogin(HttpServletRequest request,Model model) {
+        boolean remember = (boolean) request.getSession().getAttribute("remember");
+        if(remember == true){
+
+        }
         return "login";
     }
 
@@ -38,7 +43,7 @@ public class IndexController {
         return "index";
     }
 
-    @RequestMapping(value = "/login")
+    @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
     public ApiResult login(HttpServletRequest request, String username, String password, Model model, boolean savedPassword) {
         User user = userService.findUser(username, password);

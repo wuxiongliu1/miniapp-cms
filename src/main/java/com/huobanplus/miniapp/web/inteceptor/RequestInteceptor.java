@@ -24,7 +24,7 @@ public class RequestInteceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         User userSession = (User) request.getSession().getAttribute("user");
         if (StringUtil.isEmpty(userSession)) {
-            response.sendRedirect("/toLogin");
+            response.sendRedirect("/login");
             return false;
         }
         User user = userService.findUser(userSession.getUsername(), userSession.getPassword());
@@ -32,7 +32,7 @@ public class RequestInteceptor extends HandlerInterceptorAdapter {
             request.setAttribute("user", user);
             return true;
         } else {
-            response.sendRedirect("/toLogin");
+            response.sendRedirect("/login");
             return false;
         }
     }
