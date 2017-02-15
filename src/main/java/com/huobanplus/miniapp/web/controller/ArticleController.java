@@ -53,7 +53,18 @@ public class ArticleController {
         }
         model.addAttribute("article",article);
         return "ArticleEdit";
+    }
 
+    /**
+     * 跳转到编辑文章页面
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/add",method = RequestMethod.GET)
+    public String toAddArticle(Model model) throws Exception {
+
+        return "ArticleAdd";
     }
 
     /**
@@ -98,8 +109,11 @@ public class ArticleController {
      * @return
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String articleDetail(@PathVariable(value = "id") Long articleId,Model model) {
+    public String articleDetail(@PathVariable(value = "id") Long articleId,Model model) throws Exception {
         Article article = articleService.findArticle(articleId);
+        if (article == null) {
+            throw new Exception("未找到该文章");
+        }
         model.addAttribute("article",article);
         return "ArticleDetail";
     }
