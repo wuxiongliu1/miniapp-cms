@@ -6,10 +6,12 @@ import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.repository.UserRepository;
 import com.huobanplus.miniapp.web.service.UserService;
 import com.huobanplus.miniapp.web.util.StringUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 /**
@@ -25,13 +27,20 @@ public class UserServiceImpl implements UserService {
      * 初始化一个管理员
      */
     @PostConstruct
-    public void initAdmin(){
+    public void initAdmin() throws UnsupportedEncodingException {
         User user = new User();
-        user.setUsername("admin");
-        user.setPassword("12345");
+        String username = "admin";
+        String rawPassword = "12345";
+        String password = DigestUtils.md5Hex(rawPassword.getBytes("utf-8"));
+
+        user.setUsername(username);
+        user.setPassword(password);
         user.setEnabled(true);
         user.setCreateTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
-        userRepository.save(user);
+
+        if(userRepository.findByUsernameAndPassword(username,password) ==null){
+            userRepository.save(user);
+        }
     }
 
     @Override

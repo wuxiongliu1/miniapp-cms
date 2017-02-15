@@ -34,14 +34,14 @@
                         <div class="layui-input-block">
                             <input id="js-username" type="text" name="username" lay-verify="required" autocomplete="off"
                                    placeholder="请输入账户"
-                                   class="layui-input" />
+                                   class="layui-input" th:value="${user.username}" />
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">密&nbsp;码</label>
                         <div class="layui-input-block">
                             <input id="js-password" type="password" name="password" lay-verify="required" autocomplete="off"
-                                   placeholder="请输入密码" class="layui-input" />
+                                   placeholder="请输入密码" class="layui-input" th:value="${user.password}" />
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -76,17 +76,17 @@
     var failUrl = './mock/fail.json';
 
     // thymeleaf 代码
-    var remember = true;
-    var username = /*[[${user.username}]]*/ "wuxiongliu" ;
-    var password = /*[[${user.password}]]*/ "12345";
-
+    var remember = /*[[${remember}]]*/ false;
+//    var username = /*[[${user.username}]]*/ "wuxiongliu" ;
+//    var password = /*[[${user.password}]]*/ "12345";
+//
     if (remember === true) {
-        $('#js-username').val(username);
-        $('#js-password').val(password);
+//        $('#js-username').val(username);
+//        $('#js-password').val(password);
         $('#js-checkbox').prop('checked', true);
     } else {
-        $('#js-username').val('');
-        $('#js-password').val('');
+//        $('#js-username').val('');
+//        $('#js-password').val('');
         $('#js-checkbox').prop('checked', false);
     }
 

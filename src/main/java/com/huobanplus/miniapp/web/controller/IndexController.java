@@ -6,6 +6,7 @@ import com.huobanplus.miniapp.web.common.ApiResult;
 import com.huobanplus.miniapp.web.common.ResultCode;
 import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.service.UserService;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +20,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by wuxiongliu on 2017-02-10.
@@ -31,10 +33,25 @@ public class IndexController {
 
     @RequestMapping(value = "/login",method = RequestMethod.GET)
     public String toLogin(HttpServletRequest request,Model model) {
-        boolean remember = (boolean) request.getSession().getAttribute("remember");
-        if(remember == true){
 
+        Object user = request.getSession().getAttribute("user");
+        User attrUser = new User();
+        boolean attrRemember = false;
+        if(user != null){
+            Object rememberMe =  request.getSession().getAttribute("remember");
+
+            if(rememberMe != null){
+                boolean remember = (boolean) rememberMe;
+                if(remember){
+                    attrUser = (User) user;
+                    attrRemember = true;
+                }
+            }
         }
+
+        model.addAttribute("user",attrUser);
+        model.addAttribute("remember",attrRemember);
+
         return "login";
     }
 
@@ -45,13 +62,21 @@ public class IndexController {
 
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
-    public ApiResult login(HttpServletRequest request, String username, String password, Model model, boolean savedPassword) {
+    public ApiResult login(HttpServletRequest request, String username, String password, Model model, boolean rememberUser) throws UnsupportedEncodingException {
+        // 先用原密码查询，然后再用加密后的密码查询
+
         User user = userService.findUser(username, password);
         if (user == null) {
-            model.addAttribute("errorMsg", "用户名或密码错误");
-            return ApiResult.resultWith(ResultCode.NO_USER);
+            User md5User = userService.findUser(username, DigestUtils.md5Hex(password.getBytes("utf-8")));
+            if(md5User== null){
+                model.addAttribute("errorMsg", "用户名或密码错误");
+                return ApiResult.resultWith(ResultCode.NO_USER);
+            } else{
+                user = md5User;
+            }
         }
 
+        request.getSession().setAttribute("remember",rememberUser);
         request.getSession().setAttribute("user", user);
         request.getSession().setMaxInactiveInterval(1200);// session过期时间20分钟
 
