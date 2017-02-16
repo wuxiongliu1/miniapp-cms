@@ -1,18 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8">
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="format-detection" content="telephone=no">
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no"/>
 
     <title>小程序管理平台 - 添加新闻</title>
 
-    <link rel="stylesheet" href="http://resali.huobanplus.com/cdn/layui/1.0.7/css/layui.css" media="all">
-    <link rel="stylesheet" href="../resources/css/main.css" media="all">
+    <link rel="stylesheet" href="http://resali.huobanplus.com/cdn/layui/1.0.7/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="../resources/css/main.css" media="all"/>
 
 </head>
 <body>
@@ -20,22 +20,23 @@
     <div class="layui-header layui-custom">
         <div class="layui-main">
             <a class="logo" href="javascript:;">
-                <img src="../resources/images/page/logo.png" alt="Logo" class="logo-image">
+                <img src="../resources/images/page/logo.png" alt="Logo" class="logo-image"/>
                 小程序 &centerdot; 管理平台
             </a>
             <ul class="layui-nav">
                 <li class="layui-nav-item layui-this">
                     <a href="javascript:;">
                         <!--如果有头像的话-->
-                        <img src="../resources/images/page/avatar.jpg" class="img-avatar">
-                        Neo Chang
+                        <img src="../resources/images/page/avatar.jpg" th:src="@{/resources/images/page/avatar.jpg}"
+                             class="img-avatar"/>
+                        <span th:text="${user.username}"></span>
                     </a>
                     <dl class="layui-nav-child">
                         <dd>
-                            <a href="operateUser.html" target="_self">用户设置</a>
+                            <a href="operateUser.html" th:href="@{/user/{id}(id=${user.id})}" target="_self">用户设置</a>
                         </dd>
                         <dd>
-                            <a href="../login.html" target="_self">退出</a>
+                            <a href="/logout" th:href="@{/logout}" target="_self">退出</a>
                         </dd>
                     </dl>
                 </li>
@@ -49,7 +50,7 @@
                     <a href="javascript:;">新闻管理</a>
                     <dl class="layui-nav-child">
                         <dd>
-                            <a href="index.html" class="list-items">
+                            <a href="index.html" th:href="@{/index}" class="list-items">
                                 <i class="layui-icon">&#xe62d;</i>
                                 <cite>新闻列表</cite>
                             </a>
@@ -66,7 +67,7 @@
                     <a href="javascript:;">用户管理</a>
                     <dl class="layui-nav-child">
                         <dd>
-                            <a href="operateUser.html" class="list-items">
+                            <a href="operateUser.html" th:href="@{/user/{id}(id=${user.id})}" class="list-items">
                                 <i class="layui-icon">&#xe613;</i>
                                 <cite>用户设置</cite>
                             </a>
@@ -87,21 +88,22 @@
                             <div class="layui-input-block">
                                 <input type="text" name="newsTittle" lay-verify="required" autocomplete="off"
                                        placeholder="请输入标题（必填）"
-                                       class="layui-input">
+                                       class="layui-input"/>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">新闻作者</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="newsAuthor" lay-verify="required" autocomplete="off"
-                                       placeholder="请输入作者" class="layui-input">
+                                       placeholder="请输入作者" class="layui-input"/>
                             </div>
                             <div class="layui-form-mid layui-word-aux">可选</div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">发布时间</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="date" id="js-date" lay-verify="date" placeholder="yyyy-mm-dd" autocomplete="off" class="layui-input">
+                                <input type="text" name="date" id="js-date" lay-verify="date" placeholder="yyyy-mm-dd"
+                                       autocomplete="off" class="layui-input"/>
                             </div>
                             <div class="layui-form-mid layui-word-aux">默认当前时间</div>
                         </div>
@@ -114,12 +116,14 @@
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">编辑器</label>
                             <div class="layui-input-block">
-                                <textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="LAY_demo_editor"></textarea>
+                                <textarea class="layui-textarea layui-hide" name="content" lay-verify="content"
+                                          id="LAY_demo_editor"></textarea>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <div class="layui-input-block">
-                                <button class="layui-btn" lay-submit lay-filter="*">提&nbsp;&nbsp;&nbsp;&nbsp;交</button>
+                                <button class="layui-btn" lay-submit="" lay-filter="*">提&nbsp;&nbsp;&nbsp;&nbsp;交
+                                </button>
                             </div>
                         </div>
                     </form>

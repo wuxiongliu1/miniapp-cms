@@ -3,6 +3,8 @@ package com.huobanplus.miniapp.web.service;
 import com.huobanplus.miniapp.web.common.ApiResult;
 import com.huobanplus.miniapp.web.entity.User;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * Created by wuxiongliu on 2017-02-10.
  */
@@ -43,10 +45,11 @@ public interface UserService {
     /**
      * 更新用户密码
      * @param id
-     * @param password
+     * @param oldPassword
+     * @param newPassword
      * @return
      */
-    ApiResult updatePassword(Long id,String password);
+    ApiResult updatePassword(Long id, String oldPassword, String newPassword) throws UnsupportedEncodingException;
 
     /**
      * 删除用户

@@ -68,16 +68,17 @@ public class ArticleController {
     }
 
     /**
-     * 跳转到编辑文章页面
+     * 跳转到新增文章页面
      *
+     * @param user
      * @param model
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String toAddArticle(Model model) throws Exception {
-
-        return "ArticleAdd";
+    public String toAddArticle(@UserAuthenticationPrincipal(value = "user") User user, Model model) throws Exception {
+//        model.addAttribute("user",user);
+        return "addNews";
     }
 
     /**

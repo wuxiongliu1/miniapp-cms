@@ -58,7 +58,6 @@ public class ArticleServiceTest extends MiniAppTestBase {
         article.setTitle("title");
         article.setSummary("test");
         article.setContent("this is cms");
-        article.setRawContent("raw content");
         article.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUser(user);
@@ -84,7 +83,6 @@ public class ArticleServiceTest extends MiniAppTestBase {
         article.setTitle("title");
         article.setSummary("test");
         article.setContent("this is cms");
-        article.setRawContent("raw content");
         article.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUser(user);

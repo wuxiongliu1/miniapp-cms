@@ -104,9 +104,10 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/logout")
-    public String logout(HttpServletRequest request) {
+    public String logout(HttpServletRequest request, Model model) {
         request.getSession().removeAttribute("user");
-        return "login";
+        request.getSession().removeAttribute("remember");
+        return "redirect:/login";
     }
 
     @RequestMapping(value = "/ueditor")

@@ -35,16 +35,12 @@ public class Article {
     private String summary;
 
     /**
-     * 文章正文
+     * 文章内容
      */
     @Column(name = "content")
+    @Lob
     private String content;
 
-    /**
-     * 富文本编辑得到的文章正文
-     */
-    @Column(name = "raw_content")
-    private String rawContent;
 
     /**
      * 创建时间
@@ -58,6 +54,12 @@ public class Article {
      */
     @Column(name = "update_time")
     private String updateTime;
+
+    /**
+     * 发布时间
+     */
+    @Column(name = "public_date")
+    private String publicDate;
 
     /**
      * 文章作者

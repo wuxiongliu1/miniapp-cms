@@ -75,7 +75,6 @@ public class ArticleServiceImpl implements ArticleService {
         article.setTitle(title);
         article.setSummary(summary);
         article.setContent(content);
-        article.setRawContent(rawContent);
         article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article = articleRepository.save(article);
         return ApiResult.resultWith(ResultCode.SUCCESS, article);

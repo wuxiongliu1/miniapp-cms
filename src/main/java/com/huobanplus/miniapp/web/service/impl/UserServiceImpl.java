@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(true);
         user.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
 
-        if (userRepository.findByUsernameAndPassword(username, password) == null) {
+        if (userRepository.findByUsername(username) == null) {
             userRepository.save(user);
         }
     }
@@ -78,13 +78,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResult updatePassword(Long id, String password) {
+    public ApiResult updatePassword(Long id, String oldPassword, String newPassword) throws UnsupportedEncodingException {
         User user = userRepository.findOne(id);
         if (user == null) {
             return ApiResult.resultWith(ResultCode.NO_USER);
         }
 
-        user.setPassword(password);
+        if (!DigestUtils.md5Hex(oldPassword.getBytes("utf-8")).equals(user.getPassword())) {
+            return ApiResult.resultWith(ResultCode.ERROR, "原密码不正确", null);
+        }
+
+        user.setPassword(DigestUtils.md5Hex(newPassword.getBytes("utf-8")));
         User updatedUser = userRepository.save(user);
         return ApiResult.resultWith(ResultCode.SUCCESS, updatedUser);
     }

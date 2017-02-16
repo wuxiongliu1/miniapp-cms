@@ -30,14 +30,14 @@
                         <!--如果有头像的话-->
                         <img src="../resources/images/page/avatar.jpg" th:src="@{/resources/images/page/avatar.jpg}"
                              class="img-avatar"/>
-                        Neo Chang
+                        <span th:text="${user.username}"></span>
                     </a>
                     <dl class="layui-nav-child">
                         <dd>
-                            <a href="operateUser.html" target="_self">用户设置</a>
+                            <a href="operateUser.html" th:href="@{/user/{id}(id=${user.id})}" target="_self">用户设置</a>
                         </dd>
                         <dd>
-                            <a href="../login.html" target="_self">退出</a>
+                            <a href="/logout" th:href="@{/logout}" target="_self">退出</a>
                         </dd>
                     </dl>
                 </li>
@@ -51,13 +51,13 @@
                     <a href="javascript:;">新闻管理</a>
                     <dl class="layui-nav-child">
                         <dd class="layui-this">
-                            <a href="javascript:;" class="list-items">
+                            <a href="javascript:;" th:href="@{/index}" class="list-items">
                                 <i class="layui-icon">&#xe62d;</i>
                                 <cite>新闻列表</cite>
                             </a>
                         </dd>
                         <dd>
-                            <a href="addNews.html" class="list-items" target="_self">
+                            <a href="addNews.html" th:href="@{/article/add}" class="list-items" target="_self">
                                 <i class="layui-icon">&#xe61f;</i>
                                 <cite>添加新闻</cite>
                             </a>
@@ -68,7 +68,8 @@
                     <a href="javascript:;">用户管理</a>
                     <dl class="layui-nav-child">
                         <dd>
-                            <a href="operateUser.html" class="list-items" target="_self">
+                            <a href="operateUser.html" th:href="@{/user/{id}(id=${user.id})}" class="list-items"
+                               target="_self">
                                 <i class="layui-icon">&#xe613;</i>
                                 <cite>用户设置</cite>
                             </a>
@@ -95,7 +96,8 @@
                             </div>
                             <button type="button" class="layui-btn news-btn-search" id="searchBtn"><i class="layui-icon">&#xe615;</i></button>
                             <button type="button" class="layui-btn" id="searchAll">显示所有</button>
-                            <a href="addNews.html" class="layui-btn news-btn-add" target="_self"><i class="layui-icon">
+                            <a href="addNews.html" th:href="@{/article/add}" class="layui-btn news-btn-add"
+                               target="_self"><i class="layui-icon">
                                 &#xe61f;</i>&nbsp;添加新闻</a>
                         </div>
                         <table class="layui-table">
