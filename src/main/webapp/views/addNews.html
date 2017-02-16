@@ -110,26 +110,33 @@
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">新闻简介</label>
                             <div class="layui-input-block">
-                                <textarea placeholder="请输入内容（可选）" class="layui-textarea"></textarea>
+                                <textarea placeholder="请输入内容（可选）" name="newsSummary" class="layui-textarea"></textarea>
                             </div>
                         </div>
                         <div class="layui-form-item layui-form-text">
-                            <label class="layui-form-label">编辑器</label>
+                            <label class="layui-form-label">新闻详情</label>
                             <div class="layui-input-block">
                                 <textarea class="layui-textarea layui-hide" name="content" lay-verify="content"
                                           id="LAY_demo_editor"></textarea>
+                                <script id="editor" type="text/plain"></script>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <div class="layui-input-block">
                                 <button class="layui-btn" lay-submit="" lay-filter="*">提&nbsp;&nbsp;&nbsp;&nbsp;交
                                 </button>
+                            <div class="layui-input-inline layui-input-submit-custom">
+                                <button class="layui-btn" lay-submit="" lay-filter="*">提&nbsp;&nbsp;&nbsp;&nbsp;交
+                                </button>
+                            </div>
+                            <div class="layui-input-inline">
+                                <button type="button" class="layui-btn layui-btn-primary" id="js-btn-preview">预&nbsp;&nbsp;&nbsp;&nbsp;览</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </fieldset>
-
+            <div id="previewBox"></div>
         </div>
     </div>
 </div>
@@ -137,14 +144,149 @@
 </body>
 <script src="http://resali.huobanplus.com/cdn/jquery/2.2.4/jquery.min.js"></script>
 <script src="http://resali.huobanplus.com/cdn/layui/1.0.7/lay/dest/layui.all.js"></script>
+<script src="../resources/ueditor/ueditor.config.js"></script>
+<script src="../resources/ueditor/ueditor.all.js"></script>
+<script src="../resources/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script id="previewHtml" type="text/html">
+    <h3>{{ d.title }}</h3>
+    <div>
+        <span class="author">{{ d.author }}</span>
+        <span class="time">{{ d.date }}</span>
+    </div>
+    <div class="news-wrapper">{{ d.content }}</div>
+</script>
 <script>
-    var editIndex = layui.layedit.build('LAY_demo_editor');
+    $(function () {
+        var verify = {
+            required: [
+                /[\S]+/
+                , '必填项不能为空'
+            ]
+            , phone: [
+                /^1\d{10}$/
+                , '请输入正确的手机号'
+            ]
+            , email: [
+                /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/
+                , '邮箱格式不正确'
+            ]
+            , url: [
+                /(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/
+                , '链接格式不正确'
+            ]
+            , number: [
+                /^\d+$/
+                , '只能填写数字'
+            ]
+            , date: [
+                /^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*$/
+                , '日期格式不正确'
+            ]
+            , identity: [
+                /(^\d{15}$)|(^\d{17}(x|X|\d)$)/
+                , '请输入正确的身份证号'
+            ]
+        };
 
-    $('#js-date').click(function () {
-        layui.laydate({
-            elem: this
-        })
+        var ue =UE.getEditor('editor', {
+            initialFrameWidth: '100%',
+            initialFrameHeight: 500,
+            autoHeightEnabled: false,
+            elementPathEnabled: false
+        });
+
+        var newsData = {};
+        var laytpl = layui.laytpl(),
+            laydate = layui.laydate(),
+            form = layui.form();
+
+
+        $('#js-btn-preview').click(function () {
+            var stop = null;
+            $('input').each(function () {
+                var ver = $(this).attr('lay-verify');
+                var value = $(this).val();
+
+                if(ver && !verify[ver][0].test(value)) {
+                    layer.msg(verify[ver][1], {
+                        icon: 5
+                        ,shift: 6
+                    });
+                    $(this)[0].focus();
+
+                    return stop = true;
+                }
+            });
+            if (stop) return false;
+
+            var content = ue.getContent();
+
+            if(!verify['required'][0].test(content)) {
+                layer.msg(verify['required'][1], {
+                    icon: 5
+                    ,shift: 6
+                });
+                ue.focus();
+
+                return stop = true;
+            }
+
+            if (stop) return false;
+
+            var newsDate = $('input[name="newsDate"]').val();
+
+            newsData.title = $('input[name="newsTittle"]').val();
+            newsData.author = $('input[name="newsAuthor"]').val();
+            newsData.date = newsDate ? newsDate : laydate.now();
+            newsData.summary = $('input[name="newsSummary"]').val();
+            newsData.content = content;
+
+
+            var getTpl = document.getElementById('previewHtml').innerHTML;
+
+            laytpl(getTpl).render(newsData, function(html){
+                previewBox.innerHTML = html;
+            });
+        });
+
+        form.on('submit(*)', function (data) {
+            var loginData = data.field;
+            console.log(loginData)
+//            $.ajax({
+//                type: 'POST',
+//                url: successUrl,
+//                data: loginData,
+//                dataType: 'json',
+//                statusCode: {
+//                    403: function () {
+//                        layer.msg('没有权限，请联系管理员', {icon: 2});
+//                    },
+//                    404: function () {
+//                        layer.msg('页面未找到，请联系管理员', {icon: 2});
+//                    },
+//                    502: function () {
+//                        layer.msg('无效网关，请联系管理员', {icon: 2});
+//                    }
+//                },
+//                success: function (data) {
+//                    if (data.resultCode !== 200) {
+//                        layer.msg('密码错误', {icon: 2});
+//                        return false;
+//                    }
+//                    window.location.href = './views/index.html';
+//                },
+//                error: function (jqXHR, textStatus, errorThrown) {
+//                    layer.msg(errorThrown);
+//                }
+//            });
+            return false;
+        });
+
+        $('#js-date').click(function () {
+            laydate({
+                elem: this
+            })
+        });
     });
-
 </script>
 </html>
