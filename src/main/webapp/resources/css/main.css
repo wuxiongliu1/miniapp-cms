@@ -103,16 +103,18 @@
     background-color: #fff;
     border-bottom: 5px solid #009688;
 }
-
 .layui-custom .logo {
-    position: absolute;
-    left: 40px;
-    top: 18px;
+    display: inline-block;
+    margin-top: 14px;
+    height: 50px;
+    font-size: 20px;
+    font-family: "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "\9ED1\4F53", Arial, sans-serif;
+    color: #ccc;
+    vertical-align: baseline;
 }
-
-.layui-custom .logo img {
-    width: 82px;
-    height: 31px;
+.layui-custom .logo-image {
+    width: 40px;
+    height: 40px;
 }
 
 .layui-custom .layui-nav {
@@ -127,26 +129,79 @@
     margin: 0 10px;
     line-height: 70px;
 }
-
+.layui-custom .layui-nav .layui-nav-item,
 .layui-custom .layui-nav .layui-this {
     background-color: #f2f2f2;
 }
-
+.layui-custom .layui-nav .layui-nav-item a,
 .layui-custom .layui-nav .layui-this a {
     color: #000;
 }
-
+.layui-custom .layui-nav .layui-nav-item:after,
 .layui-custom .layui-nav .layui-this:after,
 .layui-custom .layui-nav-bar {
     background-color: #393D49;
 }
-
+.layui-custom .layui-nav .layui-nav-item a,
 .layui-custom .layui-nav .layui-this a {
     padding: 0 30px;
 }
+.layui-custom .layui-nav .layui-nav-more {
+    top: 33px;
+    right: 8px;
+}
+.layui-custom .layui-nav .layui-nav-mored,
+.layui-custom .layui-nav-itemed .layui-nav-more {
+    top: 28px;
+}
+.layui-custom .layui-nav-child {
+    right: 0;
+    top: auto;
+}
+.layui-custom .img-avatar {
+    margin-right: 2px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
 .layui-side .list-items i {
+    position: relative;
+    top: 2px;
     font-size: 20px;
 }
 .layui-side .list-items cite {
     padding: 0 10px;
+}
+.layui-table-custom {
+    padding: 0 30px;
+}
+.layui-table-custom table {
+    table-layout: fixed;
+}
+.layui-table-custom table td {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.layui-pageNav-custom {
+    text-align: right;
+}
+.layui-table-operate {
+    overflow: hidden;
+}
+.news-input-search {
+    float: left;
+}
+.news-input-search .layui-input {
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.news-btn-search {
+    float: left;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.news-btn-add {
+    float: right;
 }

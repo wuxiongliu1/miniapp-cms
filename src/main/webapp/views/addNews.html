@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+    <title>小程序管理平台 - 添加新闻</title>
+
+    <link rel="stylesheet" href="http://resali.huobanplus.com/cdn/layui/1.0.7/css/layui.css" media="all">
+    <link rel="stylesheet" href="../resources/css/main.css" media="all">
+
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header layui-custom">
+        <div class="layui-main">
+            <a class="logo" href="javascript:;">
+                <img src="../resources/images/page/logo.png" alt="Logo" class="logo-image">
+                小程序 &centerdot; 管理平台
+            </a>
+            <ul class="layui-nav">
+                <li class="layui-nav-item layui-this">
+                    <a href="javascript:;">
+                        <!--如果有头像的话-->
+                        <img src="../resources/images/page/avatar.jpg" class="img-avatar">
+                        Neo Chang
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="operate.html" target="_self">用户设置</a>
+                        </dd>
+                        <dd>
+                            <a href="../login.html" target="_self">退出</a>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree">
+                <li class="layui-nav-item  layui-nav-itemed">
+                    <a href="javascript:;">新闻管理</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="index.html" class="list-items">
+                                <i class="layui-icon">&#xe62d;</i>
+                                <cite>新闻列表</cite>
+                            </a>
+                        </dd>
+                        <dd class="layui-this">
+                            <a href="javascript:;" target="frameMain" class="list-items">
+                                <i class="layui-icon">&#xe61f;</i>
+                                <cite>添加新闻</cite>
+                            </a>
+                        </dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">用户管理</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="operate.html" class="list-items">
+                                <i class="layui-icon">&#xe613;</i>
+                                <cite>用户设置</cite>
+                            </a>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="layui-body">
+        <div class="layui-table-custom">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>添加新闻</legend>
+                <div class="layui-field-box">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">新闻标题</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="newsTittle" lay-verify="required" autocomplete="off"
+                                       placeholder="请输入标题（必填）"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">新闻作者</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="newsAuthor" lay-verify="required" autocomplete="off"
+                                       placeholder="请输入作者" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">可选</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">发布时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="date" id="js-date" lay-verify="date" placeholder="yyyy-mm-dd" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">默认当前时间</div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">新闻简介</label>
+                            <div class="layui-input-block">
+                                <textarea placeholder="请输入内容（可选）" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">编辑器</label>
+                            <div class="layui-input-block">
+                                <textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="LAY_demo_editor"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="*">提&nbsp;&nbsp;&nbsp;&nbsp;交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="http://resali.huobanplus.com/cdn/jquery/2.2.4/jquery.min.js"></script>
+<script src="http://resali.huobanplus.com/cdn/layui/1.0.7/lay/dest/layui.all.js"></script>
+<script>
+    var editIndex = layui.layedit.build('LAY_demo_editor');
+
+    $('#js-date').click(function () {
+        layui.laydate({
+            elem: this
+        })
+    });
+
+</script>
+</html>
