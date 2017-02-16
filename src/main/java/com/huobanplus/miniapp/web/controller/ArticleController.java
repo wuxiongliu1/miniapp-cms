@@ -30,38 +30,51 @@ public class ArticleController {
      *
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET)
-    public String articleList(ArticleSearch articleSearch, int pageIndex, int pageSize, Model model) {
+    @RequestMapping(method = RequestMethod.POST)
+    public String articleList(ArticleSearch articleSearch,
+                              @RequestParam(defaultValue = "1") int pageIndex,
+                              @RequestParam(defaultValue = "5") int pageSize,
+                              Model model) {
         Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize);
         List<Article> articleList = articlePage.getContent();
+
         model.addAttribute("articleList", articleList);
-        return "articleList";
+        model.addAttribute("articleSearch", articleSearch);
+        model.addAttribute("hasPrev", articlePage.hasPrevious());
+        model.addAttribute("hasNext", articlePage.hasNext());
+        model.addAttribute("pageNum", articlePage.getTotalPages());
+        model.addAttribute("pageIndex", pageIndex);
+        model.addAttribute("pageSize", pageSize);
+
+        return "index";
     }
 
     /**
      * 跳转到编辑文章页面
+     *
      * @param articleId
      * @param model
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/edit/{id}",method = RequestMethod.GET)
-    public String toEditArticle(@PathVariable(value = "id") Long articleId,Model model) throws Exception {
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+    public String toEditArticle(@PathVariable(value = "id") Long articleId, Model model) throws Exception {
         Article article = articleService.findArticle(articleId);
-        if(article == null){
+        if (article == null) {
             throw new Exception("未找到该文章");
         }
-        model.addAttribute("article",article);
+        model.addAttribute("article", article);
         return "ArticleEdit";
     }
 
     /**
      * 跳转到编辑文章页面
+     *
      * @param model
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/add",method = RequestMethod.GET)
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String toAddArticle(Model model) throws Exception {
 
         return "ArticleAdd";
@@ -90,13 +103,14 @@ public class ArticleController {
 
     /**
      * 新增文章
+     *
      * @param user
      * @param title
      * @param summary
      * @param content
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/add",method = RequestMethod.POST)
     @ResponseBody
     public ApiResult addArticle(@UserAuthenticationPrincipal User user, String title, String summary, String content) {
         return articleService.addArticle(user, title, summary, content);
@@ -104,22 +118,24 @@ public class ArticleController {
 
     /**
      * 文章详情
+     *
      * @param articleId
      * @param model
      * @return
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String articleDetail(@PathVariable(value = "id") Long articleId,Model model) throws Exception {
+    public String articleDetail(@PathVariable(value = "id") Long articleId, Model model) throws Exception {
         Article article = articleService.findArticle(articleId);
         if (article == null) {
             throw new Exception("未找到该文章");
         }
-        model.addAttribute("article",article);
+        model.addAttribute("article", article);
         return "ArticleDetail";
     }
 
     /**
-     *  删除文章
+     * 删除文章
+     *
      * @param user
      * @param articleId
      * @return
@@ -132,6 +148,7 @@ public class ArticleController {
 
     /**
      * 更新文章
+     *
      * @param articleId
      * @param title
      * @param summary

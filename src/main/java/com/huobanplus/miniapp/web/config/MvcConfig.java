@@ -87,7 +87,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(requestInteceptor).addPathPatterns("/**").excludePathPatterns("/login", "/logout", "/article/open/**","/ueditor/**");
+        registry.addInterceptor(requestInteceptor).addPathPatterns("/**").excludePathPatterns("/login", "/logout", "/article/open/**", "/ueditor/**");
     }
 
     /**
@@ -119,10 +119,11 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 
     /**
      * 异常统一处理bean
+     *
      * @return
      */
     @Bean
-    public HandlerExceptionResolver handlerExceptionResolver(){
+    public HandlerExceptionResolver handlerExceptionResolver() {
         return new CmsExceptionHandler();
     }
 }

@@ -60,6 +60,12 @@ public class Article {
     private String updateTime;
 
     /**
+     * 文章作者
+     */
+    @Column(name="author")
+    private String author;
+
+    /**
      * 关联用户
      */
     @ManyToOne

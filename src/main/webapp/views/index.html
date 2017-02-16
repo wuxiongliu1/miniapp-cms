@@ -1,18 +1,18 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8">
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="format-detection" content="telephone=no">
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no"/>
 
     <title>小程序管理平台 - 首页</title>
 
-    <link rel="stylesheet" href="http://resali.huobanplus.com/cdn/layui/1.0.7/css/layui.css" media="all">
-    <link rel="stylesheet" href="../resources/css/main.css" media="all">
+    <link rel="stylesheet" href="http://resali.huobanplus.com/cdn/layui/1.0.7/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="../resources/css/main.css" th:href="@{/resources/css/main.css}" media="all"/>
 
 
 </head>
@@ -21,14 +21,15 @@
     <div class="layui-header layui-custom">
         <div class="layui-main">
             <a class="logo" href="javascript:;">
-                <img src="../resources/images/page/logo.png" alt="Logo" class="logo-image">
+                <img src="../resources/images/page/logo.png" alt="Logo" class="logo-image"/>
                 小程序 &centerdot; 管理平台
             </a>
             <ul class="layui-nav">
                 <li class="layui-nav-item layui-this">
                     <a href="javascript:;">
                         <!--如果有头像的话-->
-                        <img src="../resources/images/page/avatar.jpg" class="img-avatar">
+                        <img src="../resources/images/page/avatar.jpg" th:src="@{/resources/images/page/avatar.jpg}"
+                             class="img-avatar"/>
                         Neo Chang
                     </a>
                     <dl class="layui-nav-child">
@@ -77,146 +78,194 @@
             </ul>
         </div>
     </div>
-    <div class="layui-body">
-        <div class="layui-table-custom">
-            <fieldset class="layui-elem-field layui-field-title">
-                <legend>新闻列表</legend>
-                <div class="layui-field-box">
-                    <div class="layui-table-operate">
-                        <div class="layui-input-inline news-input-search">
-                            <input id="js-search" type="text" name="search" autocomplete="off"
-                                   placeholder="请输入标题关键字"
-                                   class="layui-input">
+    <form th:action="@{/article}" method="post" id="articleForm">
+        <input type="hidden" name="pageIndex" th:value="${pageIndex}"/>
+        <input type="hidden" name="pageNum" th:value="${pageNum}"/>
+        <input type="hidden" name="pageSize" th:value="${pageSize}"/>
+        <div class="layui-body">
+            <div class="layui-table-custom">
+                <fieldset class="layui-elem-field layui-field-title">
+                    <legend>新闻列表</legend>
+                    <div class="layui-field-box">
+                        <div class="layui-table-operate">
+                            <div class="layui-input-inline news-input-search">
+                                <input id="js-search" type="text" name="title" autocomplete="off"
+                                       placeholder="请输入标题关键字"
+                                       class="layui-input" th:value="${articleSearch.title}"/>
+                            </div>
+                            <button type="button" class="layui-btn news-btn-search" id="searchBtn"><i class="layui-icon">&#xe615;</i></button>
+                            <button type="button" class="layui-btn" id="searchAll">显示所有</button>
+                            <a href="addNews.html" class="layui-btn news-btn-add" target="_self"><i class="layui-icon">
+                                &#xe61f;</i>&nbsp;添加新闻</a>
                         </div>
-                        <a href="#" class="layui-btn news-btn-search"><i class="layui-icon">&#xe615;</i></a>
-                        <a href="addNews.html" class="layui-btn news-btn-add" target="_self"><i class="layui-icon">&#xe61f;</i>&nbsp;添加新闻</a>
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="30%"/>
+                                <col width="40%"/>
+                                <col width="10%"/>
+                                <col width="10%"/>
+                                <col/>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>标题</th>
+                                <th>简介</th>
+                                <th>作者</th>
+                                <th>时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr th:each="article,articleStat:${articleList}">
+                                <td th:text="${article.title}">title</td>
+                                <td th:text="${article.summary}">summary</td>
+                                <td th:text="${article.author}">author</td>
+                                <td th:text="${article.createTime}">2016-02-16 13:32:06</td>
+                                <td><a href="">删除</a></td>
+                            </tr>
+
+                            <div class="example" th:remove="all">
+                                <tr>
+                                    <td>安徽初步形成“三位一体”大扶贫格局</td>
+                                    <td>
+                                        我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
+                                    </td>
+                                    <td>万事利</td>
+                                    <td>2017-2-14</td>
+                                    <td>人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td>安徽初步形成“三位一体”大扶贫格局</td>
+                                    <td>
+                                        我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
+                                    </td>
+                                    <td>万事利</td>
+                                    <td>2017-2-14</td>
+                                    <td>人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td>安徽初步形成“三位一体”大扶贫格局</td>
+                                    <td>
+                                        我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
+                                    </td>
+                                    <td>万事利</td>
+                                    <td>2017-2-14</td>
+                                    <td>人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td>安徽初步形成“三位一体”大扶贫格局</td>
+                                    <td>
+                                        我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
+                                    </td>
+                                    <td>万事利</td>
+                                    <td>2017-2-14</td>
+                                    <td>人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td>安徽初步形成“三位一体”大扶贫格局</td>
+                                    <td>
+                                        我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
+                                    </td>
+                                    <td>万事利</td>
+                                    <td>2017-2-14</td>
+                                    <td>人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td>安徽初步形成“三位一体”大扶贫格局</td>
+                                    <td>
+                                        我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
+                                    </td>
+                                    <td>万事利</td>
+                                    <td>2017-2-14</td>
+                                    <td>人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td>安徽初步形成“三位一体”大扶贫格局</td>
+                                    <td>
+                                        我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
+                                    </td>
+                                    <td>万事利</td>
+                                    <td>2017-2-14</td>
+                                    <td>人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td>安徽初步形成“三位一体”大扶贫格局</td>
+                                    <td>
+                                        我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
+                                    </td>
+                                    <td>万事利</td>
+                                    <td>2017-2-14</td>
+                                    <td>人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td>安徽初步形成“三位一体”大扶贫格局</td>
+                                    <td>
+                                        我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
+                                    </td>
+                                    <td>万事利</td>
+                                    <td>2017-2-14</td>
+                                    <td>人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td>安徽初步形成“三位一体”大扶贫格局</td>
+                                    <td>
+                                        我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
+                                    </td>
+                                    <td>万事利</td>
+                                    <td>2017-2-14</td>
+                                    <td>人生就像是一场修行</td>
+                                </tr>
+                            </div>
+                            </tbody>
+                        </table>
+                        <div id="page-navigator" class="layui-pageNav-custom"></div>
                     </div>
-                    <table class="layui-table">
-                        <colgroup>
-                            <col width="30%">
-                            <col width="40%">
-                            <col width="10%">
-                            <col width="10%">
-                            <col>
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th>标题</th>
-                            <th>简介</th>
-                            <th>作者</th>
-                            <th>时间</th>
-                            <th>操作</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>安徽初步形成“三位一体”大扶贫格局</td>
-                            <td>我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
-                            </td>
-                            <td>万事利</td>
-                            <td>2017-2-14</td>
-                            <td>人生就像是一场修行</td>
-                        </tr>
-                        <tr>
-                            <td>安徽初步形成“三位一体”大扶贫格局</td>
-                            <td>我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
-                            </td>
-                            <td>万事利</td>
-                            <td>2017-2-14</td>
-                            <td>人生就像是一场修行</td>
-                        </tr>
-                        <tr>
-                            <td>安徽初步形成“三位一体”大扶贫格局</td>
-                            <td>我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
-                            </td>
-                            <td>万事利</td>
-                            <td>2017-2-14</td>
-                            <td>人生就像是一场修行</td>
-                        </tr>
-                        <tr>
-                            <td>安徽初步形成“三位一体”大扶贫格局</td>
-                            <td>我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
-                            </td>
-                            <td>万事利</td>
-                            <td>2017-2-14</td>
-                            <td>人生就像是一场修行</td>
-                        </tr>
-                        <tr>
-                            <td>安徽初步形成“三位一体”大扶贫格局</td>
-                            <td>我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
-                            </td>
-                            <td>万事利</td>
-                            <td>2017-2-14</td>
-                            <td>人生就像是一场修行</td>
-                        </tr>
-                        <tr>
-                            <td>安徽初步形成“三位一体”大扶贫格局</td>
-                            <td>我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
-                            </td>
-                            <td>万事利</td>
-                            <td>2017-2-14</td>
-                            <td>人生就像是一场修行</td>
-                        </tr>
-                        <tr>
-                            <td>安徽初步形成“三位一体”大扶贫格局</td>
-                            <td>我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
-                            </td>
-                            <td>万事利</td>
-                            <td>2017-2-14</td>
-                            <td>人生就像是一场修行</td>
-                        </tr>
-                        <tr>
-                            <td>安徽初步形成“三位一体”大扶贫格局</td>
-                            <td>我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
-                            </td>
-                            <td>万事利</td>
-                            <td>2017-2-14</td>
-                            <td>人生就像是一场修行</td>
-                        </tr>
-                        <tr>
-                            <td>安徽初步形成“三位一体”大扶贫格局</td>
-                            <td>我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
-                            </td>
-                            <td>万事利</td>
-                            <td>2017-2-14</td>
-                            <td>人生就像是一场修行</td>
-                        </tr>
-                        <tr>
-                            <td>安徽初步形成“三位一体”大扶贫格局</td>
-                            <td>我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
-                            </td>
-                            <td>万事利</td>
-                            <td>2017-2-14</td>
-                            <td>人生就像是一场修行</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div id="page-navigator" class="layui-pageNav-custom"></div>
-                </div>
-            </fieldset>
+                </fieldset>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 </body>
-<script src="http://resali.huobanplus.com/cdn/layui/1.0.7/lay/dest/layui.all.js"></script>
-<script>
 
+<script src="http://resali.huobanplus.com/cdn/jquery/2.2.4/jquery.min.js"></script>
+<script src="http://resali.huobanplus.com/cdn/layui/1.0.7/lay/dest/layui.all.js"></script>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
     // thymeleaf 代码
     // curr 当前页面
+    var curr = /*[[${pageIndex}]]*/ 1;
     // pages 总数
+    var pages = /*[[${pageNum}]]*/ 15;
 
     var laypage = layui.laypage;
 
     laypage({
         cont: 'page-navigator',
-        curr: 5,
-        pages: 50,
+        curr: curr,
+        pages: pages,
         skip: true,
-        jump: function(obj, first){
+        jump: function (obj, first) {
             //得到了当前页，用于向服务端请求对应数据
             var curr = obj.curr;
-            console.log(curr)
+            console.log(curr);
+            $("input[name='pageIndex']").val(curr);
+            if (!first) {
+                $("#articleForm").submit();
+            }
         }
     });
+
+    $("#searchBtn").click(function(){
+       $("input[name='pageIndex']").val(1);
+        $("#articleForm").submit();
+    });
+
+    $("#searchAll").click(function(){
+        $("input[name='pageIndex']").val(1);
+        $("input[name='title']").val("");
+        $("#articleForm").submit();
+    });
+    /*]]>*/
 </script>
 </html>

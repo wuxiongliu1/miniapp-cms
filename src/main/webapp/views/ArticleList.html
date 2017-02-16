@@ -1,0 +1,84 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script src="http://resali.huobanplus.com/cdn/jquery/2.2.4/jquery.min.js"></script>
+</head>
+<body>
+
+<div class="articleList">
+    <form action="" th:action="@{/article/}">
+        <div class="search_pane">
+            title：<input type="text" name="title" th:value="${articleSearch.title}"/> <input type="submit" value="搜索" id="search_btn"/><br/>
+        </div>
+
+        <div class="content_pane">
+            <table>
+                <tr>
+                    <th>序号</th>
+                    <th>标题</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                <tbody>
+                <tr th:each="article,artitleStat:${articleList}">
+                    <td th:text="${artitleStat.index+1}"></td>
+                    <td th:text="${article.title}"></td>
+                    <td th:text="${article.createTime}"></td>
+                    <td>操作</td>
+                </tr>
+
+                <div class="example" th:remove="all">
+                    <tr>
+                        <td>1</td>
+                        <td>title1</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>titl2</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>titl3</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </div>
+                </tbody>
+            </table>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <div class="page_pane">
+
+            <label for="">每页大小</label>
+            <select name="pageSize" id="" th:value="${pageSize}">
+                <option value="2">2</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+            </select>
+            
+            <span th:if="${hasPrev}"><button id="prev"  th:value="${pageIndex}-1">上一页</button></span>
+            <span th:if="${hasPrev}==false"><button id="prev2" disabled="disabled"  th:value="${pageIndex}-1">上一页</button></span>
+
+            <!--<button>1</button>-->
+            <!--<button>2</button>-->
+            <!--<button>3</button>-->
+            <!--<button>4</button>-->
+            <span th:if="${hasNext}"><button id="next" type="submit" name="pageIndex" th:value="${pageIndex}+1">下一页</button></span>
+            <span th:if="${hasNext}==false"><button id="next2" type="submit" disabled="disabled" name="pageIndex" th:value="${pageIndex}+1">下一页</button></span>
+
+        </div>
+    </form>
+
+    <p th:text="${hasPrev}"></p>
+    <p th:text="${hasNext}"></p>
+</div>
+</body>
+</html>

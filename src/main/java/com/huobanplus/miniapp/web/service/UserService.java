@@ -17,6 +17,13 @@ public interface UserService {
     User findUser(String username, String password);
 
     /**
+     * 根据用户id查找
+     * @param id
+     * @return
+     */
+    User findOne(Long id);
+
+    /**
      * 新增用户
      * @param username
      * @param password
@@ -32,6 +39,14 @@ public interface UserService {
      * @return
      */
     ApiResult updateUser(Long id, String username, String password);
+
+    /**
+     * 更新用户密码
+     * @param id
+     * @param password
+     * @return
+     */
+    ApiResult updatePassword(Long id,String password);
 
     /**
      * 删除用户

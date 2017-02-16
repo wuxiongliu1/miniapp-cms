@@ -36,9 +36,9 @@ public class UserServiceImpl implements UserService {
         user.setUsername(username);
         user.setPassword(password);
         user.setEnabled(true);
-        user.setCreateTime(StringUtil.DateFormat(new Date(),StringUtil.TIME_PATTERN));
+        user.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
 
-        if(userRepository.findByUsernameAndPassword(username,password) ==null){
+        if (userRepository.findByUsernameAndPassword(username, password) == null) {
             userRepository.save(user);
         }
     }
@@ -46,6 +46,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUser(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, password);
+    }
+
+    @Override
+    public User findOne(Long id) {
+        return userRepository.findOne(id);
     }
 
     @Override
@@ -67,6 +72,18 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setUsername(username);
+        user.setPassword(password);
+        User updatedUser = userRepository.save(user);
+        return ApiResult.resultWith(ResultCode.SUCCESS, updatedUser);
+    }
+
+    @Override
+    public ApiResult updatePassword(Long id, String password) {
+        User user = userRepository.findOne(id);
+        if (user == null) {
+            return ApiResult.resultWith(ResultCode.NO_USER);
+        }
+
         user.setPassword(password);
         User updatedUser = userRepository.save(user);
         return ApiResult.resultWith(ResultCode.SUCCESS, updatedUser);

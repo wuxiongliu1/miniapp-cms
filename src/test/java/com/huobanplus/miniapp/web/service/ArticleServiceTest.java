@@ -4,6 +4,7 @@ import com.huobanplus.miniapp.web.common.ApiResult;
 import com.huobanplus.miniapp.web.config.MiniAppTestBase;
 import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.entity.User;
+import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.repository.ArticleRepository;
 import com.huobanplus.miniapp.web.repository.UserRepository;
 import com.huobanplus.miniapp.web.util.StringUtil;
@@ -11,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.Date;
@@ -107,5 +109,13 @@ public class ArticleServiceTest extends MiniAppTestBase {
         Article article = (Article) apiResult.getData();
         Assert.assertEquals(title, article.getTitle());
 
+    }
+
+    @Test
+    public void testFindAll(){
+        Page<Article> articlePage = articleService.findAll(new ArticleSearch(),1,3);
+        System.out.println("\n*******************************");
+        System.out.println(articlePage.getContent());
+        System.out.println("\n*******************************");
     }
 }

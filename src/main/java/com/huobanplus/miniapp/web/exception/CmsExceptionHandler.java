@@ -15,7 +15,7 @@ public class CmsExceptionHandler implements HandlerExceptionResolver {
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         ModelAndView model = new ModelAndView();
         model.setViewName("error");
-        model.addObject("errorMsg",ex.getMessage());
+        model.addObject("errorMsg", ex.getMessage());
         return model;
     }
 }
