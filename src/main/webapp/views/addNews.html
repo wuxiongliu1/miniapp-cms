@@ -20,23 +20,23 @@
     <div class="layui-header layui-custom">
         <div class="layui-main">
             <a class="logo" href="javascript:;">
-                <img src="../resources/images/page/logo.png" alt="Logo" class="logo-image"/>
+                <img src="../resources/images/logo.png" alt="Logo" class="logo-image"/>
                 小程序 &centerdot; 管理平台
             </a>
             <ul class="layui-nav">
                 <li class="layui-nav-item layui-this">
                     <a href="javascript:;">
                         <!--如果有头像的话-->
-                        <img src="../resources/images/page/avatar.jpg" th:src="@{/resources/images/page/avatar.jpg}"
+                        <img src="../resources/images/avatar.jpg" th:src="@{/resources/images/page/avatar.jpg}"
                              class="img-avatar"/>
-                        <span th:text="${user.username}"></span>
+                        <span th:text="${user.username}">Neo Chang</span>
                     </a>
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="operateUser.html" th:href="@{/user/{id}(id=${user.id})}" target="_self">用户设置</a>
                         </dd>
                         <dd>
-                            <a href="/logout" th:href="@{/logout}" target="_self">退出</a>
+                            <a href="../login.html" th:href="@{/logout}" target="_self">退出</a>
                         </dd>
                     </dl>
                 </li>
@@ -94,7 +94,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">新闻作者</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="newsAuthor" lay-verify="required" autocomplete="off"
+                                <input type="text" name="newsAuthor" autocomplete="off"
                                        placeholder="请输入作者" class="layui-input"/>
                             </div>
                             <div class="layui-form-mid layui-word-aux">可选</div>
@@ -102,7 +102,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">发布时间</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="date" id="js-date" lay-verify="date" placeholder="yyyy-mm-dd"
+                                <input type="text" name="date" id="js-date" placeholder="yyyy-mm-dd"
                                        autocomplete="off" class="layui-input"/>
                             </div>
                             <div class="layui-form-mid layui-word-aux">默认当前时间</div>
@@ -116,15 +116,10 @@
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">新闻详情</label>
                             <div class="layui-input-block">
-                                <textarea class="layui-textarea layui-hide" name="content" lay-verify="content"
-                                          id="LAY_demo_editor"></textarea>
                                 <script id="editor" type="text/plain"></script>
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <div class="layui-input-block">
-                                <button class="layui-btn" lay-submit="" lay-filter="*">提&nbsp;&nbsp;&nbsp;&nbsp;交
-                                </button>
                             <div class="layui-input-inline layui-input-submit-custom">
                                 <button class="layui-btn" lay-submit="" lay-filter="*">提&nbsp;&nbsp;&nbsp;&nbsp;交
                                 </button>
@@ -136,7 +131,9 @@
                     </form>
                 </div>
             </fieldset>
-            <div id="previewBox"></div>
+            <div id="js-previewBox">
+                <div id="previewBox"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -149,7 +146,7 @@
 <script src="../resources/ueditor/lang/zh-cn/zh-cn.js"></script>
 <script id="previewHtml" type="text/html">
     <h3>{{ d.title }}</h3>
-    <div>
+    <div class="subtitle">
         <span class="author">{{ d.author }}</span>
         <span class="time">{{ d.date }}</span>
     </div>
@@ -196,7 +193,7 @@
         });
 
         var newsData = {};
-        var laytpl = layui.laytpl(),
+        var laytpl = layui.laytpl,
             laydate = layui.laydate(),
             form = layui.form();
 
@@ -242,16 +239,25 @@
             newsData.content = content;
 
 
-            var getTpl = document.getElementById('previewHtml').innerHTML;
+            var getTpl = previewHtml.innerHTML;
 
             laytpl(getTpl).render(newsData, function(html){
                 previewBox.innerHTML = html;
+            });
+
+            var clone = $('#js-previewBox').html();
+
+            layer.open({
+                type: 1,
+                title: '页面预览',
+                area: ['375px', '667px'],
+                content: clone
             });
         });
 
         form.on('submit(*)', function (data) {
             var loginData = data.field;
-            console.log(loginData)
+            console.log(loginData);
 //            $.ajax({
 //                type: 'POST',
 //                url: successUrl,
