@@ -28,7 +28,7 @@
                 <li class="layui-nav-item layui-this">
                     <a href="javascript:;">
                         <!--如果有头像的话-->
-                        <img src="../resources/images/page/avatar.jpg" class="img-avatar"/>
+                        <img src="../resources/images/page/avatar.jpg" th:src="${user.avatar}" class="img-avatar"/>
                         <span th:text="${user.username}"></span>
                     </a>
                     <dl class="layui-nav-child">

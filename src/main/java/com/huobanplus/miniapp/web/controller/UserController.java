@@ -52,8 +52,11 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String userEdit(@PathVariable(value = "id") Long id, Model model) {
-
+    public String userEdit(@PathVariable(value = "id") Long id, Model model) throws Exception {
+        User user = userService.findOne(id);
+        if (user == null) {
+            throw new Exception(ResultCode.NO_USER.getResultMsg());
+        }
         return "operateUser";
     }
 }

@@ -31,4 +31,10 @@ public class User {
     @Column(name = "create_time")
     private String createTime;
 
+    /**
+     * 用户的头像url
+     */
+    @Column(name = "avatar")
+    private String avatar;
+
 }

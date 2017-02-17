@@ -32,10 +32,12 @@ public class UserServiceImpl implements UserService {
         String username = "admin";
         String rawPassword = "12345";
         String password = DigestUtils.md5Hex(rawPassword.getBytes("utf-8"));
+        String avatar = "/resources/images/page/avatar.jpg";
 
         user.setUsername(username);
         user.setPassword(password);
         user.setEnabled(true);
+        user.setAvatar(avatar);
         user.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
 
         if (userRepository.findByUsername(username) == null) {

@@ -16,6 +16,7 @@
 
 </head>
 <body>
+<!--/*@thymesVar id="user" type="com.huobanplus.miniapp.web.entity.User"*/-->
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header layui-custom">
         <div class="layui-main">
@@ -27,7 +28,7 @@
                 <li class="layui-nav-item layui-this">
                     <a href="javascript:;">
                         <!--如果有头像的话-->
-                        <img src="../resources/images/page/avatar.jpg" th:src="@{/resources/images/page/avatar.jpg}"
+                        <img src="../resources/images/page/avatar.jpg" th:src="${user.avatar}"
                              class="img-avatar"/>
                         <span th:text="${user.username}"></span>
                     </a>
