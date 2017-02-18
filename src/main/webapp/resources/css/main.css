@@ -293,3 +293,17 @@
     display: block;
     margin: 0 auto;
 }
+.layui-form-item .layui-input-file-custom {
+    width: auto;
+}
+#MINI-Upload {
+    display: inline-block;
+    width: 336px;
+    height: 189px;
+    border: 1px solid #e6e6e6;
+    border-radius: 5px;
+    vertical-align: top;
+}
+#MINI-Delete {
+    display: none;
+}

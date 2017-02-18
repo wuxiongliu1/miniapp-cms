@@ -66,27 +66,13 @@
 <script src="http://resali.huobanplus.com/cdn/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
-    layui.config({
-        version: false //一般用于更新组件缓存，默认不开启。设为true即让浏览器不缓存。也可以设为一个固定的值，如：201610
-        ,debug: true
-    });
 
-    //    var successUrl = './mock/success.json';
-    var successUrl = "/login";
-    var failUrl = './mock/fail.json';
+    var loginURL = "/login";
 
-    // thymeleaf 代码
     var remember = /*[[${remember}]]*/ false;
-//    var username = /*[[${user.username}]]*/ "wuxiongliu" ;
-//    var password = /*[[${user.password}]]*/ "12345";
-//
     if (remember === true) {
-//        $('#js-username').val(username);
-//        $('#js-password').val(password);
         $('#js-checkbox').prop('checked', true);
     } else {
-//        $('#js-username').val('');
-//        $('#js-password').val('');
         $('#js-checkbox').prop('checked', false);
     }
 
@@ -97,7 +83,7 @@
             var loginData = data.field;
             $.ajax({
                 type: 'POST',
-                url: successUrl,
+                url: loginURL,
                 data: loginData,
                 dataType: 'json',
                 statusCode: {
