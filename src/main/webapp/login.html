@@ -100,7 +100,7 @@
                     window.location.href = './views/index.html';
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    layer.msg(errorThrown);
+                    layer.msg(errorThrown, {icon: 2});
                 }
             });
             return false;
