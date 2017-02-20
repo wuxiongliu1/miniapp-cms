@@ -50,6 +50,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
      */
     private GsonHttpMessageConverter createGsonHttpMessageConverter() {
         Gson gson = new GsonBuilder()
+                .serializeNulls()
 //                .excludeFieldsWithoutExposeAnnotation()
                 .setDateFormat(StringUtil.TIME_PATTERN)
                 .create();

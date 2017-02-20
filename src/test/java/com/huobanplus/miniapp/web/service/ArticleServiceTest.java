@@ -62,11 +62,15 @@ public class ArticleServiceTest extends MiniAppTestBase {
         article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUser(user);
 
+        article.setPreviewImage("fafasdfsadf|fasdfadsfasd");
+
+//        article.setPreviewImage(previewImage);
+
         ApiResult apiResult = articleService.addArticle(article);
         article = (Article) apiResult.getData();
         Assert.assertNotNull(article.getId());
 
-        articleService.addArticle(user, "title2", "test2", "content2");
+        articleService.addArticle(user, "title2", "test2", "content2", "", "");
     }
 
     private User initUser() {

@@ -32,7 +32,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article findArticle(Long id) {
-        return articleRepository.findOne(id);
+        Article article = articleRepository.findOne(id);
+        if (article != null) {
+            String[] previewImgUrlsArray = article.getPreviewImage().split("\\|");
+            article.setPreviewImgArray(previewImgUrlsArray);
+            return article;
+        }
+        return null;
     }
 
     @Override
@@ -42,11 +48,13 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ApiResult addArticle(User user, String title, String summary, String content) {
+    public ApiResult addArticle(User user, String title, String summary, String content, String author, String publicDate) {
         Article article = new Article();
         article.setTitle(title);
         article.setSummary(summary);
         article.setContent(content);
+        article.setAuthor(author);
+        article.setPublicDate(publicDate);
         article.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUser(user);
@@ -88,11 +96,9 @@ public class ArticleServiceImpl implements ArticleService {
             if (!StringUtils.isEmpty(articleSearch.getUserId())) {
                 predicates.add(cb.equal(root.get("userId").as(Long.class), articleSearch.getUserId()));
             }
-
             if (!StringUtils.isEmpty(articleSearch.getTitle())) {
                 predicates.add(cb.like(root.get("title").as(String.class), "%" + articleSearch.getTitle() + '%'));
             }
-
             if (!StringUtils.isEmpty(articleSearch.getBeginCreateTime())) {
                 predicates.add(cb.greaterThanOrEqualTo(root.get("createTime").as(String.class), articleSearch.getBeginCreateTime()));
             }

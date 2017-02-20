@@ -13,6 +13,7 @@ public interface ArticleService {
 
     /**
      * 查找文章
+     *
      * @param id
      * @return
      */
@@ -20,6 +21,7 @@ public interface ArticleService {
 
     /**
      * 新增文章
+     *
      * @param article
      * @return
      */
@@ -27,16 +29,18 @@ public interface ArticleService {
 
     /**
      * 新增文章
+     *
      * @param user
      * @param title
      * @param summary
      * @param content
      * @return
      */
-    ApiResult addArticle(User user, String title, String summary, String content);
+    ApiResult addArticle(User user, String title, String summary, String content, String author, String publicDate);
 
     /**
      * 删除文章
+     *
      * @param userId
      * @param articleId
      * @return
@@ -45,6 +49,7 @@ public interface ArticleService {
 
     /**
      * 更新文章
+     *
      * @param articleId
      * @param title
      * @param summary
@@ -56,6 +61,7 @@ public interface ArticleService {
 
     /**
      * 文章查询
+     *
      * @param articleSearch
      * @param pageIndex
      * @param pageSize

@@ -68,9 +68,30 @@ public class Article {
     private String author;
 
     /**
+     * 是否头条
+     */
+    @Column(name = "top_head")
+    private boolean topHead;
+
+    /**
+     * 封面图片url
+     */
+    @Column(name = "cover_img")
+    private String coverImg;
+
+    /**
+     * 预览图片url存，从正文中获取，|分隔，图片数要么为0，大于1小于3则为1，大于3则为3
+     */
+    @Column(name = "preivew_img")
+    private String previewImage;
+
+    /**
      * 关联用户
      */
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Transient
+    private String[] previewImgArray;
 }

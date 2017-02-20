@@ -98,7 +98,13 @@ public class ArticleController {
                                   Model model) {
         Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize);
         List<Article> articleList = articlePage.getContent();
-        model.addAttribute("articleList", articleList);
+        articleList.forEach(article -> {
+            if (article.getPreviewImage() != null) {
+                article.setPreviewImgArray(article.getPreviewImage().split("\\|"));
+            } else {
+                article.setPreviewImgArray(new String[]{});
+            }
+        });
         return ApiResult.resultWith(ResultCode.SUCCESS, articleList);
     }
 
@@ -106,15 +112,17 @@ public class ArticleController {
      * 新增文章
      *
      * @param user
-     * @param title
-     * @param summary
-     * @param content
+     * @param newsTittle
+     * @param newsSummary
+     * @param newsAuthor
+     * @param editorValue
+     * @param date
      * @return
      */
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     @ResponseBody
-    public ApiResult addArticle(@UserAuthenticationPrincipal User user, String title, String summary, String content) {
-        return articleService.addArticle(user, title, summary, content);
+    public ApiResult addArticle(@UserAuthenticationPrincipal User user, String newsTittle, String newsSummary, String newsAuthor, String editorValue, String date) {
+        return articleService.addArticle(user, newsTittle, newsSummary, editorValue, newsAuthor, date);
     }
 
     /**

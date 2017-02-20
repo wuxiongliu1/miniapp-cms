@@ -121,11 +121,16 @@
                             <tbody>
 
                             <tr th:each="article,articleStat:${articleList}">
-                                <td th:text="${article.title}">title</td>
+                                <td><a th:href="@{/article/{id}(id=${article.id})}"><span th:text="${article.title}">title</span></a>
+                                </td>
                                 <td th:text="${article.summary}">summary</td>
                                 <td th:text="${article.author}">author</td>
                                 <td th:text="${article.createTime}">2016-02-16 13:32:06</td>
-                                <td><a href="">删除</a></td>
+                                <td>
+                                    <!--<button class="layui-btn layui-btn-small" href="">编辑</button>-->
+                                    <!--<button class="layui-btn layui-btn-small" href="">查看</button>-->
+                                    <!--<button class="layui-btn layui-btn-danger layui-btn-small" href="">删除</button>-->
+                                </td>
                             </tr>
 
                             <div class="example" th:remove="all">
@@ -269,6 +274,10 @@
         $("input[name='title']").val("");
         $("#articleForm").submit();
     });
+
+    function deleteArticle(id) {
+
+    }
     /*]]>*/
 </script>
 </html>

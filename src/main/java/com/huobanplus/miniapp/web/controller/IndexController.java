@@ -98,7 +98,7 @@ public class IndexController {
 
         request.getSession().setAttribute("remember", rememberUser);
         request.getSession().setAttribute("user", user);
-        request.getSession().setMaxInactiveInterval(1200);// session过期时间20分钟
+        request.getSession().setMaxInactiveInterval(86400);// session过期时间24小时
 
         return ApiResult.resultWith(ResultCode.SUCCESS);
     }
