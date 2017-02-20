@@ -3,6 +3,7 @@ package com.huobanplus.miniapp.web.service;
 import com.huobanplus.miniapp.web.common.ApiResult;
 import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.entity.User;
+import com.huobanplus.miniapp.web.model.ArticleModel;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -59,6 +60,14 @@ public interface ArticleService {
      * @return
      */
     ApiResult updateArticle(Long articleId, String title, String summary, String content, String rawContent);
+
+    /**
+     * 更新文章
+     *
+     * @param articleModel
+     * @return
+     */
+    ApiResult updateArticle(ArticleModel articleModel);
 
     /**
      * 文章查询

@@ -5,9 +5,11 @@ import com.huobanplus.miniapp.web.common.ArticleType;
 import com.huobanplus.miniapp.web.common.ResultCode;
 import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.entity.User;
+import com.huobanplus.miniapp.web.model.ArticleModel;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.repository.ArticleRepository;
 import com.huobanplus.miniapp.web.service.ArticleService;
+import com.huobanplus.miniapp.web.service.ResourceService;
 import com.huobanplus.miniapp.web.util.EnumHelper;
 import com.huobanplus.miniapp.web.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private ArticleRepository articleRepository;
+    @Autowired
+    private ResourceService resourceService;
 
     @Override
     public Article findArticle(Long id) {
@@ -87,6 +91,26 @@ public class ArticleServiceImpl implements ArticleService {
         article.setContent(content);
         article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article = articleRepository.save(article);
+        return ApiResult.resultWith(ResultCode.SUCCESS, article);
+    }
+
+    @Override
+    public ApiResult updateArticle(ArticleModel articleModel) {
+        Article article = articleRepository.findOne(articleModel.getId());
+        if (article == null) {
+            return ApiResult.resultWith(ResultCode.NO_ARTICLE);
+        }
+
+        article.setTitle(articleModel.getTitle());
+        article.setSummary(articleModel.getSummary());
+        article.setContent(articleModel.getContent());
+        article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
+        article.setPublicDate(articleModel.getPublicDate());
+        article.setLayoutType(articleModel.getLayoutType());
+        article.setAuthor(articleModel.getAuthor());
+        article.setPreviewImage(articleModel.getPreviewImages());
+        article = articleRepository.save(article);
+
         return ApiResult.resultWith(ResultCode.SUCCESS, article);
     }
 
