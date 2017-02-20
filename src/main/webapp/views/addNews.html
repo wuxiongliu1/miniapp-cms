@@ -21,23 +21,23 @@
     <div class="layui-header layui-custom">
         <div class="layui-main">
             <a class="logo" href="javascript:;">
-                <img src="../resources/images/page/logo.png" alt="Logo" class="logo-image"/>
+                <img src="../resources/images/logo.png" alt="Logo" class="logo-image"/>
                 小程序 &centerdot; 管理平台
             </a>
             <ul class="layui-nav">
                 <li class="layui-nav-item layui-this">
                     <a href="javascript:;">
                         <!--如果有头像的话-->
-                        <img src="../resources/images/page/avatar.jpg" th:src="${user.avatar}"
+                        <img src="../resources/images/avatar.jpg" th:src="@{/resources/images/page/avatar.jpg}"
                              class="img-avatar"/>
-                        <span th:text="${user.username}"></span>
+                        <span th:text="${user.username}">Neo Chang</span>
                     </a>
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="operateUser.html" th:href="@{/user/{id}(id=${user.id})}" target="_self">用户设置</a>
                         </dd>
                         <dd>
-                            <a href="/logout" th:href="@{/logout}" target="_self">退出</a>
+                            <a href="../login.html" th:href="@{/logout}" target="_self">退出</a>
                         </dd>
                     </dl>
                 </li>
@@ -95,7 +95,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">新闻作者</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="newsAuthor" lay-verify="required" autocomplete="off"
+                                <input type="text" name="newsAuthor" autocomplete="off"
                                        placeholder="请输入作者" class="layui-input"/>
                             </div>
                             <div class="layui-form-mid layui-word-aux">可选</div>
@@ -103,10 +103,23 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">发布时间</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="date" id="js-date" lay-verify="date" placeholder="yyyy-mm-dd"
+                                <input type="text" name="date" id="js-date" placeholder="yyyy-mm-dd"
                                        autocomplete="off" class="layui-input"/>
                             </div>
                             <div class="layui-form-mid layui-word-aux">默认当前时间</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">新闻封面</label>
+                            <div class="layui-input-inline layui-input-file-custom">
+                                <input type="file" name="newsCover" class="layui-upload-file">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">支持格式 *.png *.jpg，推荐尺寸 480x270 （比例尺寸）</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <img src="../resources/images/placeholder.png" data-img="../resources/images/placeholder.png" id="MINI-Upload" alt="Cover">
+                                <button type="button" id="MINI-Delete" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe640;</i> 删除</button>
+                            </div>
                         </div>
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">新闻简介</label>
@@ -117,15 +130,10 @@
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">新闻详情</label>
                             <div class="layui-input-block">
-                                <textarea class="layui-textarea layui-hide" name="content" lay-verify="content"
-                                          id="LAY_demo_editor"></textarea>
                                 <script id="editor" type="text/plain"></script>
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <div class="layui-input-block">
-                                <button class="layui-btn" lay-submit="" lay-filter="*">提&nbsp;&nbsp;&nbsp;&nbsp;交
-                                </button>
                             <div class="layui-input-inline layui-input-submit-custom">
                                 <button class="layui-btn" lay-submit="" lay-filter="*">提&nbsp;&nbsp;&nbsp;&nbsp;交
                                 </button>
@@ -134,12 +142,12 @@
                                 <button type="button" class="layui-btn layui-btn-primary" id="js-btn-preview">预&nbsp;&nbsp;&nbsp;&nbsp;览</button>
                             </div>
                         </div>
-                        </div>
                     </form>
-
                 </div>
             </fieldset>
-            <div id="previewBox"></div>
+            <div id="js-previewBox">
+                <div id="previewBox"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -152,109 +160,172 @@
 <script src="../resources/ueditor/lang/zh-cn/zh-cn.js"></script>
 <script id="previewHtml" type="text/html">
     <h3>{{ d.title }}</h3>
-    <div>
+    <div class="subtitle">
         <span class="author">{{ d.author }}</span>
         <span class="time">{{ d.date }}</span>
     </div>
     <div class="news-wrapper">{{ d.content }}</div>
 </script>
-<script type="text/javascript" th:inline="javascript">
-    /*<![CDATA[*/
-    $(function () {
+<script src="../mock/mock.js"></script>
+<script src="../mock/mockData.js"></script>
+<script>
+    var verify = {
+        required: [
+            /[\S]+/
+            , '必填项不能为空'
+        ]
+        , phone: [
+            /^1\d{10}$/
+            , '请输入正确的手机号'
+        ]
+        , email: [
+            /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/
+            , '邮箱格式不正确'
+        ]
+        , url: [
+            /(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/
+            , '链接格式不正确'
+        ]
+        , number: [
+            /^\d+$/
+            , '只能填写数字'
+        ]
+        , date: [
+            /^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*$/
+            , '日期格式不正确'
+        ]
+        , identity: [
+            /(^\d{15}$)|(^\d{17}(x|X|\d)$)/
+            , '请输入正确的身份证号'
+        ]
+    };
 
-        var successUrl = "/article/add";
+    /**
+     * 初始化富文本
+     */
 
-        var verify = {
-            required: [
-                /[\S]+/
-                , '必填项不能为空'
-            ]
-            , phone: [
-                /^1\d{10}$/
-                , '请输入正确的手机号'
-            ]
-            , email: [
-                /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/
-                , '邮箱格式不正确'
-            ]
-            , url: [
-                /(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/
-                , '链接格式不正确'
-            ]
-            , number: [
-                /^\d+$/
-                , '只能填写数字'
-            ]
-            , date: [
-                /^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*$/
-                , '日期格式不正确'
-            ]
-            , identity: [
-                /(^\d{15}$)|(^\d{17}(x|X|\d)$)/
-                , '请输入正确的身份证号'
-            ]
-        };
+    var ue =UE.getEditor('editor', {
+        initialFrameWidth: '100%',
+        initialFrameHeight: 500,
+        autoHeightEnabled: false,
+        elementPathEnabled: false
+    });
 
-        var ue =UE.getEditor('editor', {
-            initialFrameWidth: '100%',
-            initialFrameHeight: 500,
-            autoHeightEnabled: false,
-            elementPathEnabled: false
-        });
-
-        var newsData = {};
-        var laytpl = layui.laytpl(),
-            laydate = layui.laydate(),
-            form = layui.form();
+    var newsData = {};
+    var laytpl = layui.laytpl,
+        laydate = layui.laydate(),
+        form = layui.form();
 
 
-        $('#js-btn-preview').click(function () {
-            var stop = null;
-            $('input').each(function () {
-                var ver = $(this).attr('lay-verify');
-                var value = $(this).val();
+    /**
+     *  编辑页面预览，不提交
+     */
+    $('#js-btn-preview').click(function () {
+        var stop = null;
+        $('input').each(function () {
+            var ver = $(this).attr('lay-verify');
+            var value = $(this).val();
 
-                if(ver && !verify[ver][0].test(value)) {
-                    layer.msg(verify[ver][1], {
-                        icon: 5
-                        ,shift: 6
-                    });
-                    $(this)[0].focus();
-
-                    return stop = true;
-                }
-            });
-            if (stop) return false;
-
-            var content = ue.getContent();
-
-            if(!verify['required'][0].test(content)) {
-                layer.msg(verify['required'][1], {
+            if(ver && !verify[ver][0].test(value)) {
+                layer.msg(verify[ver][1], {
                     icon: 5
                     ,shift: 6
                 });
-                ue.focus();
+                $(this)[0].focus();
 
                 return stop = true;
             }
-
-            if (stop) return false;
-
-            var newsDate = $('input[name="newsDate"]').val();
-
-            newsData.title = $('input[name="newsTittle"]').val();
-            newsData.author = $('input[name="newsAuthor"]').val();
-            newsData.date = newsDate ? newsDate : laydate.now();
-            newsData.summary = $('input[name="newsSummary"]').val();
-            newsData.content = content;
-
-
-            var getTpl = document.getElementById('previewHtml').innerHTML;
-
-            laytpl(getTpl).render(newsData, function(html){
-                previewBox.innerHTML = html;
-            });
         });
+        if (stop) return false;
+
+        var content = ue.getContent();
+
+        if(!verify['required'][0].test(content)) {
+            layer.msg(verify['required'][1], {
+                icon: 5
+                ,shift: 6
+            });
+            ue.focus();
+
+            return stop = true;
+        }
+
+        if (stop) return false;
+
+        var newsDate = $('input[name="newsDate"]').val();
+
+        newsData.title = $('input[name="newsTittle"]').val();
+        newsData.author = $('input[name="newsAuthor"]').val();
+        newsData.date = newsDate ? newsDate : laydate.now();
+        newsData.summary = $('input[name="newsSummary"]').val();
+        newsData.content = content;
+
+
+        var getTpl = previewHtml.innerHTML;
+
+        laytpl(getTpl).render(newsData, function(html){
+            previewBox.innerHTML = html;
+        });
+
+        var clone = $('#js-previewBox').html();
+
+        layer.open({
+            type: 1,
+            title: '页面预览',
+            area: ['375px', '667px'],
+            content: clone
+        });
+    });
+
+    /**
+     * 上传功能
+     */
+    var imgUploadURL = '../mock/uploadImage.json';
+    var imgDeleteURL = 'deleteImage.json';
+    var imgLoading = null;
+
+    layui.upload({
+        url: imgUploadURL,
+        before: function() {
+            imgLoading = layer.msg('图片上传中', {
+                icon: 16,
+                time: 10000,
+                shade: 0.01
+            });
+        },
+        success: function(res) {
+            if (res.resultCode !== 200) {
+                layer.msg(res.resultMsg, {icon: 2});
+                return false;
+            }
+            layer.close(imgLoading);
+            $('#MINI-Upload').attr('src', res.data.src);
+            $('#MINI-Delete').show();
+        }
+    });
+    $('#MINI-Delete').click(function () {
+        $.ajax({
+            type: 'DELETE',
+            url: imgDeleteURL,
+            dataType: 'json',
+            success: function (res) {
+                if (res.resultCode !== 200) {
+                    layer.msg(res.resultMsg, {icon: 2});
+                    return false;
+                }
+
+                var upload =  $('#MINI-Upload'),
+                    img = upload.data('img');
+                upload.attr('src',img);
+                $('#MINI-Delete').hide();
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(errorThrown)
+                layer.msg(errorThrown);
+            }
+        });
+    });
 
         form.on('submit(*)', function (data) {
             var loginData = data.field;
@@ -289,11 +360,10 @@
             return false;
         });
 
-        $('#js-date').click(function () {
-            laydate({
-                elem: this
-            })
-        });
+    $('#js-date').click(function () {
+        laydate({
+            elem: this
+        })
     });
     /*]]>*/
 </script>

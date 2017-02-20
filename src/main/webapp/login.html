@@ -19,7 +19,7 @@
     <div class="inner wrp">
         <h1 class="logo">
             <a href="javascript:;" title="小程序管理平台">
-                <img src="./resources/images/page/logo.png" alt="Logo" class="logo-image">
+                <img src="resources/images/logo.png" alt="Logo" class="logo-image">
                 小程序 &centerdot; 管理平台
             </a>
         </h1>
@@ -64,9 +64,8 @@
 <script src="http://resali.huobanplus.com/cdn/layui/1.0.7/layui.js"></script>
 
 <script>
-//    var successUrl = './mock/success.json';
-    var successUrl = '/login';
-    var failUrl = './mock/fail.json';
+
+    var loginURL = '/login';
 
     // thymeleaf 代码
     var remember = true;
@@ -90,29 +89,18 @@
             var loginData = data.field;
             $.ajax({
                 type: 'POST',
-                url: successUrl,
+                url: loginURL,
                 data: loginData,
                 dataType: 'json',
-                statusCode: {
-                    403: function () {
-                        layer.msg('没有权限，请联系管理员', {icon: 2});
-                    },
-                    404: function () {
-                        layer.msg('页面未找到，请联系管理员', {icon: 2});
-                    },
-                    502: function () {
-                        layer.msg('无效网关，请联系管理员', {icon: 2});
-                    }
-                },
-                success: function (data) {
-                    if (data.resultCode !== 200) {
-                        layer.msg('密码错误', {icon: 2});
+                success: function (res) {
+                    if (res.resultCode !== 200) {
+                        layer.msg(res.resultMsg, {icon: 2});
                         return false;
                     }
                     window.location.href = './views/index.html';
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    layer.msg(errorThrown);
+                    layer.msg(errorThrown, {icon: 2});
                 }
             });
             return false;
