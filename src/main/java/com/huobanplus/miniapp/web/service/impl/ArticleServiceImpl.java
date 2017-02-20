@@ -1,12 +1,14 @@
 package com.huobanplus.miniapp.web.service.impl;
 
 import com.huobanplus.miniapp.web.common.ApiResult;
+import com.huobanplus.miniapp.web.common.ArticleType;
 import com.huobanplus.miniapp.web.common.ResultCode;
 import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.repository.ArticleRepository;
 import com.huobanplus.miniapp.web.service.ArticleService;
+import com.huobanplus.miniapp.web.util.EnumHelper;
 import com.huobanplus.miniapp.web.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -89,12 +91,15 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Page<Article> findAll(ArticleSearch articleSearch, int pageIndex, int pageSize) {
+    public Page<Article> findAll(ArticleSearch articleSearch, int pageIndex, int pageSize, Sort sort) {
         Specification<Article> specification = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             if (!StringUtils.isEmpty(articleSearch.getUserId())) {
-                predicates.add(cb.equal(root.get("userId").as(Long.class), articleSearch.getUserId()));
+                predicates.add(cb.equal(root.get("user").get("id").as(Long.class), articleSearch.getUserId()));
+            }
+            if (!StringUtils.isEmpty(articleSearch.getLayoutType())) {
+                predicates.add(cb.equal(root.get("layoutType").as(ArticleType.LayoutEnum.class), EnumHelper.getEnumType(ArticleType.LayoutEnum.class, articleSearch.getLayoutType())));
             }
             if (!StringUtils.isEmpty(articleSearch.getTitle())) {
                 predicates.add(cb.like(root.get("title").as(String.class), "%" + articleSearch.getTitle() + '%'));
@@ -114,6 +119,6 @@ public class ArticleServiceImpl implements ArticleService {
 
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
-        return articleRepository.findAll(specification, new PageRequest(pageIndex - 1, pageSize, new Sort(Sort.Direction.DESC, "updateTime")));
+        return articleRepository.findAll(specification, new PageRequest(pageIndex - 1, pageSize, sort));
     }
 }

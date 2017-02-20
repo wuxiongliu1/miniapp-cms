@@ -16,6 +16,11 @@ public class ArticleSearch {
     private String title;
 
     /**
+     * 布局类型
+     */
+    private Integer layoutType;
+
+    /**
      * 创建时间 开始
      */
     private String beginCreateTime;

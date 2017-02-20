@@ -111,13 +111,14 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">新闻封面</label>
                             <div class="layui-input-inline layui-input-file-custom">
-                                <input type="file" name="newsCover" class="layui-upload-file">
+                                <input type="file" name="newsCover" class="layui-upload-file"/>
                             </div>
                             <div class="layui-form-mid layui-word-aux">支持格式 *.png *.jpg，推荐尺寸 480x270 （比例尺寸）</div>
                         </div>
                         <div class="layui-form-item">
                             <div class="layui-input-block">
-                                <img src="../resources/images/placeholder.png" data-img="../resources/images/placeholder.png" id="MINI-Upload" alt="Cover">
+                                <img src="../resources/images/placeholder.png"
+                                     data-img="../resources/images/placeholder.png" id="MINI-Upload" alt="Cover"/>
                                 <button type="button" id="MINI-Delete" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe640;</i> 删除</button>
                             </div>
                         </div>
@@ -168,7 +169,8 @@
 </script>
 <script src="../mock/mock.js"></script>
 <script src="../mock/mockData.js"></script>
-<script>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
     var verify = {
         required: [
             /[\S]+/

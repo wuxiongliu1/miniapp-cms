@@ -1,6 +1,7 @@
 package com.huobanplus.miniapp.web.service;
 
 import com.huobanplus.miniapp.web.common.ApiResult;
+import com.huobanplus.miniapp.web.common.ArticleType;
 import com.huobanplus.miniapp.web.config.MiniAppTestBase;
 import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.entity.User;
@@ -8,11 +9,13 @@ import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.repository.ArticleRepository;
 import com.huobanplus.miniapp.web.repository.UserRepository;
 import com.huobanplus.miniapp.web.util.StringUtil;
+import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.Date;
@@ -52,19 +55,18 @@ public class ArticleServiceTest extends MiniAppTestBase {
     @Test
     @Rollback(value = false)
     public void testAddArticle() {
-        User user = (User) userService.addUser("wuxiongliu", "12345").getData();
+        User user = (User) userService.addUser(UUID.randomUUID().toString(), "12345").getData();
 
         Article article = new Article();
         article.setTitle("title");
         article.setSummary("test");
         article.setContent("this is cms");
+        article.setLayoutType(ArticleType.LayoutEnum.NO_PIC);
         article.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUser(user);
 
         article.setPreviewImage("fafasdfsadf|fasdfadsfasd");
-
-//        article.setPreviewImage(previewImage);
 
         ApiResult apiResult = articleService.addArticle(article);
         article = (Article) apiResult.getData();
@@ -115,9 +117,25 @@ public class ArticleServiceTest extends MiniAppTestBase {
 
     @Test
     public void testFindAll(){
-        Page<Article> articlePage = articleService.findAll(new ArticleSearch(),1,3);
+        Page<Article> articlePage = articleService.findAll(new ArticleSearch(), 1, 3, new Sort("updateTime"));
         System.out.println("\n*******************************");
         System.out.println(articlePage.getContent());
         System.out.println("\n*******************************");
+    }
+
+    private String generateFilePath(Long userId) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("/upload/")
+                .append(userId)
+                .append("/image/")
+                .append(StringUtil.DateFormat(new Date(), "yyyyMMdd")).append("/");
+        return sb.toString();
+    }
+
+    @Test
+    public void generateFilePath() {
+        Long id = 1L;
+        System.out.println(generateFilePath(id));
+        System.out.println(RandomStringUtils.randomNumeric(6));
     }
 }

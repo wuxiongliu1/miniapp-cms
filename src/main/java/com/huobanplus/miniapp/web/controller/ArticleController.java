@@ -2,13 +2,13 @@ package com.huobanplus.miniapp.web.controller;
 
 import com.huobanplus.miniapp.web.annotations.UserAuthenticationPrincipal;
 import com.huobanplus.miniapp.web.common.ApiResult;
-import com.huobanplus.miniapp.web.common.ResultCode;
 import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +35,7 @@ public class ArticleController {
                               @RequestParam(defaultValue = "1") int pageIndex,
                               @RequestParam(defaultValue = "5") int pageSize,
                               Model model) {
-        Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize);
+        Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize, new Sort("updateTime"));
         List<Article> articleList = articlePage.getContent();
 
         model.addAttribute("articleList", articleList);
@@ -81,32 +81,6 @@ public class ArticleController {
         return "addNews";
     }
 
-    /**
-     * 开放接口
-     *
-     * @param articleSearch
-     * @param pageIndex
-     * @param pageSize
-     * @param model
-     * @return
-     */
-    @RequestMapping(value = "/open", method = RequestMethod.GET)
-    @ResponseBody
-    public ApiResult articleList2(ArticleSearch articleSearch,
-                                  @RequestParam(defaultValue = "1") int pageIndex,
-                                  @RequestParam(defaultValue = "50") int pageSize,
-                                  Model model) {
-        Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize);
-        List<Article> articleList = articlePage.getContent();
-        articleList.forEach(article -> {
-            if (article.getPreviewImage() != null) {
-                article.setPreviewImgArray(article.getPreviewImage().split("\\|"));
-            } else {
-                article.setPreviewImgArray(new String[]{});
-            }
-        });
-        return ApiResult.resultWith(ResultCode.SUCCESS, articleList);
-    }
 
     /**
      * 新增文章

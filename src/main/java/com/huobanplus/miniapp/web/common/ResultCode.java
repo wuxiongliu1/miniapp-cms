@@ -17,6 +17,7 @@ public enum ResultCode {
     NO_PERMISSTION(500, "没有权限"),
     NO_USER(400, "没有该用户"),
     NO_ARTICLE(404, "找不到该文章"),
+    NO_FILE(406, "找不到该文件"),
     ERROR(-1, "处理失败");
 
     private int resultCode;

@@ -13,6 +13,7 @@ import com.huobanplus.miniapp.web.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,7 +67,9 @@ public class IndexController {
     @RequestMapping(value = {"/", "index"})
     public String index(@UserAuthenticationPrincipal(value = "user") User user,Model model) {
 
-        Page<Article> articlePage = articleService.findAll(new ArticleSearch(), 1, Constant.PAGE_SIZE);
+        ArticleSearch articleSearch = new ArticleSearch();
+        articleSearch.setUserId(user.getId());
+        Page<Article> articlePage = articleService.findAll(articleSearch, 1, Constant.PAGE_SIZE, new Sort("updateTime"));
         List<Article> articleList = articlePage.getContent();
 
         model.addAttribute("articleList", articleList);

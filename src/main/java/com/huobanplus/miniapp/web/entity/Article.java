@@ -1,5 +1,6 @@
 package com.huobanplus.miniapp.web.entity;
 
+import com.huobanplus.miniapp.web.common.ArticleType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -67,23 +68,19 @@ public class Article {
     @Column(name="author")
     private String author;
 
-    /**
-     * 是否头条
-     */
-    @Column(name = "top_head")
-    private boolean topHead;
 
     /**
-     * 封面图片url
+     * 布局类型
+     * {@link ArticleType}
      */
-    @Column(name = "cover_img")
-    private String coverImg;
+    @Column(name = "layout_type")
+    private ArticleType.LayoutEnum layoutType = ArticleType.LayoutEnum.NO_PIC;// 默认无图
 
     /**
      * 预览图片url存，从正文中获取，|分隔，图片数要么为0，大于1小于3则为1，大于3则为3
      */
     @Column(name = "preivew_img")
-    private String previewImage;
+    private String previewImage = "";
 
     /**
      * 关联用户

@@ -5,6 +5,7 @@ import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 
 /**
  * Created by wuxiongliu on 2017-02-10.
@@ -67,5 +68,5 @@ public interface ArticleService {
      * @param pageSize
      * @return
      */
-    Page<Article> findAll(ArticleSearch articleSearch, int pageIndex, int pageSize);
+    Page<Article> findAll(ArticleSearch articleSearch, int pageIndex, int pageSize, Sort sort);
 }
