@@ -109,19 +109,31 @@
                             <div class="layui-form-mid layui-word-aux">默认当前时间</div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">新闻封面</label>
-                            <div class="layui-input-inline layui-input-file-custom">
-                                <input type="file" name="newsCover" class="layui-upload-file"/>
-                            </div>
+                            <label class="layui-form-label">新闻类型</label>
                             <div class="layui-form-mid layui-word-aux">支持格式 *.png *.jpg，推荐尺寸 480x270 （比例尺寸）</div>
                         </div>
                         <div class="layui-form-item">
+                            <label class="layui-form-label">展示图片</label>
                             <div class="layui-input-block">
-                                <img src="../resources/images/placeholder.png"
-                                     data-img="../resources/images/placeholder.png" id="MINI-Upload" alt="Cover"/>
-                                <button type="button" id="MINI-Delete" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe640;</i> 删除</button>
+                                <div id="js-imageUpload"></div>
                             </div>
                         </div>
+                        <!--<div class="layui-form-item">-->
+                            <!--<div class="layui-input-block">-->
+                                <!--<ul class="preview-list">-->
+                                    <!--<li class="preview-list-item">-->
+                                        <!--<img src="../resources/images/placeholder.png"-->
+                                             <!--data-img="../resources/images/placeholder.png" class="MINI-Upload"-->
+                                             <!--alt="Cover">-->
+                                        <!--<button type="button"-->
+                                                <!--class="layui-btn layui-btn-small layui-btn-danger MINI-Delete"><i-->
+                                                <!--class="layui-icon">&#xe640;</i>删除-->
+                                        <!--</button>-->
+                                    <!--</li>-->
+                                <!--</ul>-->
+
+                            <!--</div>-->
+                        <!--</div>-->
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">新闻简介</label>
                             <div class="layui-input-block">
@@ -155,7 +167,9 @@
 
 </body>
 <script src="http://resali.huobanplus.com/cdn/jquery/2.2.4/jquery.min.js"></script>
+<script src="http://resali.huobanplus.com/cdn/jquery-form/3.51/jquery.form.min.js"></script>
 <script src="http://resali.huobanplus.com/cdn/layui/1.0.7/lay/dest/layui.all.js"></script>
+<script src="http://resali.huobanplus.com/cdn/upload-file/4.0.10/jquery.uploadfile.min.js"></script>
 <script src="../resources/ueditor/ueditor.config.js"></script>
 <script src="../resources/ueditor/ueditor.all.js"></script>
 <script src="../resources/ueditor/lang/zh-cn/zh-cn.js"></script>
@@ -206,7 +220,7 @@
      * 初始化富文本
      */
 
-    var ue =UE.getEditor('editor', {
+    var ue = UE.getEditor('editor', {
         initialFrameWidth: '100%',
         initialFrameHeight: 500,
         autoHeightEnabled: false,
@@ -228,10 +242,10 @@
             var ver = $(this).attr('lay-verify');
             var value = $(this).val();
 
-            if(ver && !verify[ver][0].test(value)) {
+            if (ver && !verify[ver][0].test(value)) {
                 layer.msg(verify[ver][1], {
                     icon: 5
-                    ,shift: 6
+                    , shift: 6
                 });
                 $(this)[0].focus();
 
@@ -242,10 +256,10 @@
 
         var content = ue.getContent();
 
-        if(!verify['required'][0].test(content)) {
+        if (!verify['required'][0].test(content)) {
             layer.msg(verify['required'][1], {
                 icon: 5
-                ,shift: 6
+                , shift: 6
             });
             ue.focus();
 
@@ -265,7 +279,7 @@
 
         var getTpl = previewHtml.innerHTML;
 
-        laytpl(getTpl).render(newsData, function(html){
+        laytpl(getTpl).render(newsData, function (html) {
             previewBox.innerHTML = html;
         });
 
@@ -285,82 +299,80 @@
     var imgUploadURL = '../mock/uploadImage.json';
     var imgDeleteURL = 'deleteImage.json';
     var imgLoading = null;
+    var imgObj = [];
 
-    layui.upload({
+    //    js-imageUpload
+
+    var uploadObj = $("#js-imageUpload").uploadFile({
         url: imgUploadURL,
-        before: function() {
-            imgLoading = layer.msg('图片上传中', {
-                icon: 16,
-                time: 10000,
-                shade: 0.01
-            });
+        fileName: 'myfile',
+        uploadStr: '<span class="layui-upload-icon"><i class="layui-icon">&#xe61f;</i>上传图片</span>',
+        cancelStr: '<i class="layui-icon">&#xe640;</i>',
+        extErrorStr: '是无效格式, 允许上传文件的扩展名: ',
+        dragDrop: false,
+        showStatusAfterSuccess: false,
+        allowedTypes: 'jpg,jpeg,png',
+        acceptFiles: 'image/',
+        multiple: true,
+        autoSubmit: false,
+        showFileSize: false,
+        showFileCounter: false,
+        showPreview: true,
+        statusBarWidth: 192,
+        onLoad: function () {
+            $('.ajax-file-upload').addClass('layui-btn layui-btn-primary file-upload-reset');
         },
-        success: function(res) {
-            if (res.resultCode !== 200) {
-                layer.msg(res.resultMsg, {icon: 2});
-                return false;
-            }
-            layer.close(imgLoading);
-            $('#MINI-Upload').attr('src', res.data.src);
-            $('#MINI-Delete').show();
+        onSelect:function(files) {
+            // files[0].name;
+            // files[0].size;
+            // console.log(files)
+            return true;
+        },
+        onSuccess: function (files, data, xhr, pd) {
+            var imgData = data.data;
+            imgObj.push(imgData.src)
+            console.log(files)
+        },
+        onError: function (files, status, errMsg, pd) {
+            console.log(errMsg)
         }
     });
-    $('#MINI-Delete').click(function () {
-        $.ajax({
-            type: 'DELETE',
-            url: imgDeleteURL,
-            dataType: 'json',
-            success: function (res) {
-                if (res.resultCode !== 200) {
-                    layer.msg(res.resultMsg, {icon: 2});
-                    return false;
-                }
 
-                var upload =  $('#MINI-Upload'),
-                    img = upload.data('img');
-                upload.attr('src',img);
-                $('#MINI-Delete').hide();
+    form.on('submit(*)', function (data) {
+        uploadObj.startUpload();
 
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log(errorThrown)
-                layer.msg(errorThrown);
-            }
-        });
+        var loginData = data.field;
+        console.log(imgObj);
+        console.log(loginData);
+//            $.ajax({
+//                type: 'POST',
+//                url: successUrl,
+//                data: loginData,
+//                dataType: 'json',
+//                statusCode: {
+//                    403: function () {
+//                        layer.msg('没有权限，请联系管理员', {icon: 2});
+//                    },
+//                    404: function () {
+//                        layer.msg('页面未找到，请联系管理员', {icon: 2});
+//                    },
+//                    502: function () {
+//                        layer.msg('无效网关，请联系管理员', {icon: 2});
+//                    }
+//                },
+//                success: function (data) {
+//                    if (data.resultCode !== 200) {
+//                        layer.msg('密码错误', {icon: 2});
+//                        return false;
+//                    }
+//                    window.location.href = './views/index.html';
+//                },
+//                error: function (jqXHR, textStatus, errorThrown) {
+//                    layer.msg(errorThrown);
+//                }
+//            });
+        return false;
     });
-
-        form.on('submit(*)', function (data) {
-            var loginData = data.field;
-            console.log(loginData)
-            $.ajax({
-                type: 'POST',
-                url: successUrl,
-                data: loginData,
-                dataType: 'json',
-                statusCode: {
-                    403: function () {
-                        layer.msg('没有权限，请联系管理员', {icon: 2});
-                    },
-                    404: function () {
-                        layer.msg('页面未找到，请联系管理员', {icon: 2});
-                    },
-                    502: function () {
-                        layer.msg('无效网关，请联系管理员', {icon: 2});
-                    }
-                },
-                success: function (data) {
-                    if (data.resultCode !== 200) {
-                        layer.msg(data.resultMsg, {icon: 2});
-                        return false;
-                    }
-                    window.location.href = '/';
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    layer.msg(errorThrown);
-                }
-            });
-            return false;
-        });
 
     $('#js-date').click(function () {
         laydate({
