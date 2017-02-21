@@ -24,6 +24,21 @@ public class Article {
     private Long id;
 
     /**
+     * 文章状态
+     * * {@link com.huobanplus.miniapp.web.common.ArticleType.ArticleStatus}
+     */
+    @Column(name = "article_status")
+    private ArticleType.ArticleStatus articleStatus = ArticleType.ArticleStatus.UNRELEASE;
+
+    /**
+     * 是否删除
+     * true 未删除
+     * false 已删除
+     */
+    @Column(name = "enabled")
+    private Boolean enabled = true;
+
+    /**
      * 文章标题
      */
     @Column(name = "title")
@@ -80,7 +95,19 @@ public class Article {
      * 预览图片url存，从正文中获取，|分隔，图片数要么为0，大于1小于3则为1，大于3则为3
      */
     @Column(name = "preivew_img")
-    private String previewImage = "";
+    private String previewImage;
+
+    /**
+     * 是否头条
+     * true： 是 需要上传头条轮播图片
+     * false：否
+     */
+    private Boolean topHead;
+
+    /**
+     * 头条的轮播图片
+     */
+    private String topHeadImg;
 
     /**
      * 关联用户

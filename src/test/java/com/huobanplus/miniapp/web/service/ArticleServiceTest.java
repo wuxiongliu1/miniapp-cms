@@ -55,7 +55,6 @@ public class ArticleServiceTest extends MiniAppTestBase {
     @Test
     @Rollback(value = false)
     public void testAddArticle() {
-        User user = (User) userService.addUser(UUID.randomUUID().toString(), "12345").getData();
 
         Article article = new Article();
         article.setTitle("title");
@@ -64,7 +63,7 @@ public class ArticleServiceTest extends MiniAppTestBase {
         article.setLayoutType(ArticleType.LayoutEnum.NO_PIC);
         article.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
-        article.setUser(user);
+        article.setUser(mockUser);
 
         article.setPreviewImage("fafasdfsadf|fasdfadsfasd");
 
@@ -72,7 +71,7 @@ public class ArticleServiceTest extends MiniAppTestBase {
         article = (Article) apiResult.getData();
         Assert.assertNotNull(article.getId());
 
-        articleService.addArticle(user, "title2", "test2", "content2", "", "");
+        articleService.addArticle(mockUser, "title2", "test2", "content2", "", "");
     }
 
     private User initUser() {

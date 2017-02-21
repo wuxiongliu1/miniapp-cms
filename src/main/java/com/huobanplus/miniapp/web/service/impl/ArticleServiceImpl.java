@@ -40,8 +40,12 @@ public class ArticleServiceImpl implements ArticleService {
     public Article findArticle(Long id) {
         Article article = articleRepository.findOne(id);
         if (article != null) {
-            String[] previewImgUrlsArray = article.getPreviewImage().split("\\|");
-            article.setPreviewImgArray(previewImgUrlsArray);
+            if (StringUtil.isNotEmpty(article.getPreviewImage())) {
+                String[] previewImgUrlsArray = article.getPreviewImage().split("\\|");
+                article.setPreviewImgArray(previewImgUrlsArray);
+            } else {
+                article.setPreviewImgArray(new String[]{});
+            }
             return article;
         }
         return null;
@@ -57,6 +61,7 @@ public class ArticleServiceImpl implements ArticleService {
     public ApiResult addArticle(User user, String title, String summary, String content, String author, String publicDate) {
         Article article = new Article();
         article.setTitle(title);
+        article.setArticleStatus(ArticleType.ArticleStatus.UNRELEASE);
         article.setSummary(summary);
         article.setContent(content);
         article.setAuthor(author);
@@ -73,7 +78,8 @@ public class ArticleServiceImpl implements ArticleService {
     public ApiResult deleteArticle(Long userId, Long articleId) {
         Article article = articleRepository.findOne(articleId);
         if (article.getUser().getId() == userId) {
-            articleRepository.delete(articleId);
+            article.setEnabled(false);
+            articleRepository.save(article);
             return ApiResult.resultWith(ResultCode.SUCCESS, article);
         } else {
             return ApiResult.resultWith(ResultCode.NO_PERMISSTION);
@@ -122,6 +128,12 @@ public class ArticleServiceImpl implements ArticleService {
             if (!StringUtils.isEmpty(articleSearch.getUserId())) {
                 predicates.add(cb.equal(root.get("user").get("id").as(Long.class), articleSearch.getUserId()));
             }
+            if (articleSearch.getEnabled() != null) {
+                predicates.add(cb.equal(root.get("enabled").as(Boolean.class), articleSearch.getEnabled()));
+            }
+            if (!StringUtils.isEmpty(articleSearch.getArticleStatus())) {
+                predicates.add(cb.equal(root.get("articleStatus").as(ArticleType.ArticleStatus.class), articleSearch.getArticleStatus()));
+            }
             if (!StringUtils.isEmpty(articleSearch.getLayoutType())) {
                 predicates.add(cb.equal(root.get("layoutType").as(ArticleType.LayoutEnum.class), EnumHelper.getEnumType(ArticleType.LayoutEnum.class, articleSearch.getLayoutType())));
             }
@@ -144,5 +156,38 @@ public class ArticleServiceImpl implements ArticleService {
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
         return articleRepository.findAll(specification, new PageRequest(pageIndex - 1, pageSize, sort));
+    }
+
+    @Override
+    public synchronized ApiResult operateArticle(Long id, ArticleType.ArticleOperateEnum articleOperateEnum) {
+        Article article = articleRepository.findOne(id);
+        if (article == null) {
+            return ApiResult.resultWith(ResultCode.NO_ARTICLE);
+        }
+        if (!article.getEnabled()) {
+            return ApiResult.resultWith(ResultCode.ERROR, "该文章已删除,无法操作该文章");
+        }
+        switch (articleOperateEnum) {
+            case DELETE: { // 删除
+                if (article.getArticleStatus() == ArticleType.ArticleStatus.RELEASE) {
+                    return ApiResult.resultWith(ResultCode.ERROR, "不能删除已发布的文章");
+                }
+                article.setEnabled(false);
+                break;
+            }
+            case RELEASE: {// 发布
+                article.setArticleStatus(ArticleType.ArticleStatus.RELEASE);
+                break;
+            }
+            case OFFRELEASE: {// 取消发布
+                article.setArticleStatus(ArticleType.ArticleStatus.OFFRELEASE);
+                break;
+            }
+            default: {
+                return ApiResult.resultWith(ResultCode.ERROR, "不支持的操作类型");
+            }
+        }
+        articleRepository.save(article);
+        return ApiResult.resultWith(ResultCode.SUCCESS);
     }
 }

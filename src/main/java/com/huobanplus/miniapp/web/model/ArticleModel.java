@@ -15,6 +15,16 @@ public class ArticleModel {
     private Long id;
 
     /**
+     * 是否头条
+     */
+    private boolean topHead;
+
+    /**
+     * 轮播图片地址
+     */
+    private String topHeadImg;
+
+    /**
      * 文章标题
      */
     private String title;

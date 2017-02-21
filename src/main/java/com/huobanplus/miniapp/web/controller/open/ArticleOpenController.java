@@ -46,6 +46,7 @@ public class ArticleOpenController {
                                  @RequestParam(defaultValue = "1") int pageIndex,
                                  @RequestParam(defaultValue = "50") int pageSize,
                                  Model model) {
+        articleSearch.setEnabled(true);
         Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize, new Sort("updateTime"));
         List<Article> articleList = articlePage.getContent();
         articleList.forEach(article -> {
@@ -66,7 +67,8 @@ public class ArticleOpenController {
     @RequestMapping(value = "/banners")
     @ResponseBody
     public ApiResult bannerList(ArticleSearch articleSearch) {
-        Page<Article> articlePage = articleService.findAll(articleSearch, 1, 4, new Sort("updateTime"));
+        articleSearch.setEnabled(true);
+        Page<Article> articlePage = articleService.findAll(articleSearch, 1, 4, new Sort("updateTime"));// 取前面四篇的最新文章
         List<Article> articleList = articlePage.getContent();
         List<BannerArticle> bannerArticleList = new ArrayList<>();
         articleList.forEach(article -> {
@@ -75,14 +77,13 @@ public class ArticleOpenController {
             bannerArticle.setTitle(article.getTitle());
             bannerArticle.setLayoutType(article.getLayoutType().getCode());
             String previewImgStr = article.getPreviewImage();
-            if (previewImgStr == null) {
-
-            }
-            String[] imgArray = article.getPreviewImage().split("\\|");
-            if (imgArray.length > 0) {
-                bannerArticle.setImgSrc(imgArray[0]);// 取第一张图
-            } else {
-                bannerArticle.setImgSrc("");// 照一张默认的？？
+            if (StringUtil.isNotEmpty(previewImgStr)) {
+                String[] imgArray = article.getPreviewImage().split("\\|");
+                if (imgArray.length > 0) {
+                    bannerArticle.setImgSrc(imgArray[0]);// 取第一张图
+                } else {
+                    bannerArticle.setImgSrc("");// 照一张默认的？？
+                }
             }
             bannerArticleList.add(bannerArticle);
         });

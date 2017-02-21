@@ -1,6 +1,7 @@
 package com.huobanplus.miniapp.web.service;
 
 import com.huobanplus.miniapp.web.common.ApiResult;
+import com.huobanplus.miniapp.web.common.ArticleType;
 import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.model.ArticleModel;
@@ -41,7 +42,7 @@ public interface ArticleService {
     ApiResult addArticle(User user, String title, String summary, String content, String author, String publicDate);
 
     /**
-     * 删除文章
+     * 删除文章（标记删除，不要真的删掉）
      *
      * @param userId
      * @param articleId
@@ -78,4 +79,13 @@ public interface ArticleService {
      * @return
      */
     Page<Article> findAll(ArticleSearch articleSearch, int pageIndex, int pageSize, Sort sort);
+
+    /**
+     * 操作文章
+     *
+     * @param id
+     * @param articleOperateEnum
+     * @return
+     */
+    ApiResult operateArticle(Long id, ArticleType.ArticleOperateEnum articleOperateEnum);
 }

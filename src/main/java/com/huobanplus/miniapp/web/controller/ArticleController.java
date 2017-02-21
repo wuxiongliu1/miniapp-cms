@@ -2,13 +2,16 @@ package com.huobanplus.miniapp.web.controller;
 
 import com.huobanplus.miniapp.web.annotations.UserAuthenticationPrincipal;
 import com.huobanplus.miniapp.web.common.ApiResult;
+import com.huobanplus.miniapp.web.common.ArticleType;
 import com.huobanplus.miniapp.web.common.ResultCode;
 import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.model.ArticleModel;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
+import com.huobanplus.miniapp.web.repository.ArticleRepository;
 import com.huobanplus.miniapp.web.service.ArticleService;
 import com.huobanplus.miniapp.web.service.ResourceService;
+import com.huobanplus.miniapp.web.util.EnumHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -30,6 +33,8 @@ public class ArticleController {
     private ArticleService articleService;
     @Autowired
     private ResourceService resourceService;
+    @Autowired
+    private ArticleRepository articleRepository;
 
     /**
      * 获取文章列表
@@ -41,6 +46,7 @@ public class ArticleController {
                               @RequestParam(defaultValue = "1") int pageIndex,
                               @RequestParam(defaultValue = "5") int pageSize,
                               Model model) {
+        articleSearch.setEnabled(true);// 设置文章状态为未删除条件
         Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize, new Sort("updateTime"));
         List<Article> articleList = articlePage.getContent();
 
@@ -129,7 +135,7 @@ public class ArticleController {
             throw new Exception("未找到该文章");
         }
         model.addAttribute("article", article);
-        return "ArticleDetail";
+        return "previewPage";
     }
 
     /**
@@ -142,7 +148,9 @@ public class ArticleController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public ApiResult deleteArticle(@UserAuthenticationPrincipal(value = "user") User user, @PathVariable(value = "id") Long articleId) {
-        return articleService.deleteArticle(user.getId(), articleId);
+        ApiResult apiResult = articleService.deleteArticle(user.getId(), articleId);
+        // 同时删除关联的图片
+        return apiResult;
     }
 
     /**
@@ -182,10 +190,22 @@ public class ArticleController {
                 String realPath = request.getSession().getServletContext().getRealPath(oldImg);
                 resourceService.removeRes(realPath);
             }
+            Article article = (Article) apiResult.getData();
+            article.setUser(null);
+            apiResult.setData(article);
         }
-        Article article = (Article) apiResult.getData();
-        article.setUser(null);
-        apiResult.setData(article);
         return apiResult;
     }
+
+    @RequestMapping(value = "/operate/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiResult operateArticle(@PathVariable(value = "id") Long articleId, int code) {
+        ArticleType.ArticleOperateEnum operateEnum = EnumHelper.getEnumType(ArticleType.ArticleOperateEnum.class, code);
+        if (operateEnum == null) {
+            return ApiResult.resultWith(ResultCode.ERROR, "不识别的操作码:" + code);
+        }
+        return articleService.operateArticle(articleId, operateEnum);
+
+    }
+
 }

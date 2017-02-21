@@ -69,6 +69,7 @@ public class IndexController {
 
         ArticleSearch articleSearch = new ArticleSearch();
         articleSearch.setUserId(user.getId());
+        articleSearch.setEnabled(true);
         Page<Article> articlePage = articleService.findAll(articleSearch, 1, Constant.PAGE_SIZE, new Sort("updateTime"));
         List<Article> articleList = articlePage.getContent();
 

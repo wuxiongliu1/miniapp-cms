@@ -1,5 +1,6 @@
 package com.huobanplus.miniapp.web.model;
 
+import com.huobanplus.miniapp.web.common.ArticleType;
 import lombok.Data;
 
 /**
@@ -9,6 +10,16 @@ import lombok.Data;
 public class ArticleSearch {
 
     private Long userId;
+
+    /**
+     * 文章状态
+     */
+    private ArticleType.ArticleStatus articleStatus;
+
+    /**
+     * 文章是否已删除
+     */
+    private Boolean enabled;
 
     /**
      * 笔记标题
