@@ -101,16 +101,41 @@
                             <div class="layui-form-mid layui-word-aux">可选</div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">发布时间</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="date" id="js-date" placeholder="yyyy-mm-dd"
-                                       autocomplete="off" class="layui-input"/>
+                            <label class="layui-form-label">是否置顶</label>
+                            <div class="layui-input-block layui-checkbox-custom">
+                                <input type="checkbox" name="isBanner" lay-skin="switch" value="1">
+                                <div class="layui-word-aux">以轮播图形式使用最新的前五条展示</div>
                             </div>
-                            <div class="layui-form-mid layui-word-aux">默认当前时间</div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">新闻类型</label>
-                            <div class="layui-form-mid layui-word-aux">支持格式 *.png *.jpg，推荐尺寸 480x270 （比例尺寸）</div>
+                            <div class="layui-input-block">
+                                <input type="radio" name="newsType" value="1" title="小图" checked>
+                                <input type="radio" name="newsType" value="2" title="大图">
+                                <input type="radio" name="newsType" value="3" title="多图">
+                                <input type="radio" id="noneImage" name="newsType" value="0" title="无图">
+                            </div>
+
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">布局结构</label>
+                            <div class="layui-input-block">
+                                <ul class="newsType-list">
+                                    <li class="list-items show" data-id="1">
+                                        <img src="../resources/images/small.png">
+                                    </li>
+                                    <li class="list-items" data-id="2">
+                                        <img src="../resources/images/big.png">
+                                    </li>
+                                    <li class="list-items" data-id="3">
+                                        <img src="../resources/images/more.png">
+                                    </li>
+                                    <li class="list-items" data-id="0">
+                                        <img src="../resources/images/none.png">
+                                    </li>
+                                </ul>
+                                <blockquote class="layui-elem-quote">支持格式 *.png *.jpg *.jpeg，推荐尺寸 480x270 （相似比例尺寸）</blockquote>
+                            </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">展示图片</label>
@@ -147,12 +172,15 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <div class="layui-input-inline layui-input-submit-custom">
-                                <button class="layui-btn" lay-submit="" lay-filter="*">提&nbsp;&nbsp;&nbsp;&nbsp;交
+                            <div class="layui-input-inline layui-input-submit-custom layui-input-no-left">
+                                <button class="layui-btn" lay-submit="" lay-filter="*">添&nbsp;&nbsp;&nbsp;&nbsp;加
                                 </button>
                             </div>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-inline layui-input-submit-custom">
                                 <button type="button" class="layui-btn layui-btn-primary" id="js-btn-preview">预&nbsp;&nbsp;&nbsp;&nbsp;览</button>
+                            </div>
+                            <div class="layui-input-inline">
+                                <button type="button" class="layui-btn layui-btn-danger" id="js-btn-publish">立即发布</button>
                             </div>
                         </div>
                     </form>
@@ -227,7 +255,6 @@
         elementPathEnabled: false
     });
 
-    var newsData = {};
     var laytpl = layui.laytpl,
         laydate = layui.laydate(),
         form = layui.form();
@@ -238,6 +265,7 @@
      */
     $('#js-btn-preview').click(function () {
         var stop = null;
+
         $('input').each(function () {
             var ver = $(this).attr('lay-verify');
             var value = $(this).val();
@@ -252,6 +280,7 @@
                 return stop = true;
             }
         });
+
         if (stop) return false;
 
         var content = ue.getContent();
@@ -268,11 +297,13 @@
 
         if (stop) return false;
 
-        var newsDate = $('input[name="newsDate"]').val();
+        var newsData = {};
+
+        var newsTime = $('input[name="newsDate"]').val();
 
         newsData.title = $('input[name="newsTittle"]').val();
         newsData.author = $('input[name="newsAuthor"]').val();
-        newsData.date = newsDate ? newsDate : laydate.now();
+        newsData.date = newsTime ? newsTime : laydate.now();
         newsData.summary = $('input[name="newsSummary"]').val();
         newsData.content = content;
 
@@ -297,8 +328,6 @@
      * 上传功能
      */
     var imgUploadURL = '../mock/uploadImage.json';
-    var imgDeleteURL = 'deleteImage.json';
-    var imgLoading = null;
     var imgObj = [];
 
     //    js-imageUpload
@@ -322,20 +351,47 @@
         onLoad: function () {
             $('.ajax-file-upload').addClass('layui-btn layui-btn-primary file-upload-reset');
         },
-        onSelect:function(files) {
-            // files[0].name;
-            // files[0].size;
-            // console.log(files)
-            return true;
-        },
         onSuccess: function (files, data, xhr, pd) {
             var imgData = data.data;
-            imgObj.push(imgData.src)
+            imgObj.push(imgData.src);
             console.log(files)
         },
         onError: function (files, status, errMsg, pd) {
-            console.log(errMsg)
+            layer.msg(errMsg, {icon: 2});
         }
+    });
+
+    /**
+     * checkbox操作与无图单选联动
+     */
+    form.on('switch', function(data){
+        if(data.elem.checked)
+            $('#noneImage')
+                .removeAttr('checked')
+                .attr('disabled', true)
+                .next()
+                .addClass('layui-radio-disbaled layui-disabled')
+                .removeClass('layui-form-radioed')
+                .find('i').text('');
+        else
+            $('#noneImage')
+                .attr('disabled', false)
+                .next()
+                .removeClass('layui-radio-disbaled layui-disabled');
+    });
+
+    /**
+     * radio操作与展示图联动
+     */
+
+    form.on('radio', function(data){
+        var value = data.value;
+        var box = $('.newsType-list').find('.list-items');
+        box.each(function () {
+            if( $(this).data('id') == value ) {
+                $(this).addClass('show').siblings().removeClass('show');
+            }
+        });
     });
 
     form.on('submit(*)', function (data) {

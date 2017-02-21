@@ -229,8 +229,10 @@
 }
 
 .layui-form-item .layui-input-submit-custom {
-    margin-left: 110px;
     width: 90px;
+}
+.layui-input-no-left {
+    margin-left: 110px;
 }
 
 .preview-wrapper {
@@ -289,9 +291,10 @@
 }
 
 #previewBox p img {
-    max-width: 100%;
     display: block;
     margin: 0 auto;
+    max-width: 100%;
+    height: auto;
 }
 .layui-form-item .layui-input-file-custom {
     width: auto;
@@ -371,10 +374,28 @@
 .ajax-file-upload-statusbar:hover .ajax-file-upload-cancel {
     display: inline-block !important;
 }
-.ajax-file-upload-error {
+.ajax-file-upload ~ div > .ajax-file-upload-error {
     margin-top: 4px;
     padding: 6px;
     color: #FF5722;
     border-left: 5px solid #FF5722;
     background-color: #f2f2f2;
+}
+.layui-textarea {
+    resize: none;
+}
+.layui-checkbox-custom .layui-word-aux {
+    display: inline-block;
+    vertical-align: sub;
+}
+.newsType-list {
+    padding: 10px 10px 0 10px;
+    height: 110px;
+}
+.newsType-list .list-items {
+    display: none;
+    float: left;
+}
+.newsType-list .show {
+    display: block;
 }
