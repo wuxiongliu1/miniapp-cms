@@ -101,27 +101,64 @@
                             <div class="layui-form-mid layui-word-aux">可选</div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">发布时间</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="date" id="js-date" placeholder="yyyy-mm-dd"
-                                       autocomplete="off" class="layui-input"/>
+                            <label class="layui-form-label">是否置顶</label>
+                            <div class="layui-input-block layui-checkbox-custom">
+                                <input type="checkbox" name="isBanner" lay-skin="switch" value="1">
+                                <div class="layui-word-aux">以轮播图形式使用最新的前五条展示</div>
                             </div>
-                            <div class="layui-form-mid layui-word-aux">默认当前时间</div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">新闻封面</label>
-                            <div class="layui-input-inline layui-input-file-custom">
-                                <input type="file" name="newsCover" class="layui-upload-file"/>
-                            </div>
-                            <div class="layui-form-mid layui-word-aux">支持格式 *.png *.jpg，推荐尺寸 480x270 （比例尺寸）</div>
-                        </div>
-                        <div class="layui-form-item">
+                            <label class="layui-form-label">新闻类型</label>
                             <div class="layui-input-block">
-                                <img src="../resources/images/placeholder.png"
-                                     data-img="../resources/images/placeholder.png" id="MINI-Upload" alt="Cover"/>
-                                <button type="button" id="MINI-Delete" class="layui-btn layui-btn-small layui-btn-danger"><i class="layui-icon">&#xe640;</i> 删除</button>
+                                <input type="radio" name="newsType" value="1" title="小图" checked>
+                                <input type="radio" name="newsType" value="2" title="大图">
+                                <input type="radio" name="newsType" value="3" title="多图">
+                                <input type="radio" id="noneImage" name="newsType" value="0" title="无图">
+                            </div>
+
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">布局结构</label>
+                            <div class="layui-input-block">
+                                <ul class="newsType-list">
+                                    <li class="list-items show" data-id="1">
+                                        <img src="../resources/images/small.png">
+                                    </li>
+                                    <li class="list-items" data-id="2">
+                                        <img src="../resources/images/big.png">
+                                    </li>
+                                    <li class="list-items" data-id="3">
+                                        <img src="../resources/images/more.png">
+                                    </li>
+                                    <li class="list-items" data-id="0">
+                                        <img src="../resources/images/none.png">
+                                    </li>
+                                </ul>
+                                <blockquote class="layui-elem-quote">支持格式 *.png *.jpg *.jpeg，推荐尺寸 480x270 （相似比例尺寸）</blockquote>
                             </div>
                         </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">展示图片</label>
+                            <div class="layui-input-block">
+                                <div id="js-imageUpload"></div>
+                            </div>
+                        </div>
+                        <!--<div class="layui-form-item">-->
+                            <!--<div class="layui-input-block">-->
+                                <!--<ul class="preview-list">-->
+                                    <!--<li class="preview-list-item">-->
+                                        <!--<img src="../resources/images/placeholder.png"-->
+                                             <!--data-img="../resources/images/placeholder.png" class="MINI-Upload"-->
+                                             <!--alt="Cover">-->
+                                        <!--<button type="button"-->
+                                                <!--class="layui-btn layui-btn-small layui-btn-danger MINI-Delete"><i-->
+                                                <!--class="layui-icon">&#xe640;</i>删除-->
+                                        <!--</button>-->
+                                    <!--</li>-->
+                                <!--</ul>-->
+
+                            <!--</div>-->
+                        <!--</div>-->
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">新闻简介</label>
                             <div class="layui-input-block">
@@ -135,12 +172,15 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <div class="layui-input-inline layui-input-submit-custom">
-                                <button class="layui-btn" lay-submit="" lay-filter="*">提&nbsp;&nbsp;&nbsp;&nbsp;交
+                            <div class="layui-input-inline layui-input-submit-custom layui-input-no-left">
+                                <button class="layui-btn" lay-submit="" lay-filter="*">添&nbsp;&nbsp;&nbsp;&nbsp;加
                                 </button>
                             </div>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-inline layui-input-submit-custom">
                                 <button type="button" class="layui-btn layui-btn-primary" id="js-btn-preview">预&nbsp;&nbsp;&nbsp;&nbsp;览</button>
+                            </div>
+                            <div class="layui-input-inline">
+                                <button type="button" class="layui-btn layui-btn-danger" id="js-btn-publish">立即发布</button>
                             </div>
                         </div>
                     </form>
@@ -155,7 +195,9 @@
 
 </body>
 <script src="http://resali.huobanplus.com/cdn/jquery/2.2.4/jquery.min.js"></script>
+<script src="http://resali.huobanplus.com/cdn/jquery-form/3.51/jquery.form.min.js"></script>
 <script src="http://resali.huobanplus.com/cdn/layui/1.0.7/lay/dest/layui.all.js"></script>
+<script src="http://resali.huobanplus.com/cdn/upload-file/4.0.10/jquery.uploadfile.min.js"></script>
 <script src="../resources/ueditor/ueditor.config.js"></script>
 <script src="../resources/ueditor/ueditor.all.js"></script>
 <script src="../resources/ueditor/lang/zh-cn/zh-cn.js"></script>
@@ -206,14 +248,13 @@
      * 初始化富文本
      */
 
-    var ue =UE.getEditor('editor', {
+    var ue = UE.getEditor('editor', {
         initialFrameWidth: '100%',
         initialFrameHeight: 500,
         autoHeightEnabled: false,
         elementPathEnabled: false
     });
 
-    var newsData = {};
     var laytpl = layui.laytpl,
         laydate = layui.laydate(),
         form = layui.form();
@@ -224,28 +265,30 @@
      */
     $('#js-btn-preview').click(function () {
         var stop = null;
+
         $('input').each(function () {
             var ver = $(this).attr('lay-verify');
             var value = $(this).val();
 
-            if(ver && !verify[ver][0].test(value)) {
+            if (ver && !verify[ver][0].test(value)) {
                 layer.msg(verify[ver][1], {
                     icon: 5
-                    ,shift: 6
+                    , shift: 6
                 });
                 $(this)[0].focus();
 
                 return stop = true;
             }
         });
+
         if (stop) return false;
 
         var content = ue.getContent();
 
-        if(!verify['required'][0].test(content)) {
+        if (!verify['required'][0].test(content)) {
             layer.msg(verify['required'][1], {
                 icon: 5
-                ,shift: 6
+                , shift: 6
             });
             ue.focus();
 
@@ -254,18 +297,20 @@
 
         if (stop) return false;
 
-        var newsDate = $('input[name="newsDate"]').val();
+        var newsData = {};
+
+        var newsTime = $('input[name="newsDate"]').val();
 
         newsData.title = $('input[name="newsTittle"]').val();
         newsData.author = $('input[name="newsAuthor"]').val();
-        newsData.date = newsDate ? newsDate : laydate.now();
+        newsData.date = newsTime ? newsTime : laydate.now();
         newsData.summary = $('input[name="newsSummary"]').val();
         newsData.content = content;
 
 
         var getTpl = previewHtml.innerHTML;
 
-        laytpl(getTpl).render(newsData, function(html){
+        laytpl(getTpl).render(newsData, function (html) {
             previewBox.innerHTML = html;
         });
 
@@ -283,84 +328,107 @@
      * 上传功能
      */
     var imgUploadURL = '../mock/uploadImage.json';
-    var imgDeleteURL = 'deleteImage.json';
-    var imgLoading = null;
+    var imgObj = [];
 
-    layui.upload({
+    //    js-imageUpload
+
+    var uploadObj = $("#js-imageUpload").uploadFile({
         url: imgUploadURL,
-        before: function() {
-            imgLoading = layer.msg('图片上传中', {
-                icon: 16,
-                time: 10000,
-                shade: 0.01
-            });
+        fileName: 'myfile',
+        uploadStr: '<span class="layui-upload-icon"><i class="layui-icon">&#xe61f;</i>上传图片</span>',
+        cancelStr: '<i class="layui-icon">&#xe640;</i>',
+        extErrorStr: '是无效格式, 允许上传文件的扩展名: ',
+        dragDrop: false,
+        showStatusAfterSuccess: false,
+        allowedTypes: 'jpg,jpeg,png',
+        acceptFiles: 'image/',
+        multiple: true,
+        autoSubmit: false,
+        showFileSize: false,
+        showFileCounter: false,
+        showPreview: true,
+        statusBarWidth: 192,
+        onLoad: function () {
+            $('.ajax-file-upload').addClass('layui-btn layui-btn-primary file-upload-reset');
         },
-        success: function(res) {
-            if (res.resultCode !== 200) {
-                layer.msg(res.resultMsg, {icon: 2});
-                return false;
-            }
-            layer.close(imgLoading);
-            $('#MINI-Upload').attr('src', res.data.src);
-            $('#MINI-Delete').show();
+        onSuccess: function (files, data, xhr, pd) {
+            var imgData = data.data;
+            imgObj.push(imgData.src);
+            console.log(files)
+        },
+        onError: function (files, status, errMsg, pd) {
+            layer.msg(errMsg, {icon: 2});
         }
     });
-    $('#MINI-Delete').click(function () {
-        $.ajax({
-            type: 'DELETE',
-            url: imgDeleteURL,
-            dataType: 'json',
-            success: function (res) {
-                if (res.resultCode !== 200) {
-                    layer.msg(res.resultMsg, {icon: 2});
-                    return false;
-                }
 
-                var upload =  $('#MINI-Upload'),
-                    img = upload.data('img');
-                upload.attr('src',img);
-                $('#MINI-Delete').hide();
+    /**
+     * checkbox操作与无图单选联动
+     */
+    form.on('switch', function(data){
+        if(data.elem.checked)
+            $('#noneImage')
+                .removeAttr('checked')
+                .attr('disabled', true)
+                .next()
+                .addClass('layui-radio-disbaled layui-disabled')
+                .removeClass('layui-form-radioed')
+                .find('i').text('');
+        else
+            $('#noneImage')
+                .attr('disabled', false)
+                .next()
+                .removeClass('layui-radio-disbaled layui-disabled');
+    });
 
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log(errorThrown)
-                layer.msg(errorThrown);
+    /**
+     * radio操作与展示图联动
+     */
+
+    form.on('radio', function(data){
+        var value = data.value;
+        var box = $('.newsType-list').find('.list-items');
+        box.each(function () {
+            if( $(this).data('id') == value ) {
+                $(this).addClass('show').siblings().removeClass('show');
             }
         });
     });
 
-        form.on('submit(*)', function (data) {
-            var loginData = data.field;
-            console.log(loginData)
-            $.ajax({
-                type: 'POST',
-                url: successUrl,
-                data: loginData,
-                dataType: 'json',
-                statusCode: {
-                    403: function () {
-                        layer.msg('没有权限，请联系管理员', {icon: 2});
-                    },
-                    404: function () {
-                        layer.msg('页面未找到，请联系管理员', {icon: 2});
-                    },
-                    502: function () {
-                        layer.msg('无效网关，请联系管理员', {icon: 2});
-                    }
-                },
-                success: function (data) {
-                    if (data.resultCode !== 200) {
-                        layer.msg(data.resultMsg, {icon: 2});
-                        return false;
-                    }
-                    window.location.href = '/';
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    layer.msg(errorThrown);
-                }
-            });
-            return false;
-        });
+    form.on('submit(*)', function (data) {
+        uploadObj.startUpload();
+
+        var loginData = data.field;
+        console.log(imgObj);
+        console.log(loginData);
+//            $.ajax({
+//                type: 'POST',
+//                url: successUrl,
+//                data: loginData,
+//                dataType: 'json',
+//                statusCode: {
+//                    403: function () {
+//                        layer.msg('没有权限，请联系管理员', {icon: 2});
+//                    },
+//                    404: function () {
+//                        layer.msg('页面未找到，请联系管理员', {icon: 2});
+//                    },
+//                    502: function () {
+//                        layer.msg('无效网关，请联系管理员', {icon: 2});
+//                    }
+//                },
+//                success: function (data) {
+//                    if (data.resultCode !== 200) {
+//                        layer.msg('密码错误', {icon: 2});
+//                        return false;
+//                    }
+//                    window.location.href = './views/index.html';
+//                },
+//                error: function (jqXHR, textStatus, errorThrown) {
+//                    layer.msg(errorThrown);
+//                }
+//            });
+        return false;
+    });
 
     $('#js-date').click(function () {
         laydate({
