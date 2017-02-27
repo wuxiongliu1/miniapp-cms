@@ -201,9 +201,9 @@
 <script src="http://resali.huobanplus.com/cdn/jquery-form/3.51/jquery.form.min.js"></script>
 <script src="http://resali.huobanplus.com/cdn/layui/1.0.7/lay/dest/layui.all.js"></script>
 <script src="http://resali.huobanplus.com/cdn/upload-file/4.0.10/jquery.uploadfile.min.js"></script>
-<script src="../resources/ueditor/ueditor.config.js"></script>
-<script src="../resources/ueditor/ueditor.all.js"></script>
-<script src="../resources/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script src="http://resali.huobanplus.com/cdn/ueditor/1.4.3.3/ueditor.config.js"></script>
+<script src="http://resali.huobanplus.com/cdn/ueditor/1.4.3.3/ueditor.all.min.js"></script>
+<script src="http://resali.huobanplus.com/cdn/ueditor/1.4.3.3/lang/zh-cn/zh-cn.js"></script>
 <script id="previewHtml" type="text/html">
     <h3>{{ d.title }}</h3>
     <div class="subtitle">
@@ -314,7 +314,7 @@
 
     var uploadObj = $("#js-imageUpload").uploadFile({
         url: imgUploadURL,
-        fileName: 'myfile',
+        fileName: 'files',
         uploadStr: '<span class="layui-upload-icon"><i class="layui-icon">&#xe61f;</i>上传图片</span>',
         cancelStr: '<i class="layui-icon">&#xe640;</i>',
         extErrorStr: '是无效格式, 允许上传文件的扩展名: ',
@@ -335,9 +335,10 @@
         },
         onSuccess: function (files, data, xhr, pd) {
             imgObj.push(data.data);
+
         },
         onError: function (files, status, errMsg, pd) {
-            console.log(errMsg)
+            console.error(errMsg)
         }
     });
 
@@ -388,14 +389,14 @@
 
     form.on('submit(*)', function (data) {
         uploadObj.startUpload();
-        console.log(uploadObj.getResponses());
-        var loginData = data.field;
-        console.log(imgObj);
-        console.log(loginData);
+
+        var newsData = data.field;
+        newsData.newsFiles = imgObj;
+        console.log(newsData);
 //            $.ajax({
 //                type: 'POST',
 //                url: successUrl,
-//                data: loginData,
+//                data: newsData,
 //                dataType: 'json',
 //                statusCode: {
 //                    403: function () {
