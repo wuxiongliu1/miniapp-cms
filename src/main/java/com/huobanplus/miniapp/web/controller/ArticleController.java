@@ -99,7 +99,7 @@ public class ArticleController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String toAddArticle(@UserAuthenticationPrincipal(value = "user") User user, Model model) throws Exception {
-//        model.addAttribute("user",user);
+        model.addAttribute("user", user);
         return "addNews";
     }
 

@@ -103,17 +103,17 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">是否置顶</label>
                             <div class="layui-input-block layui-checkbox-custom">
-                                <input type="checkbox" name="isBanner" lay-skin="switch" value="1">
+                                <input type="checkbox" name="isBanner" lay-skin="switch" value="1"/>
                                 <div class="layui-word-aux">以轮播图形式使用最新的前五条展示</div>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">新闻类型</label>
                             <div class="layui-input-block">
-                                <input type="radio" name="newsType" value="1" title="小图" checked>
-                                <input type="radio" name="newsType" value="2" title="大图">
-                                <input type="radio" name="newsType" value="3" title="多图">
-                                <input type="radio" id="noneImage" name="newsType" value="0" title="无图">
+                                <input type="radio" name="newsType" value="1" title="小图" checked="checked"/>
+                                <input type="radio" name="newsType" value="2" title="大图"/>
+                                <input type="radio" name="newsType" value="3" title="多图"/>
+                                <input type="radio" id="noneImage" name="newsType" value="0" title="无图"/>
                             </div>
 
                         </div>
@@ -122,16 +122,16 @@
                             <div class="layui-input-block">
                                 <ul class="newsType-list">
                                     <li class="list-items show" data-id="1">
-                                        <img src="../resources/images/small.png">
+                                        <img src="../resources/images/small.png"/>
                                     </li>
                                     <li class="list-items" data-id="2">
-                                        <img src="../resources/images/big.png">
+                                        <img src="../resources/images/big.png"/>
                                     </li>
                                     <li class="list-items" data-id="3">
-                                        <img src="../resources/images/more.png">
+                                        <img src="../resources/images/more.png"/>
                                     </li>
                                     <li class="list-items" data-id="0">
-                                        <img src="../resources/images/none.png">
+                                        <img src="../resources/images/none.png"/>
                                     </li>
                                 </ul>
                                 <blockquote class="layui-elem-quote">支持格式 *.png *.jpg *.jpeg，推荐尺寸 480x270 （相似比例尺寸）
@@ -233,7 +233,8 @@
         initialFrameWidth: '100%',
         initialFrameHeight: 500,
         autoHeightEnabled: false,
-        elementPathEnabled: false
+        elementPathEnabled: false,
+        serverUrl: "/ueditor/upload"
     });
 
     var laytpl = layui.laytpl,
@@ -304,7 +305,8 @@
     /**
      * 上传功能
      */
-    var imgUploadURL = '../mock/uploadImage.json';
+//    var imgUploadURL = '../mock/uploadImage.json';
+    var imgUploadURL = '/res/upload';
     var imgObj = [];
 
     var imageNumber = 1;
@@ -332,9 +334,7 @@
             $('.ajax-file-upload').addClass('layui-btn layui-btn-primary file-upload-reset');
         },
         onSuccess: function (files, data, xhr, pd) {
-            var imgData = data.data;
-            imgObj.push(imgData.src);
-            console.log(files)
+            imgObj.push(data.data);
         },
         onError: function (files, status, errMsg, pd) {
             console.log(errMsg)

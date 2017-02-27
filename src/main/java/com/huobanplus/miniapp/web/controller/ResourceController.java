@@ -5,6 +5,9 @@ import com.huobanplus.miniapp.web.common.ApiResult;
 import com.huobanplus.miniapp.web.common.ResultCode;
 import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.util.StringUtil;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,7 +20,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,36 +33,58 @@ public class ResourceController {
 
     private static final Log log = LogFactory.getLog(ResourceController.class);
 
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @ResponseBody
+    public ApiResult upload2(@UserAuthenticationPrincipal(value = "user") User user, HttpServletRequest request) throws Exception {
+
+        String relativePathPrefix = generateFilePath(user.getUsername());
+        String relativePath = "";
+
+        DiskFileItemFactory factory = new DiskFileItemFactory();
+        ServletFileUpload upload = new ServletFileUpload(factory);
+        List<FileItem> items = upload.parseRequest(request);
+        for (FileItem item : items) {
+            String originalFilename = item.getName();
+            String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String fileName = new Date().getTime() + RandomStringUtils.randomNumeric(6) + fileSuffix;
+            String realPath = request.getSession().getServletContext().getRealPath(relativePathPrefix);
+            relativePath = relativePathPrefix + fileName;
+            File targetFile = new File(realPath);
+            if (!targetFile.exists()) {
+                targetFile.mkdirs();
+            }
+            item.write(new File(targetFile, fileName));
+        }
+        return ApiResult.resultWith(ResultCode.SUCCESS, relativePath);
+    }
+
     /**
      * 上传资源
      *
      * @return
      */
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/uploadUseless", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResult upload(@UserAuthenticationPrincipal(value = "user") User user, @RequestParam CommonsMultipartFile[] file, HttpServletRequest request) {
+    public ApiResult upload(@UserAuthenticationPrincipal(value = "user") User user, @RequestParam CommonsMultipartFile myfile, HttpServletRequest request) {
 
         String relativePathPrefix = generateFilePath(user.getUsername());
-        List<String> fileRelativePaths = new ArrayList<>();
 
-        for (int i = 0; i < file.length; i++) {
-            String originalFilename = file[i].getOriginalFilename();
-            String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String fileName = new Date().getTime() + RandomStringUtils.randomNumeric(6) + fileSuffix;
-            String realPath = request.getSession().getServletContext().getRealPath(relativePathPrefix);
-            String relativePath = relativePathPrefix + fileName;
-            fileRelativePaths.add(relativePath);
-            File targetFile = new File(realPath, fileName);
-            if (!targetFile.exists()) {
-                targetFile.mkdirs();
-            }
-            try {
-                file[i].transferTo(targetFile);
-            } catch (Exception e) {
-                log.info("uploadException: " + e.getMessage());
-            }
+
+        String originalFilename = myfile.getOriginalFilename();
+        String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String fileName = new Date().getTime() + RandomStringUtils.randomNumeric(6) + fileSuffix;
+        String realPath = request.getSession().getServletContext().getRealPath(relativePathPrefix);
+        String relativePath = relativePathPrefix + fileName;
+        File targetFile = new File(realPath, fileName);
+        if (!targetFile.exists()) {
+            targetFile.mkdirs();
         }
-        return ApiResult.resultWith(ResultCode.SUCCESS, fileRelativePaths);
+        try {
+            myfile.transferTo(targetFile);
+        } catch (Exception e) {
+            log.info("uploadException: " + e.getMessage());
+        }
+        return ApiResult.resultWith(ResultCode.SUCCESS, relativePath);
     }
 
     /**
