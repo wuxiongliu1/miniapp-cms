@@ -134,30 +134,32 @@
                                         <img src="../resources/images/none.png">
                                     </li>
                                 </ul>
-                                <blockquote class="layui-elem-quote">支持格式 *.png *.jpg *.jpeg，推荐尺寸 480x270 （相似比例尺寸）</blockquote>
+                                <blockquote class="layui-elem-quote">支持格式 *.png *.jpg *.jpeg，推荐尺寸 480x270 （相似比例尺寸）
+                                </blockquote>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">展示图片</label>
-                            <div class="layui-input-block">
+                            <div class="layui-input-block" id="layui-mainUpload">
+                                <div id="js-coverUpload"></div>
                                 <div id="js-imageUpload"></div>
                             </div>
                         </div>
                         <!--<div class="layui-form-item">-->
-                            <!--<div class="layui-input-block">-->
-                                <!--<ul class="preview-list">-->
-                                    <!--<li class="preview-list-item">-->
-                                        <!--<img src="../resources/images/placeholder.png"-->
-                                             <!--data-img="../resources/images/placeholder.png" class="MINI-Upload"-->
-                                             <!--alt="Cover">-->
-                                        <!--<button type="button"-->
-                                                <!--class="layui-btn layui-btn-small layui-btn-danger MINI-Delete"><i-->
-                                                <!--class="layui-icon">&#xe640;</i>删除-->
-                                        <!--</button>-->
-                                    <!--</li>-->
-                                <!--</ul>-->
+                        <!--<div class="layui-input-block">-->
+                        <!--<ul class="preview-list">-->
+                        <!--<li class="preview-list-item">-->
+                        <!--<img src="../resources/images/placeholder.png"-->
+                        <!--data-img="../resources/images/placeholder.png" class="MINI-Upload"-->
+                        <!--alt="Cover">-->
+                        <!--<button type="button"-->
+                        <!--class="layui-btn layui-btn-small layui-btn-danger MINI-Delete"><i-->
+                        <!--class="layui-icon">&#xe640;</i>删除-->
+                        <!--</button>-->
+                        <!--</li>-->
+                        <!--</ul>-->
 
-                            <!--</div>-->
+                        <!--</div>-->
                         <!--</div>-->
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">新闻简介</label>
@@ -180,7 +182,8 @@
                                 <button type="button" class="layui-btn layui-btn-primary" id="js-btn-preview">预&nbsp;&nbsp;&nbsp;&nbsp;览</button>
                             </div>
                             <div class="layui-input-inline">
-                                <button type="button" class="layui-btn layui-btn-danger" id="js-btn-publish">立即发布</button>
+                                <button type="button" class="layui-btn layui-btn-danger" id="js-btn-publish">立即发布
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -209,39 +212,17 @@
     </div>
     <div class="news-wrapper">{{ d.content }}</div>
 </script>
-<script src="../mock/mock.js"></script>
-<script src="../mock/mockData.js"></script>
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
+
     var verify = {
-        required: [
-            /[\S]+/
-            , '必填项不能为空'
-        ]
-        , phone: [
-            /^1\d{10}$/
-            , '请输入正确的手机号'
-        ]
-        , email: [
-            /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/
-            , '邮箱格式不正确'
-        ]
-        , url: [
-            /(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/
-            , '链接格式不正确'
-        ]
-        , number: [
-            /^\d+$/
-            , '只能填写数字'
-        ]
-        , date: [
-            /^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*$/
-            , '日期格式不正确'
-        ]
-        , identity: [
-            /(^\d{15}$)|(^\d{17}(x|X|\d)$)/
-            , '请输入正确的身份证号'
-        ]
+        required: [/[\S]+/, '必填项不能为空']
+        , phone: [/^1\d{10}$/, '请输入正确的手机号']
+        , email: [/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/, '邮箱格式不正确']
+        , url: [/(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/, '链接格式不正确']
+        , number: [/^\d+$/, '只能填写数字']
+        , date: [/^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*$/, '日期格式不正确']
+        , identity: [/(^\d{15}$)|(^\d{17}(x|X|\d)$)/, '请输入正确的身份证号']
     };
 
     /**
@@ -256,7 +237,6 @@
     });
 
     var laytpl = layui.laytpl,
-        laydate = layui.laydate(),
         form = layui.form();
 
 
@@ -299,11 +279,8 @@
 
         var newsData = {};
 
-        var newsTime = $('input[name="newsDate"]').val();
-
         newsData.title = $('input[name="newsTittle"]').val();
         newsData.author = $('input[name="newsAuthor"]').val();
-        newsData.date = newsTime ? newsTime : laydate.now();
         newsData.summary = $('input[name="newsSummary"]').val();
         newsData.content = content;
 
@@ -330,6 +307,7 @@
     var imgUploadURL = '../mock/uploadImage.json';
     var imgObj = [];
 
+    var imageNumber = 1;
     //    js-imageUpload
 
     var uploadObj = $("#js-imageUpload").uploadFile({
@@ -338,6 +316,7 @@
         uploadStr: '<span class="layui-upload-icon"><i class="layui-icon">&#xe61f;</i>上传图片</span>',
         cancelStr: '<i class="layui-icon">&#xe640;</i>',
         extErrorStr: '是无效格式, 允许上传文件的扩展名: ',
+        maxFileCountErrorStr: '是无效文件, 允许上传文件数量为: ',
         dragDrop: false,
         showStatusAfterSuccess: false,
         allowedTypes: 'jpg,jpeg,png',
@@ -348,6 +327,7 @@
         showFileCounter: false,
         showPreview: true,
         statusBarWidth: 192,
+        maxFileCount: 3,
         onLoad: function () {
             $('.ajax-file-upload').addClass('layui-btn layui-btn-primary file-upload-reset');
         },
@@ -357,15 +337,15 @@
             console.log(files)
         },
         onError: function (files, status, errMsg, pd) {
-            layer.msg(errMsg, {icon: 2});
+            console.log(errMsg)
         }
     });
 
     /**
      * checkbox操作与无图单选联动
      */
-    form.on('switch', function(data){
-        if(data.elem.checked)
+    form.on('switch', function (data) {
+        if (data.elem.checked)
             $('#noneImage')
                 .removeAttr('checked')
                 .attr('disabled', true)
@@ -384,19 +364,31 @@
      * radio操作与展示图联动
      */
 
-    form.on('radio', function(data){
+    form.on('radio', function (data) {
         var value = data.value;
         var box = $('.newsType-list').find('.list-items');
         box.each(function () {
-            if( $(this).data('id') == value ) {
+            if ($(this).data('id') == value) {
                 $(this).addClass('show').siblings().removeClass('show');
             }
         });
+        if (value == 1 || value == 2) {
+            imageNumber = 1;
+            $('#js-coverUpload').hide();
+        }
+        if (value == 2) {
+            imageNumber = 3;
+            $('#js-coverUpload').hide();
+        }
+        if (value == 0) {
+            imageNumber = 0;
+            $('#js-coverUpload').show();
+        }
     });
 
     form.on('submit(*)', function (data) {
         uploadObj.startUpload();
-
+        console.log(uploadObj.getResponses());
         var loginData = data.field;
         console.log(imgObj);
         console.log(loginData);
@@ -430,11 +422,6 @@
         return false;
     });
 
-    $('#js-date').click(function () {
-        laydate({
-            elem: this
-        })
-    });
     /*]]>*/
 </script>
 </html>
