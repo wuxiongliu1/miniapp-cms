@@ -42,6 +42,15 @@ public interface ArticleService {
     ApiResult addArticle(User user, String title, String summary, String content, String author, String publicDate);
 
     /**
+     * 新增文章
+     *
+     * @param user
+     * @param articleModel
+     * @return
+     */
+    ApiResult addArticle(User user, ArticleModel articleModel);
+
+    /**
      * 删除文章（标记删除，不要真的删掉）
      *
      * @param userId

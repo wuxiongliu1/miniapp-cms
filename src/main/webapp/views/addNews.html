@@ -305,8 +305,7 @@
     /**
      * 上传功能
      */
-//    var imgUploadURL = '../mock/uploadImage.json';
-    var imgUploadURL = '/res/upload';
+    var imgUploadURL = /*[[@{/res/upload}]]*/ '../mock/uploadImage.json';
     var imgObj = [];
 
     var imageNumber = 1;
@@ -393,33 +392,33 @@
         var newsData = data.field;
         newsData.newsFiles = imgObj;
         console.log(newsData);
-//            $.ajax({
-//                type: 'POST',
-//                url: successUrl,
-//                data: newsData,
-//                dataType: 'json',
-//                statusCode: {
-//                    403: function () {
-//                        layer.msg('没有权限，请联系管理员', {icon: 2});
-//                    },
-//                    404: function () {
-//                        layer.msg('页面未找到，请联系管理员', {icon: 2});
-//                    },
-//                    502: function () {
-//                        layer.msg('无效网关，请联系管理员', {icon: 2});
-//                    }
-//                },
-//                success: function (data) {
-//                    if (data.resultCode !== 200) {
-//                        layer.msg('密码错误', {icon: 2});
-//                        return false;
-//                    }
-//                    window.location.href = './views/index.html';
-//                },
-//                error: function (jqXHR, textStatus, errorThrown) {
-//                    layer.msg(errorThrown);
-//                }
-//            });
+        $.ajax({
+            type: 'POST',
+            url: "/article/add",
+            data: newsData,
+            dataType: 'json',
+            statusCode: {
+                403: function () {
+                    layer.msg('没有权限，请联系管理员', {icon: 2});
+                },
+                404: function () {
+                    layer.msg('页面未找到，请联系管理员', {icon: 2});
+                },
+                502: function () {
+                    layer.msg('无效网关，请联系管理员', {icon: 2});
+                }
+            },
+            success: function (data) {
+                if (data.resultCode !== 200) {
+                    layer.msg('密码错误', {icon: 2});
+                    return false;
+                }
+                window.location.href = './views/index.html';
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                layer.msg(errorThrown);
+            }
+        });
         return false;
     });
 

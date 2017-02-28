@@ -6,7 +6,6 @@ import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.model.BannerArticle;
 import com.huobanplus.miniapp.web.service.ArticleService;
-import com.huobanplus.miniapp.web.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -49,13 +48,6 @@ public class ArticleOpenController {
         articleSearch.setEnabled(true);
         Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize, new Sort("updateTime"));
         List<Article> articleList = articlePage.getContent();
-        articleList.forEach(article -> {
-            if (StringUtil.isNotEmpty(article.getPreviewImage())) {
-                article.setPreviewImgArray(article.getPreviewImage().split("\\|"));
-            } else {
-                article.setPreviewImgArray(new String[]{});
-            }
-        });
         return ApiResult.resultWith(ResultCode.SUCCESS, articleList);
     }
 
@@ -76,14 +68,11 @@ public class ArticleOpenController {
             bannerArticle.setId(article.getId());
             bannerArticle.setTitle(article.getTitle());
             bannerArticle.setLayoutType(article.getLayoutType().getCode());
-            String previewImgStr = article.getPreviewImage();
-            if (StringUtil.isNotEmpty(previewImgStr)) {
-                String[] imgArray = article.getPreviewImage().split("\\|");
-                if (imgArray.length > 0) {
-                    bannerArticle.setImgSrc(imgArray[0]);// 取第一张图
-                } else {
-                    bannerArticle.setImgSrc("");// 照一张默认的？？
-                }
+            String[] previewImgs = article.getPreviewImage();
+            if (previewImgs.length > 0) {
+                bannerArticle.setImgSrc(previewImgs[0]);// 取第一张图
+            } else {
+                bannerArticle.setImgSrc("");// 照一张默认的？？
             }
             bannerArticleList.add(bannerArticle);
         });

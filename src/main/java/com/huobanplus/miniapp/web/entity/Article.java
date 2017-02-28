@@ -92,10 +92,10 @@ public class Article {
     private ArticleType.LayoutEnum layoutType = ArticleType.LayoutEnum.NO_PIC;// 默认无图
 
     /**
-     * 预览图片url存，从正文中获取，|分隔，图片数要么为0，大于1小于3则为1，大于3则为3
+     * 预览图片url数组
      */
     @Column(name = "preivew_img")
-    private String previewImage;
+    private String[] previewImage;
 
     /**
      * 是否头条
@@ -116,6 +116,4 @@ public class Article {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Transient
-    private String[] previewImgArray;
 }

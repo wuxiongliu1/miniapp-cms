@@ -65,7 +65,7 @@ public class ArticleServiceTest extends MiniAppTestBase {
         article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUser(mockUser);
 
-        article.setPreviewImage("fafasdfsadf|fasdfadsfasd");
+        article.setPreviewImage("fafasdfsadf|fasdfadsfasd".split("\\|"));
 
         ApiResult apiResult = articleService.addArticle(article);
         article = (Article) apiResult.getData();

@@ -8,7 +8,6 @@ import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.model.ArticleModel;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
-import com.huobanplus.miniapp.web.repository.ArticleRepository;
 import com.huobanplus.miniapp.web.service.ArticleService;
 import com.huobanplus.miniapp.web.service.ResourceService;
 import com.huobanplus.miniapp.web.util.EnumHelper;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -33,8 +31,6 @@ public class ArticleController {
     private ArticleService articleService;
     @Autowired
     private ResourceService resourceService;
-    @Autowired
-    private ArticleRepository articleRepository;
 
     /**
      * 获取文章列表
@@ -83,8 +79,7 @@ public class ArticleController {
         articleModel.setPublicDate(article.getPublicDate());
         articleModel.setAuthor(article.getAuthor());
         articleModel.setLayoutType(article.getLayoutType());
-        articleModel.setPreviewImages(article.getPreviewImage());
-        articleModel.setOldImgs(article.getPreviewImage().split("\\|"));
+        articleModel.setNewsFiles(article.getPreviewImage());
         model.addAttribute("articleModel", articleModel);
         return "ArticleEdit";
     }
@@ -112,13 +107,68 @@ public class ArticleController {
      * @param newsSummary
      * @param newsAuthor
      * @param editorValue
-     * @param date
+     * @param
      * @return
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public ApiResult addArticle(@UserAuthenticationPrincipal User user, String newsTittle, String newsSummary, String newsAuthor, String editorValue, String date) {
-        return articleService.addArticle(user, newsTittle, newsSummary, editorValue, newsAuthor, date);
+    public ApiResult addArticle(@UserAuthenticationPrincipal User user, String newsTittle, String newsSummary,
+                                String newsAuthor, String editorValue,
+                                boolean isBanner, int newsType, @RequestParam("newsFiles[]") String[] newsFiles) {
+
+        ArticleModel articleModel = new ArticleModel();
+        articleModel.setTitle(newsTittle);
+        articleModel.setSummary(newsSummary);
+        articleModel.setAuthor(newsAuthor);
+        articleModel.setContent(editorValue);
+        articleModel.setTopHead(isBanner);
+        articleModel.setNewsFiles(newsFiles);
+        articleModel.setLayoutType(EnumHelper.getEnumType(ArticleType.LayoutEnum.class, newsType));
+
+        return articleService.addArticle(user, articleModel);
+    }
+
+    /**
+     * 更新文章
+     *
+     * @param articleId
+     * @param newsTittle
+     * @param newsSummary
+     * @param newsAuthor
+     * @param editorValue
+     * @param isBanner
+     * @param newsType
+     * @param newsFiles
+     * @return
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @ResponseBody
+    public ApiResult updateArticle(@PathVariable(value = "id") Long articleId, String newsTittle, String newsSummary,
+                                   String newsAuthor, String editorValue,
+                                   boolean isBanner, int newsType,
+                                   @RequestParam("newsFiles[]") String[] newsFiles) {
+
+        ArticleModel articleModel = new ArticleModel();
+        articleModel.setId(articleId);
+        articleModel.setTitle(newsTittle);
+        articleModel.setSummary(newsSummary);
+        articleModel.setAuthor(newsAuthor);
+        articleModel.setContent(editorValue);
+        articleModel.setTopHead(isBanner);
+        articleModel.setNewsFiles(newsFiles);
+        articleModel.setLayoutType(EnumHelper.getEnumType(ArticleType.LayoutEnum.class, newsType));
+
+        ApiResult apiResult = articleService.updateArticle(articleModel);
+        if (apiResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
+            String oldImgs = (String) apiResult.getData();
+            String[] oldImgArray = oldImgs.split(",");
+            for (String s : oldImgArray) {
+                if (!containsImg(s, articleModel.getNewsFiles())) {
+                    resourceService.removeRes(s);
+                }
+            }
+        }
+        return apiResult;
     }
 
     /**
@@ -153,50 +203,30 @@ public class ArticleController {
         return apiResult;
     }
 
-    /**
-     * 更新文章
-     *
-     * @param articleId
-     * @param title
-     * @param summary
-     * @param content
-     * @param rawContent
-     * @return
-     */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    @ResponseBody
-    public ApiResult updateArticle(@PathVariable(value = "id") Long articleId, String title, String summary, String content, String rawContent) {
-        return articleService.updateArticle(articleId, title, summary, content, rawContent);
-    }
 
     /**
-     * 更新文章
+     * 判断旧的图片url是否存在于新的url列表中
      *
-     * @param articleId
-     * @param articleModel
+     * @param olds
+     * @param news
      * @return
      */
-    @RequestMapping(value = "/test/{id}", method = RequestMethod.PUT)
-    @ResponseBody
-    public ApiResult updateArticle2(@PathVariable(value = "id") Long articleId, ArticleModel articleModel, HttpServletRequest request) {
-        articleModel.setId(articleId);
-
-        ApiResult apiResult = articleService.updateArticle(articleModel);
-        if (apiResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
-            // 删除文章关联的图片
-//            String[] oldImgs = articleModel.getOldImgs().split("\\|");
-            String[] oldImgs = articleModel.getOldImgs();
-            for (String oldImg : oldImgs) {
-                String realPath = request.getSession().getServletContext().getRealPath(oldImg);
-                resourceService.removeRes(realPath);
+    private boolean containsImg(String olds, String[] news) {
+        for (int i = 0; i < news.length; i++) {
+            if (olds.equals(news[i])) {
+                return true;
             }
-            Article article = (Article) apiResult.getData();
-            article.setUser(null);
-            apiResult.setData(article);
         }
-        return apiResult;
+        return false;
     }
 
+    /**
+     *  文章的操作
+     *
+     * @param articleId
+     * @param code 0:删除 1:发布 2:取消发布
+     * @return
+     */
     @RequestMapping(value = "/operate/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ApiResult operateArticle(@PathVariable(value = "id") Long articleId, int code) {

@@ -55,10 +55,6 @@ public class ArticleModel {
      */
     private ArticleType.LayoutEnum layoutType = ArticleType.LayoutEnum.NO_PIC;// 默认无图
 
-    /**
-     * 预览图片url存
-     */
-    private String previewImages;
 
-    private String[] oldImgs;
+    private String[] newsFiles;
 }

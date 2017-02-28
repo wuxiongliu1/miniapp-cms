@@ -38,17 +38,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article findArticle(Long id) {
-        Article article = articleRepository.findOne(id);
-        if (article != null) {
-            if (StringUtil.isNotEmpty(article.getPreviewImage())) {
-                String[] previewImgUrlsArray = article.getPreviewImage().split("\\|");
-                article.setPreviewImgArray(previewImgUrlsArray);
-            } else {
-                article.setPreviewImgArray(new String[]{});
-            }
-            return article;
-        }
-        return null;
+        return articleRepository.findOne(id);
     }
 
     @Override
@@ -72,6 +62,25 @@ public class ArticleServiceImpl implements ArticleService {
 
         articleRepository.save(article);
         return ApiResult.resultWith(ResultCode.SUCCESS, article);
+    }
+
+    @Override
+    public ApiResult addArticle(User user, ArticleModel articleModel) {
+        Article article = new Article();
+        article.setTitle(articleModel.getTitle());
+        article.setArticleStatus(ArticleType.ArticleStatus.UNRELEASE);
+        article.setSummary(articleModel.getSummary());
+        article.setContent(articleModel.getContent());
+        article.setAuthor(articleModel.getAuthor());
+        article.setPublicDate(articleModel.getPublicDate());
+        article.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
+        article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
+        article.setUser(user);
+        article.setPreviewImage(articleModel.getNewsFiles());
+
+        articleRepository.save(article);
+        return ApiResult.resultWith(ResultCode.SUCCESS, article);
+
     }
 
     @Override
@@ -103,6 +112,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ApiResult updateArticle(ArticleModel articleModel) {
         Article article = articleRepository.findOne(articleModel.getId());
+        String[] oldImgs = article.getPreviewImage();
         if (article == null) {
             return ApiResult.resultWith(ResultCode.NO_ARTICLE);
         }
@@ -114,10 +124,10 @@ public class ArticleServiceImpl implements ArticleService {
         article.setPublicDate(articleModel.getPublicDate());
         article.setLayoutType(articleModel.getLayoutType());
         article.setAuthor(articleModel.getAuthor());
-        article.setPreviewImage(articleModel.getPreviewImages());
+        article.setPreviewImage(articleModel.getNewsFiles());
         article = articleRepository.save(article);
 
-        return ApiResult.resultWith(ResultCode.SUCCESS, article);
+        return ApiResult.resultWith(ResultCode.SUCCESS, oldImgs);
     }
 
     @Override
