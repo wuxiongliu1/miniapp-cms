@@ -305,41 +305,60 @@
     /**
      * 上传功能
      */
-    var imgUploadURL = /*[[@{/res/upload}]]*/ '../mock/uploadImage.json';
-    var imgObj = [];
-
+    var imageUploadURL = /*[[@{/res/upload}]]*/ '../mock/uploadImage.json';
+    // 上传图片列表
+    var imageList = [];
+    // 图片可上传数量
     var imageNumber = 1;
-    //    js-imageUpload
+    // loading 遮罩
+    var loading = null;
+    // 添加新闻接口
+    var OPER_News = '../mock/uploadImage.json';
+    // 跳转页面接口
+    var GOTO_PAGE = './index.html';
+    // 提交参数收集容器
+    var POST_DATA = {};
 
-    var uploadObj = $("#js-imageUpload").uploadFile({
-        url: imgUploadURL,
-        fileName: 'files',
-        uploadStr: '<span class="layui-upload-icon"><i class="layui-icon">&#xe61f;</i>上传图片</span>',
-        cancelStr: '<i class="layui-icon">&#xe640;</i>',
-        extErrorStr: '是无效格式, 允许上传文件的扩展名: ',
-        maxFileCountErrorStr: '是无效文件, 允许上传文件数量为: ',
-        dragDrop: false,
-        showStatusAfterSuccess: false,
-        allowedTypes: 'jpg,jpeg,png',
-        acceptFiles: 'image/',
-        multiple: true,
-        autoSubmit: false,
-        showFileSize: false,
-        showFileCounter: false,
-        showPreview: true,
-        statusBarWidth: 192,
-        maxFileCount: 3,
-        onLoad: function () {
-            $('.ajax-file-upload').addClass('layui-btn layui-btn-primary file-upload-reset');
-        },
-        onSuccess: function (files, data, xhr, pd) {
-            imgObj.push(data.data);
+    function options(count) {
+        return {
+            url: imageUploadURL,
+            fileName: 'files',
+            uploadStr: '<span class="layui-upload-icon"><i class="layui-icon">&#xe61f;</i>上传图片</span>',
+            cancelStr: '<i class="layui-icon">&#xe640;</i>',
+            extErrorStr: '是无效格式, 允许上传文件的扩展名: ',
+            maxFileCountErrorStr: '是无效文件, 允许上传文件数量为: ',
+            uploadErrorStr: '文件超出上传数量',
+            dragDrop: false,
+            showStatusAfterSuccess: false,
+            allowedTypes: 'jpg,jpeg,png',
+            acceptFiles: 'image/',
+            autoSubmit: false,
+            showFileSize: false,
+            showFileCounter: false,
+            showPreview: true,
+            statusBarWidth: 192,
+            maxFileCount: count,
+            uploadQueueOrder: 'bottom',
+            onLoad: function () {
+                $('.ajax-file-upload').addClass('layui-btn layui-btn-primary file-upload-reset');
+            },
+            afterUploadAll: function (obj) {
+                layer.close(loading);
+                var data = obj.getResponses();
+                data.forEach(function (v, i) {
+                    imageList[i] = v.data;
+                });
 
-        },
-        onError: function (files, status, errMsg, pd) {
-            console.error(errMsg)
+                POST_DATA.newsFiles = imageList;
+
+                ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
+            },
+            onError: function (files, status, errMsg, pd) {
+                console.error(errMsg)
+            }
         }
-    });
+    }
+    var uploadObj = $("#js-imageUpload").uploadFile(options(1));
 
     /**
      * checkbox操作与无图单选联动
@@ -374,10 +393,14 @@
         });
         if (value == 1 || value == 2) {
             imageNumber = 1;
+            uploadObj.reset();
+            uploadObj = $("#js-imageUpload").uploadFile(options(imageNumber));
             $('#js-coverUpload').hide();
         }
-        if (value == 2) {
+        if (value == 3) {
             imageNumber = 3;
+            uploadObj.reset();
+            uploadObj = $("#js-imageUpload").uploadFile(options(imageNumber));
             $('#js-coverUpload').hide();
         }
         if (value == 0) {
@@ -386,42 +409,37 @@
         }
     });
 
-    form.on('submit(*)', function (data) {
-        uploadObj.startUpload();
 
-        var newsData = data.field;
-        newsData.newsFiles = imgObj;
-        console.log(newsData);
-        $.ajax({
-            type: 'POST',
-            url: "/article/add",
-            data: newsData,
-            dataType: 'json',
-            statusCode: {
-                403: function () {
-                    layer.msg('没有权限，请联系管理员', {icon: 2});
-                },
-                404: function () {
-                    layer.msg('页面未找到，请联系管理员', {icon: 2});
-                },
-                502: function () {
-                    layer.msg('无效网关，请联系管理员', {icon: 2});
-                }
-            },
-            success: function (data) {
-                if (data.resultCode !== 200) {
-                    layer.msg('密码错误', {icon: 2});
-                    return false;
-                }
-                window.location.href = './views/index.html';
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                layer.msg(errorThrown);
-            }
-        });
+    form.on('submit(*)', function (data) {
+        POST_DATA = data.field;
+        var len = $('.ajax-file-upload-statusbar').length;
+        if( len !== imageNumber) {
+            layer.msg('该新闻类型需要<b style="color: #FF5722;"> ' + imageNumber +' </b>张展示图', {icon: 2});
+        } else {
+            loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
+            uploadObj.startUpload();
+        }
         return false;
     });
 
+    function ajaxSubmitNews(postURL, postData, geToURL) {
+        $.ajax({
+            type: 'POST',
+            url: postURL,
+            data: postData,
+            dataType: 'json',
+            success: function (data) {
+                if (data.resultCode !== 200) {
+                    layer.msg(res.resultMsg, {icon: 2});
+                    return false;
+                }
+                window.location.href = geToURL;
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                layer.msg(errorThrown, {icon: 2});
+            }
+        });
+    }
     /*]]>*/
 </script>
 </html>
