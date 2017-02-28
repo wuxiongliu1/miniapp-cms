@@ -68,26 +68,11 @@
 
 .layui-reset .layui-form-label {
     padding: 8px 0;
+    width: 80px;
 }
 
 .layui-reset .layui-input-block {
-    margin-left: 82px;
-}
-
-.layui-reset .layui-form-checkbox {
-    height: 20px;
-    line-height: 18px;
-    padding-right: 20px;
-}
-
-.layui-reset .layui-form-checkbox span {
-    padding: 0 4px;
-    font-size: 12px;
-}
-
-.layui-reset .layui-form-checkbox i {
-    width: 26px;
-    font-size: 14px;
+    margin-left: 80px;
 }
 
 .layui-reset .layui-input-inline {
@@ -97,17 +82,16 @@
 .layui-reset .layui-btn {
     width: 120px;
 }
-
-.layui-custom {
-    height: 65px;
+.layui-layout-admin .layui-custom {
     color: #fff;
     background-color: #fff;
     border-bottom: 5px solid #009688;
+    box-sizing: border-box;
 }
 
 .layui-custom .logo {
     display: inline-block;
-    margin-top: 14px;
+    margin-top: 10px;
     height: 50px;
     font-size: 20px;
     font-family: "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "\9ED1\4F53", Arial, sans-serif;
@@ -130,7 +114,6 @@
 
 .layui-custom .layui-nav .layui-nav-item {
     margin: 0 10px;
-    line-height: 70px;
 }
 
 .layui-custom .layui-nav .layui-nav-item,
@@ -152,16 +135,6 @@
 .layui-custom .layui-nav .layui-nav-item a,
 .layui-custom .layui-nav .layui-this a {
     padding: 0 30px;
-}
-
-.layui-custom .layui-nav .layui-nav-more {
-    top: 33px;
-    right: 8px;
-}
-
-.layui-custom .layui-nav .layui-nav-mored,
-.layui-custom .layui-nav-itemed .layui-nav-more {
-    top: 28px;
 }
 
 .layui-custom .layui-nav-child {
@@ -189,7 +162,9 @@
 .layui-table-custom {
     padding: 0 30px;
 }
-
+.layui-table-custom .layui-table-wrapper {
+    min-height: 391px;
+}
 .layui-table-custom table {
     table-layout: fixed;
 }
@@ -199,7 +174,9 @@
     overflow: hidden;
     white-space: nowrap;
 }
-
+.newsTable-title a {
+    display: block;
+}
 .layui-pageNav-custom {
     text-align: right;
 }
