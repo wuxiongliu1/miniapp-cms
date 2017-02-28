@@ -205,12 +205,11 @@
 <script src="http://resali.huobanplus.com/cdn/ueditor/1.4.3.3/ueditor.all.min.js"></script>
 <script src="http://resali.huobanplus.com/cdn/ueditor/1.4.3.3/lang/zh-cn/zh-cn.js"></script>
 <script id="previewHtml" type="text/html">
-    <h3>{{ d.title }}</h3>
+    <h3>{{ d.newsTittle }}</h3>
     <div class="subtitle">
-        <span class="author">{{ d.author }}</span>
-        <span class="time">{{ d.date }}</span>
+        <span class="author">{{ d.newsAuthor }}</span>
     </div>
-    <div class="news-wrapper">{{ d.content }}</div>
+    <div class="news-wrapper">{{ d.editorValue }}</div>
 </script>
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
@@ -244,7 +243,7 @@
     /**
      *  编辑页面预览，不提交
      */
-    $('#js-btn-preview').click(function () {
+    $('#js-btn-preview, #js-btn-publish').click(function () {
         var stop = null;
 
         $('input').each(function () {
@@ -278,28 +277,34 @@
 
         if (stop) return false;
 
-        var newsData = {};
+        POST_DATA.newsTittle = $('input[name="newsTittle"]').val();
+        POST_DATA.newsAuthor = $('input[name="newsAuthor"]').val();
+        POST_DATA.newsSummary = $('input[name="newsSummary"]').val();
+        POST_DATA.editorValue = content;
 
-        newsData.title = $('input[name="newsTittle"]').val();
-        newsData.author = $('input[name="newsAuthor"]').val();
-        newsData.summary = $('input[name="newsSummary"]').val();
-        newsData.content = content;
+        if ($(this).attr('id') == 'js-btn-preview') {
+            var getTpl = previewHtml.innerHTML;
 
+            laytpl(getTpl).render(newsData, function (html) {
+                previewBox.innerHTML = html;
+            });
 
-        var getTpl = previewHtml.innerHTML;
+            var clone = $('#js-previewBox').html();
 
-        laytpl(getTpl).render(newsData, function (html) {
-            previewBox.innerHTML = html;
-        });
-
-        var clone = $('#js-previewBox').html();
-
-        layer.open({
-            type: 1,
-            title: '页面预览',
-            area: ['375px', '667px'],
-            content: clone
-        });
+            layer.open({
+                type: 1,
+                title: '页面预览',
+                area: ['375px', '667px'],
+                content: clone
+            });
+        }
+        if ( $(this).attr('id') == 'js-btn-publish' ) {
+            if(verifyType())
+                POST_DATA.isBanner = $('input[name="isBanner"]').is(':checked');
+                POST_DATA.code = 1;
+                loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
+                uploadObj.startUpload();
+        }
     });
 
     /**
@@ -350,7 +355,7 @@
                 });
 
                 POST_DATA.newsFiles = imageList;
-
+                console.log(POST_DATA)
                 ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
             },
             onError: function (files, status, errMsg, pd) {
@@ -364,7 +369,7 @@
      * checkbox操作与无图单选联动
      */
     form.on('switch', function (data) {
-        if (data.elem.checked)
+        if (data.elem.checked) {
             $('#noneImage')
                 .removeAttr('checked')
                 .attr('disabled', true)
@@ -372,11 +377,13 @@
                 .addClass('layui-radio-disbaled layui-disabled')
                 .removeClass('layui-form-radioed')
                 .find('i').text('');
-        else
+            imageNumber = imageNumber === 0 ? 4 : imageNumber;
+        } else {
             $('#noneImage')
                 .attr('disabled', false)
                 .next()
                 .removeClass('layui-radio-disbaled layui-disabled');
+        }
     });
 
     /**
@@ -412,16 +419,27 @@
 
     form.on('submit(*)', function (data) {
         POST_DATA = data.field;
-        var len = $('.ajax-file-upload-statusbar').length;
-        if( len !== imageNumber) {
-            layer.msg('该新闻类型需要<b style="color: #FF5722;"> ' + imageNumber +' </b>张展示图', {icon: 2});
-        } else {
+        if(verifyType())
             loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
             uploadObj.startUpload();
-        }
         return false;
     });
 
+
+    function verifyType() {
+        var len = $('.ajax-file-upload-statusbar').length;
+        if( len !== imageNumber) {
+            if(imageNumber === 4) {
+                layer.msg('请选择一个新闻类型', {icon: 2});
+            } else {
+                layer.msg('该新闻类型需要<b style="color: #FF5722;"> ' + imageNumber +' </b>张展示图', {icon: 2});
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
     function ajaxSubmitNews(postURL, postData, geToURL) {
         $.ajax({
             type: 'POST',
@@ -440,6 +458,7 @@
             }
         });
     }
+
     /*]]>*/
 </script>
 </html>
