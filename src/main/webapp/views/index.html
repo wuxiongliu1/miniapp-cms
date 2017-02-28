@@ -11,7 +11,7 @@
 
     <title>小程序管理平台 - 首页</title>
 
-    <link rel="stylesheet" href="http://resali.huobanplus.com/cdn/layui/1.0.7/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="http://resali.huobanplus.com/cdn/layui/1.0.9/css/layui.css" media="all"/>
     <link rel="stylesheet" href="../resources/css/main.css" th:href="@{/resources/css/main.css}" media="all"/>
 
 
@@ -101,35 +101,34 @@
                                target="_self"><i class="layui-icon">
                                 &#xe61f;</i>&nbsp;添加新闻</a>
                         </div>
-                        <table class="layui-table">
-                            <colgroup>
-                                <col width="30%"/>
-                                <col width="40%"/>
-                                <col width="10%"/>
-                                <col width="10%"/>
-                                <col/>
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th>标题</th>
-                                <th>简介</th>
-                                <th>作者</th>
-                                <th>时间</th>
-                                <th>操作</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                        <div class="layui-table-wrapper">
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="30%"/>
+                                    <col width="40%"/>
+                                    <col width="10%"/>
+                                    <col width="10%"/>
+                                    <col/>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>标题</th>
+                                    <th>简介</th>
+                                    <th>作者</th>
+                                    <th>时间</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
 
-                            <tr th:each="article,articleStat:${articleList}">
-                                <td><a th:href="@{/article/{id}(id=${article.id})}"><span th:text="${article.title}">title</span></a>
-                                </td>
-                                <td th:text="${article.summary}">summary</td>
-                                <td th:text="${article.author}">author</td>
-                                <td th:text="${article.createTime}">2016-02-16 13:32:06</td>
-                                <td><a href="">删除</a></td>
-                            </tr>
-
-                            <div class="example" th:remove="all">
+                                <tr th:each="article,articleStat:${articleList}">
+                                    <td><a th:href="@{/article/{id}(id=${article.id})}"><span th:text="${article.title}">title</span></a>
+                                    </td>
+                                    <td th:text="${article.summary}">summary</td>
+                                    <td th:text="${article.author}">author</td>
+                                    <td th:text="${article.createTime}">2016-02-16 13:32:06</td>
+                                    <td><a href="">删除</a></td>
+                                </tr>
                                 <tr>
                                     <td>安徽初步形成“三位一体”大扶贫格局</td>
                                     <td>
@@ -139,9 +138,9 @@
                                     <td>2017-2-14</td>
                                     <td>人生就像是一场修行</td>
                                 </tr>
-                            </div>
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                         <div id="page-navigator" class="layui-pageNav-custom"></div>
                     </div>
                 </fieldset>
@@ -152,7 +151,7 @@
 </body>
 
 <script src="http://resali.huobanplus.com/cdn/jquery/2.2.4/jquery.min.js"></script>
-<script src="http://resali.huobanplus.com/cdn/layui/1.0.7/lay/dest/layui.all.js"></script>
+<script src="http://resali.huobanplus.com/cdn/layui/1.0.9/lay/dest/layui.all.js"></script>
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
     // curr 当前页面
