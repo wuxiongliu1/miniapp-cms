@@ -99,15 +99,11 @@ public class Article {
 
     /**
      * 是否头条
-     * true： 是 需要上传头条轮播图片
+     * true： 是 需要上传头条轮播图片[从预览图片的第一张获取]
      * false：否
      */
-    private Boolean topHead;
+    private boolean topHead;
 
-    /**
-     * 头条的轮播图片
-     */
-    private String topHeadImg;
 
     /**
      * 关联用户

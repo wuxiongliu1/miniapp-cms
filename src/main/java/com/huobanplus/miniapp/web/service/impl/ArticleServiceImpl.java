@@ -72,7 +72,9 @@ public class ArticleServiceImpl implements ArticleService {
         article.setSummary(articleModel.getSummary());
         article.setContent(articleModel.getContent());
         article.setAuthor(articleModel.getAuthor());
+        article.setTopHead(articleModel.isTopHead());
         article.setPublicDate(articleModel.getPublicDate());
+        article.setLayoutType(articleModel.getLayoutType());
         article.setCreateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
         article.setUser(user);

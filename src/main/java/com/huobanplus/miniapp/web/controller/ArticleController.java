@@ -43,7 +43,7 @@ public class ArticleController {
                               @RequestParam(defaultValue = "5") int pageSize,
                               Model model) {
         articleSearch.setEnabled(true);// 设置文章状态为未删除条件
-        Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize, new Sort("updateTime"));
+        Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize, new Sort(Sort.Direction.DESC, "updateTime"));
         List<Article> articleList = articlePage.getContent();
 
         model.addAttribute("articleList", articleList);

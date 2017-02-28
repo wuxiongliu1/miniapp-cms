@@ -57,4 +57,8 @@ public class ArticleModel {
 
 
     private String[] newsFiles;
+
+    private String createTime;
+
+    private String updateTime;
 }

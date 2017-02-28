@@ -3,6 +3,7 @@ package com.huobanplus.miniapp.web.controller.open;
 import com.huobanplus.miniapp.web.common.ApiResult;
 import com.huobanplus.miniapp.web.common.ResultCode;
 import com.huobanplus.miniapp.web.entity.Article;
+import com.huobanplus.miniapp.web.model.ArticleModel;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.model.BannerArticle;
 import com.huobanplus.miniapp.web.service.ArticleService;
@@ -11,10 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,9 +44,41 @@ public class ArticleOpenController {
                                  @RequestParam(defaultValue = "50") int pageSize,
                                  Model model) {
         articleSearch.setEnabled(true);
-        Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize, new Sort("updateTime"));
+        Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize, new Sort(Sort.Direction.DESC, "updateTime"));
         List<Article> articleList = articlePage.getContent();
-        return ApiResult.resultWith(ResultCode.SUCCESS, articleList);
+        List<ArticleModel> articleModelList = new ArrayList<>();
+        for (Article article : articleList) {
+            ArticleModel articleModel = new ArticleModel();
+            articleModel.setId(article.getId());
+            articleModel.setTitle(article.getTitle());
+            articleModel.setAuthor(article.getAuthor());
+            articleModel.setContent(article.getContent());
+            articleModel.setNewsFiles(article.getPreviewImage());
+            articleModel.setTopHead(article.isTopHead());
+            articleModel.setLayoutType(article.getLayoutType());
+            articleModel.setSummary(article.getSummary());
+            articleModel.setCreateTime(article.getCreateTime());
+            articleModel.setUpdateTime(article.getUpdateTime());
+            articleModelList.add(articleModel);
+        }
+        return ApiResult.resultWith(ResultCode.SUCCESS, articleModelList);
+    }
+
+    /**
+     * 文章详情
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ApiResult articleDetail(@PathVariable(value = "id") Long id) {
+        Article article = articleService.findArticle(id);
+        if (article == null) {
+            return ApiResult.resultWith(ResultCode.NO_ARTICLE);
+        }
+        article.setUser(null);
+        return ApiResult.resultWith(ResultCode.SUCCESS, article);
     }
 
     /**
@@ -60,7 +90,7 @@ public class ArticleOpenController {
     @ResponseBody
     public ApiResult bannerList(ArticleSearch articleSearch) {
         articleSearch.setEnabled(true);
-        Page<Article> articlePage = articleService.findAll(articleSearch, 1, 4, new Sort("updateTime"));// 取前面四篇的最新文章
+        Page<Article> articlePage = articleService.findAll(articleSearch, 1, 4, new Sort(Sort.Direction.DESC, "updateTime"));// 取前面四篇的最新文章
         List<Article> articleList = articlePage.getContent();
         List<BannerArticle> bannerArticleList = new ArrayList<>();
         articleList.forEach(article -> {
@@ -69,7 +99,7 @@ public class ArticleOpenController {
             bannerArticle.setTitle(article.getTitle());
             bannerArticle.setLayoutType(article.getLayoutType().getCode());
             String[] previewImgs = article.getPreviewImage();
-            if (previewImgs.length > 0) {
+            if (previewImgs != null && previewImgs.length > 0) {
                 bannerArticle.setImgSrc(previewImgs[0]);// 取第一张图
             } else {
                 bannerArticle.setImgSrc("");// 照一张默认的？？
