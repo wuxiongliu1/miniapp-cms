@@ -95,7 +95,8 @@
                                        placeholder="请输入标题关键字"
                                        class="layui-input" th:value="${articleSearch.title}"/>
                             </div>
-                            <button type="button" class="layui-btn news-btn-search" id="searchBtn"><i class="layui-icon">&#xe615;</i></button>
+                            <button type="button" class="layui-btn news-btn-search" id="searchBtn"><i
+                                    class="layui-icon">&#xe615;</i></button>
                             <button type="button" class="layui-btn" id="searchAll">显示所有</button>
                             <a href="addNews.html" th:href="@{/article/add}" class="layui-btn news-btn-add"
                                target="_self"><i class="layui-icon">
@@ -105,7 +106,7 @@
                             <table class="layui-table">
                                 <colgroup>
                                     <col width="30%"/>
-                                    <col width="40%"/>
+                                    <col width="35%"/>
                                     <col width="10%"/>
                                     <col width="10%"/>
                                     <col/>
@@ -122,21 +123,61 @@
                                 <tbody>
 
                                 <tr th:each="article,articleStat:${articleList}">
-                                    <td><a th:href="@{/article/{id}(id=${article.id})}"><span th:text="${article.title}">title</span></a>
+                                    <td class="newsTable-title">
+                                        <a th:href="@{/article/{id}(id=${article.id})}"
+                                           href="previewPage.html">
+                                            <span th:text="${article.title}">title</span>
+                                        </a>
                                     </td>
                                     <td th:text="${article.summary}">summary</td>
                                     <td th:text="${article.author}">author</td>
                                     <td th:text="${article.createTime}">2016-02-16 13:32:06</td>
-                                    <td><a href="">删除</a></td>
-                                </tr>
-                                <tr>
-                                    <td>安徽初步形成“三位一体”大扶贫格局</td>
                                     <td>
-                                        我省积极发动社会各界参与脱贫攻坚，初步形成了专项扶贫、行业扶贫、社会扶贫“三位一体”的大扶贫格局——定点帮扶扶到点上“我们给105户贫困户送黑毛猪崽，每头黑毛猪每年可增加收入2000元。
+                                        <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
+                                                title="发布"
+                                                onclick="operateArticle(this, 520, 1)"
+                                                th:onclick="|operateArticle(this, ${article.id}, 1)|">
+                                            <i class="layui-icon">&#xe609;</i>
+                                            <span>发布</span>
+                                        </button>
+                                        <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
+                                                title="编辑">
+                                            <i class="layui-icon">&#xe642;</i>
+                                            <span>编辑</span>
+                                        </button>
+                                        <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
+                                                title="删除"
+                                                onclick="operateArticle(this, 520, 0)"
+                                                th:onclick="|operateArticle(this, ${article.id}, 0)|">
+                                            <i class="layui-icon">&#xe640;</i>
+                                            <span>删除</span>
+                                        </button>
                                     </td>
-                                    <td>万事利</td>
-                                    <td>2017-2-14</td>
-                                    <td>人生就像是一场修行</td>
+                                </tr>
+                                <tr th:each="article,articleStat:${articleList}">
+                                    <td class="newsTable-title">
+                                        <a th:href="@{/article/{id}(id=${article.id})}"
+                                           href="previewPage.html">
+                                            <span th:text="${article.title}">title</span>
+                                        </a>
+                                    </td>
+                                    <td th:text="${article.summary}">summary</td>
+                                    <td th:text="${article.author}">author</td>
+                                    <td th:text="${article.createTime}">2016-02-16 13:32:06</td>
+                                    <td>
+                                        <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
+                                                title="下架"
+                                                onclick="operateArticle(this, 520, 2)"
+                                                th:onclick="|operateArticle(this, ${article.id}, 2)|">
+                                            <i class="layui-icon">&#xe601;</i>
+                                            <span>下架</span>
+                                        </button>
+                                        <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
+                                                title="查看">
+                                            <i class="layui-icon">&#xe632;</i>
+                                            <span>查看</span>
+                                        </button>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -175,16 +216,47 @@
         }
     });
 
-    $("#searchBtn").click(function(){
-       $("input[name='pageIndex']").val(1);
+    $("#searchBtn").click(function () {
+        $("input[name='pageIndex']").val(1);
         $("#articleForm").submit();
     });
 
-    $("#searchAll").click(function(){
+    $("#searchAll").click(function () {
         $("input[name='pageIndex']").val(1);
         $("input[name='title']").val("");
         $("#articleForm").submit();
     });
+
+
+    function operateArticle(ele, id, code) {
+        var URL = '/article/operate/' + id + '?code=' + code;
+        var msg = $(ele).attr('title');
+        console.log(msg, URL)
+
+        layer.confirm('你是否要'+msg+'该条新闻？', {
+            btn: ['确定','取消']
+        }, function(){
+            ajaxOperate(URL)
+        });
+    }
+
+    function ajaxOperate(operateURL) {
+        $.ajax({
+            type: 'GET',
+            url: operateURL,
+            dataType: 'json',
+            success: function (data) {
+                if (data.resultCode !== 200) {
+                    layer.msg(res.resultMsg, {icon: 2});
+                    return false;
+                }
+                $("#articleForm").submit();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                layer.msg(errorThrown, {icon: 2});
+            }
+        })
+    }
     /*]]>*/
 </script>
 </html>
