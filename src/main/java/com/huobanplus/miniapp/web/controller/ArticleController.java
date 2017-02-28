@@ -10,6 +10,7 @@ import com.huobanplus.miniapp.web.model.ArticleModel;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.service.ArticleService;
 import com.huobanplus.miniapp.web.service.ResourceService;
+import com.huobanplus.miniapp.web.util.ContentUtil;
 import com.huobanplus.miniapp.web.util.EnumHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -146,7 +149,8 @@ public class ArticleController {
     public ApiResult updateArticle(@PathVariable(value = "id") Long articleId, String newsTittle, String newsSummary,
                                    String newsAuthor, String editorValue,
                                    boolean isBanner, int newsType,
-                                   @RequestParam("newsFiles[]") String[] newsFiles) {
+                                   @RequestParam("newsFiles[]") String[] newsFiles,
+                                   HttpServletRequest request) {
 
         ArticleModel articleModel = new ArticleModel();
         articleModel.setId(articleId);
@@ -160,12 +164,29 @@ public class ArticleController {
 
         ApiResult apiResult = articleService.updateArticle(articleModel);
         if (apiResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
-            String oldImgs = (String) apiResult.getData();
-            String[] oldImgArray = oldImgs.split(",");
-            for (String s : oldImgArray) {
-                if (!containsImg(s, articleModel.getNewsFiles())) {
-                    resourceService.removeRes(s);
+
+            ArticleModel model = (ArticleModel) apiResult.getData();
+            if (model != null) {
+                String[] oldPreviewImgs = model.getNewsFiles();
+                String[] oldContentImgs = ContentUtil.captureImgUrls(model.getContent());
+                ServletContext servletContext = request.getSession().getServletContext();
+
+                if (oldPreviewImgs != null) {
+                    for (String oldPreviewImg : oldPreviewImgs) {
+                        if (!containsImg(oldPreviewImg, articleModel.getNewsFiles())) {
+                            resourceService.removeRes(servletContext.getRealPath(oldPreviewImg));
+                        }
+                    }
                 }
+
+                if (oldContentImgs != null) {
+                    for (String oldContentImg : oldContentImgs) {
+                        if (!containsImg(oldContentImg, ContentUtil.captureImgUrls(articleModel.getContent()))) {
+                            resourceService.removeRes(servletContext.getRealPath(oldContentImg));
+                        }
+                    }
+                }
+
             }
         }
         return apiResult;

@@ -13,39 +13,35 @@ public class ContentUtil {
      * 从html中取出所有的img标签
      *
      * @param html
-     * @param num  要抓取的数量
      * @return
      */
-    public static String captureImgUrls(String html, int num) {
+    public static String[] captureImgUrls(String html) {
         Document doc = Jsoup.parse(html);
         Elements imgs = doc.select("img");
-
-        StringBuffer resultImages = new StringBuffer();
-
         int imgNums = imgs.size();
-
-        if (imgNums >= 3) {
-            // 取前三条
-            resultImages.append(imgs.get(0).attr("src")).append("|")
-                    .append(imgs.get(1).attr("src")).append("|")
-                    .append(imgs.get(2).attr("src"));
-
-        } else if (imgNums >= 1 && imgNums < 3) {
-            // 取第一条
-            resultImages.append(imgs.get(0).attr("src")).append("|");
-        } else {
-            // 一条也没有
+        String[] imgSrcs = new String[imgNums];
+        for (int i = 0; i < imgNums; i++) {
+            if (imgs.get(i).attr("src") != null) {
+                imgSrcs[i] = imgs.get(i).attr("src");
+            }
         }
-
-        return resultImages.toString();
+        return imgSrcs;
     }
 
 
     public static void main(String[] args) {
-        String html = "<img src=\"http://img06.tooopen.com/images/20160725/tooopen_sl_171743228656.jpg\" onerror=\"javascript:this.src='http://resource.tooopen.com/image/no-img-192.gif';this.onerror=null;\" alt=\"美丽的海边岩石景色摄影大图\" class=\"imgItem\"/>\n" + "<img data-src=\"http://img06.tooopen.com/images/20160725/tooopen_sl_171743228656.jpg\" onerror=\"javascript:this.src='http://resource.tooopen.com/image/no-img-192.gif';this.onerror=null;\" alt=\"美丽的海边岩石景色摄影大图\" class=\"imgItem\"/>\n";
+        String html = "<img src=\"http://img06.tooopen.com/images/20160725/tooopen_sl_171743228656.jpg\"/>" +
+                "<img src=\"http://img06.tooopen.com/images/20160725/tooopen_sl_171743228656.jpg\"/>" +
+                "<img data-src=\"http://img06.tooopen.com/images/20160725/tooopen_sl_171743228656.jpg\"/>" +
+                "<img src=\"http://img06.tooopen.com/images/20160725/tooopen_sl_171743228656.jpg\"/>" +
+                "<img src=\"http://img06.tooopen.com/images/20160725/tooopen_sl_171743228656.jpg\"/>";
+        String nonImgHtml = "fsadffasdfasdfads";
 
-
-        System.out.println(captureImgUrls(html, 5));
+        String[] imgSrcs = captureImgUrls(nonImgHtml);
+        for (String imgSrc : imgSrcs) {
+            System.out.println(imgSrc);
+        }
+        System.out.println(imgSrcs.length);
 
         String res = "http://img06.tooopen.com/images/20160727/tooopen_sl_172639819999.jpg|http://img06.tooopen.com/images/20160724/tooopen_sl_171557864411.jpg|http://img06.tooopen.com/images/20160725/tooopen_sl_171743228656.jpg|";
         System.out.println(res.split("\\|").length);

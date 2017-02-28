@@ -114,10 +114,13 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ApiResult updateArticle(ArticleModel articleModel) {
         Article article = articleRepository.findOne(articleModel.getId());
+        String oldContent = article.getContent();
         String[] oldImgs = article.getPreviewImage();
+
         if (article == null) {
             return ApiResult.resultWith(ResultCode.NO_ARTICLE);
         }
+
 
         article.setTitle(articleModel.getTitle());
         article.setSummary(articleModel.getSummary());
@@ -127,9 +130,14 @@ public class ArticleServiceImpl implements ArticleService {
         article.setLayoutType(articleModel.getLayoutType());
         article.setAuthor(articleModel.getAuthor());
         article.setPreviewImage(articleModel.getNewsFiles());
+//        article.setContentImage(ContentUtil.captureImgUrls(articleModel.getContent()));
+
         article = articleRepository.save(article);
 
-        return ApiResult.resultWith(ResultCode.SUCCESS, oldImgs);
+        ArticleModel model = new ArticleModel();
+        model.setNewsFiles(oldImgs);
+        model.setContent(oldContent);
+        return ApiResult.resultWith(ResultCode.SUCCESS, model);
     }
 
     @Override
@@ -201,5 +209,21 @@ public class ArticleServiceImpl implements ArticleService {
         }
         articleRepository.save(article);
         return ApiResult.resultWith(ResultCode.SUCCESS);
+    }
+
+    /**
+     * 判断旧的图片url是否存在于新的url列表中
+     *
+     * @param olds
+     * @param news
+     * @return
+     */
+    private boolean containsImg(String olds, String[] news) {
+        for (int i = 0; i < news.length; i++) {
+            if (olds.equals(news[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 }
