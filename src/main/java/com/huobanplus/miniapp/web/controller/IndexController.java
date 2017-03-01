@@ -94,7 +94,7 @@ public class IndexController {
             User md5User = userService.findUser(username, DigestUtils.md5Hex(password.getBytes("utf-8")));
             if (md5User == null) {
                 model.addAttribute("errorMsg", "用户名或密码错误");
-                return ApiResult.resultWith(ResultCode.NO_USER);
+                return ApiResult.resultWith(ResultCode.NO_USER, "用户名或密码错误", null);
             } else {
                 user = md5User;
             }

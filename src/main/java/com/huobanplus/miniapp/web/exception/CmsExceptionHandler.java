@@ -21,6 +21,7 @@ public class CmsExceptionHandler implements HandlerExceptionResolver {
         model.setViewName("error");
         model.addObject("errorMsg", ex.getMessage());
         log.error(ex);
+        ex.printStackTrace();
         return model;
     }
 }

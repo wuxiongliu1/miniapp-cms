@@ -106,7 +106,8 @@
                             <table class="layui-table">
                                 <colgroup>
                                     <col width="30%"/>
-                                    <col width="35%"/>
+                                    <col width="20%"/>
+                                    <col width="10%"/>
                                     <col width="10%"/>
                                     <col width="10%"/>
                                     <col/>
@@ -117,6 +118,7 @@
                                     <th>简介</th>
                                     <th>作者</th>
                                     <th>时间</th>
+                                    <th>状态</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -132,53 +134,82 @@
                                     <td th:text="${article.summary}">summary</td>
                                     <td th:text="${article.author}">author</td>
                                     <td th:text="${article.createTime}">2016-02-16 13:32:06</td>
+                                    <td th:text="${article.articleStatus.getName()}">status</td>
                                     <td>
-                                        <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
-                                                title="发布"
-                                                onclick="operateArticle(this, 520, 1)"
-                                                th:onclick="|operateArticle(this, ${article.id}, 1)|">
-                                            <i class="layui-icon">&#xe609;</i>
-                                            <span>发布</span>
-                                        </button>
-                                        <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
-                                                title="编辑">
-                                            <i class="layui-icon">&#xe642;</i>
-                                            <span>编辑</span>
-                                        </button>
-                                        <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
-                                                title="删除"
-                                                onclick="operateArticle(this, 520, 0)"
-                                                th:onclick="|operateArticle(this, ${article.id}, 0)|">
-                                            <i class="layui-icon">&#xe640;</i>
-                                            <span>删除</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr th:each="article,articleStat:${articleList}">
-                                    <td class="newsTable-title">
+                                        <span th:if="${article.articleStatus.getCode()}==0"><!--未发布按钮组-->
+                                            <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
+                                                    title="发布"
+                                                    onclick="operateArticle(this, 520, 1)"
+                                                    th:onclick="|operateArticle(this,'${article.id}', 1)|">
+                                                <i class="layui-icon">&#xe609;</i>
+                                                <span>发布</span>
+                                            </button>
+                                            <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
+                                                    title="编辑">
+                                                <i class="layui-icon">&#xe642;</i>
+                                                <span>编辑</span>
+                                            </button>
+                                            <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
+                                                    title="删除"
+                                                    onclick="operateArticle(this, 520, 0)"
+                                                    th:onclick="|operateArticle(this, ${article.id}, 0)|">
+                                                <i class="layui-icon">&#xe640;</i>
+                                                <span>删除</span>
+                                            </button>
+                                        </span>
+
+                                        <span th:if="${article.articleStatus.getCode()}==1"> <!--已发布按钮组-->
+                                             <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
+                                                     title="下架"
+                                                     onclick="operateArticle(this, 520, 2)"
+                                                     th:onclick="|operateArticle(this, ${article.id}, 2)|">
+                                                 <i class="layui-icon">&#xe601;</i>
+                                                 <span>下架</span>
+                                             </button>
+                                        </span>
+
+                                        <span th:if="${article.articleStatus.getCode()}==2"> <!--已下架按钮组-->
+                                             <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
+                                                     title="发布"
+                                                     onclick="operateArticle(this, 520, 1)"
+                                                     th:onclick="|operateArticle(this,'${article.id}', 1)|">
+                                                 <i class="layui-icon">&#xe609;</i>
+                                                 <span>发布</span>
+                                             </button>
+                                            <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
+                                                    title="删除"
+                                                    onclick="operateArticle(this, 520, 0)"
+                                                    th:onclick="|operateArticle(this, ${article.id}, 0)|">
+                                                <i class="layui-icon">&#xe640;</i>
+                                                <span>删除</span>
+                                            </button>
+                                        </span>
+
                                         <a th:href="@{/article/{id}(id=${article.id})}"
-                                           href="previewPage.html">
-                                            <span th:text="${article.title}">title</span>
-                                        </a>
-                                    </td>
-                                    <td th:text="${article.summary}">summary</td>
-                                    <td th:text="${article.author}">author</td>
-                                    <td th:text="${article.createTime}">2016-02-16 13:32:06</td>
-                                    <td>
-                                        <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
-                                                title="下架"
-                                                onclick="operateArticle(this, 520, 2)"
-                                                th:onclick="|operateArticle(this, ${article.id}, 2)|">
-                                            <i class="layui-icon">&#xe601;</i>
-                                            <span>下架</span>
-                                        </button>
-                                        <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
+                                           class="layui-btn layui-btn-primary layui-btn-small"
                                                 title="查看">
                                             <i class="layui-icon">&#xe632;</i>
                                             <span>查看</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
+                                <!--<tr th:each="article,articleStat:${articleList}">-->
+                                <!--<td class="newsTable-title">-->
+                                <!--<a th:href="@{/article/{id}(id=${article.id})}"-->
+                                <!--href="previewPage.html">-->
+                                <!--<span th:text="${article.title}">title</span>-->
+                                <!--</a>-->
+                                <!--</td>-->
+                                <!--<td th:text="${article.summary}">summary</td>-->
+                                <!--<td th:text="${article.author}">author</td>-->
+                                <!--<td th:text="${article.createTime}">2016-02-16 13:32:06</td>-->
+                                <!--<td>-->
+                                <!--<span th:if="${article.articleStatus.getCode()==1}">-->
+
+                                <!--</span>-->
+
+                                <!--</td>-->
+                                <!--</tr>-->
                                 </tbody>
                             </table>
                         </div>
@@ -233,9 +264,9 @@
         var msg = $(ele).attr('title');
         console.log(msg, URL)
 
-        layer.confirm('你是否要'+msg+'该条新闻？', {
-            btn: ['确定','取消']
-        }, function(){
+        layer.confirm('你是否要' + msg + '该条新闻？', {
+            btn: ['确定', '取消']
+        }, function () {
             ajaxOperate(URL)
         });
     }

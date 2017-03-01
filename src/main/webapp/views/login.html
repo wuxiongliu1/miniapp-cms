@@ -88,7 +88,7 @@
                 dataType: 'json',
                 success: function (data) {
                     if (data.resultCode !== 200) {
-                        layer.msg(res.resultMsg, {icon: 2});
+                        layer.msg(data.resultMsg, {icon: 2});
                         return false;
                     }
                     window.location.href = '/';
