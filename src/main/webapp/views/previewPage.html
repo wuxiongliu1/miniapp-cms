@@ -48,8 +48,8 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;">新闻管理</a>
                     <dl class="layui-nav-child">
-                        <dd class="layui-this">
-                            <a href="javascript:;" th:href="@{/index}" class="list-items">
+                        <dd>
+                            <a href="index.html" th:href="@{/index}" class="list-items">
                                 <i class="layui-icon">&#xe62d;</i>
                                 <cite>新闻列表</cite>
                             </a>
@@ -87,26 +87,9 @@
                         <span class="time" th:text="${article.createTime}">2017-02-17</span>
                     </div>
                     <div class="news-wrapper" th:utext="${article.content}">
-                        <!--<p>一阵大风吹，吹来了降温，也吹来了团团雾霾！还好明天是星期六，可以睡个懒觉安慰一下的小心灵！</p>-->
-                        <!--<p>-->
-                        <!--<img src="http://mmbiz.qpic.cn/mmbiz_jpg/Y79ibNgIc17zNmGBlqkma7axEYpDThicMsjB5v8SUXByQAwIwIDf8s6WfOFiakiaSIdbQIMJLwDUDFZUVYuv4cXJkw/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1"-->
-                        <!--title="1487316270258064227.jpg" alt="Koala.jpg"/>-->
-                        <!--</p>-->
-                        <!--<p>不过，也有好消息，听说在奥体中心边上的高楼大厦之间，一个占地1400亩的钱江世纪公园就要造好了！</p>-->
-                        <!--<p><img src="http://mmbiz.qpic.cn/mmbiz_jpg/Y79ibNgIc17zNmGBlqkma7axEYpDThicMsG1UZK9YxW26hLgGz8VIzvMNYwicyR5DZMRPvMkcAk3CqeiaGoMyv00fg/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1" /></p>-->
-                        <!--<p><img src="http://mmbiz.qpic.cn/mmbiz_jpg/Y79ibNgIc17zNmGBlqkma7axEYpDThicMsibAiaDIJEKibcA6IMt5q2EmEDRvLIM1CbBGPG01aZQNQJicsrStUUwziasA/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1" alt=""></p>-->
-                        <!--<p>公园位处钱塘江南岸，靠近庆春路隧道南端出口的地方，呈“T”字型，像一只张开翅膀飞向江面的鸟！</p>-->
-                        <!--<p>超级大草坪、音乐喷泉、灌木迷宫、3公里沿江跑道……附近的小伙伴周末野餐、饭后散步，有新去处了！</p>-->
-                        <!--<p><img src="http://mmbiz.qpic.cn/mmbiz_gif/Y79ibNgIc17zNmGBlqkma7axEYpDThicMsBwnbdiazzDwfjW8GkCrBR7TyzLYDMtmQd6p7ngLcibZcNoSvzhulzHibQ/0?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1" alt="" /></p>-->
-                        <!--<p>但是，有些小朋友就不开心了！</p>-->
-                        <!--<p>2月10日，江西玉山县某小学六年级的学生小明骑着单车，到了320国道常山收费站附近，在寒风中瑟瑟发抖问路，被好心人发现并带往常山县招贤派出所。</p>-->
-                        <!--<p>“听他口音，应该是江西那边的。”民警赶紧打电话给离常山县最近的江西省玉山县公安局，巧的是，小明的父母刚好报警。民警与其父母取得联系，希望尽快来所确认。在等待过程中，小明才放松警惕，道出事情的原。</p>-->
-                        <!--<p><img src="http://mmbiz.qpic.cn/mmbiz_jpg/Y79ibNgIc17zNmGBlqkma7axEYpDThicMsALsLMHwZEjLVU0L9CWQWiaQqPDYnOhT2T7aIVicLFaUaYLEnCankT1eQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1" alt="" /></p>-->
-                        <!--<p>原来，马上就要开学了，但小明的作业一个字都没有动，父母随口骂了他几句，他一气之下离家出走，从百里之外的江西玉山独自骑车骑到衢州柯城准备投靠儿时的伙伴。</p>-->
-                        <!--<p>当天下午，小明的爸爸林先生赶到了派出所，目前孩子已经安全返回江西。</p>-->
-                        <!--<p>小明回家了，但是作业究竟还要不要写！</p>-->
                     </div>
                 </div>
+                <div class="back-btn"></div>
             </div>
         </div>
     </div>
@@ -115,4 +98,18 @@
 </body>
 <script src="http://resali.huobanplus.com/cdn/jquery/2.2.4/jquery.min.js"></script>
 <script src="http://resali.huobanplus.com/cdn/layui/1.0.9/lay/dest/layui.all.js"></script>
+<script>
+    $('.preview-wrapper').find('.back-btn').on({
+        mouseenter: function () {
+            var that = this;
+            layer.tips('Home 键也可以返回~', that, {
+                tips: 1
+            });
+        },
+        click: function () {
+            window.history.back();
+        }
+    });
+
+</script>
 </html>

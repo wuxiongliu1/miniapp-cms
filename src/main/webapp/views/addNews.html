@@ -103,7 +103,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">是否置顶</label>
                             <div class="layui-input-block layui-checkbox-custom">
-                                <input type="checkbox" name="isBanner" lay-skin="switch" value="1" lay-text="是|否"/>
+                                <input type="checkbox" name="isBanner" lay-skin="switch" value="0" lay-text="是|否"/>
                                 <div class="layui-word-aux">以轮播图形式使用最新的前五条展示</div>
                             </div>
                         </div>
@@ -215,6 +215,7 @@
 </script>
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
+    'use strict';
 
     var verify = {
         required: [/[\S]+/, '必填项不能为空']
@@ -236,6 +237,10 @@
         autoHeightEnabled: false,
         elementPathEnabled: false,
         serverUrl: "/ueditor/upload"
+    });
+
+    ue.ready(function () {
+        ue.setContent('<p>new text</p>');
     });
 
     var laytpl = layui.laytpl,
@@ -287,7 +292,7 @@
         if ($(this).attr('id') == 'js-btn-preview') {
             var getTpl = previewHtml.innerHTML;
 
-            laytpl(getTpl).render(newsData, function (html) {
+            laytpl(getTpl).render(POST_DATA, function (html) {
                 previewBox.innerHTML = html;
             });
 
@@ -300,12 +305,14 @@
                 content: clone
             });
         }
-        if ( $(this).attr('id') == 'js-btn-publish' ) {
-            if(verifyType())
+        if ($(this).attr('id') == 'js-btn-publish') {
+            if (verifyType()) {
                 POST_DATA.isBanner = $('input[name="isBanner"]').is(':checked');
                 POST_DATA.code = 1;
+                POST_DATA.newsType = $('input[name="newsType"]:checked').val();
                 loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
                 uploadObj.startUpload();
+            }
         }
     });
 
@@ -357,7 +364,6 @@
                 });
 
                 POST_DATA.newsFiles = imageList;
-                console.log(POST_DATA)
                 ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
             },
             onError: function (files, status, errMsg, pd) {
@@ -421,27 +427,28 @@
 
     form.on('submit(*)', function (data) {
         POST_DATA = data.field;
-        if(verifyType())
+        if (verifyType()) {
             loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
             uploadObj.startUpload();
+        }
         return false;
     });
 
 
     function verifyType() {
         var len = $('.ajax-file-upload-statusbar').length;
-        if( len !== imageNumber) {
-            if(imageNumber === 4) {
+        if (len !== imageNumber) {
+            if (imageNumber === 4) {
                 layer.msg('请选择一个新闻类型', {icon: 2});
             } else {
-                layer.msg('该新闻类型需要<b style="color: #FF5722;"> ' + imageNumber +' </b>张展示图', {icon: 2});
+                layer.msg('该新闻类型需要<b style="color: #FF5722;"> ' + imageNumber + ' </b>张展示图', {icon: 2});
             }
             return false;
         } else {
             return true;
         }
     }
-    
+
     function ajaxSubmitNews(postURL, postData, geToURL) {
         $.ajax({
             type: 'POST',
@@ -460,6 +467,7 @@
             }
         });
     }
+
 
     /*]]>*/
 </script>
