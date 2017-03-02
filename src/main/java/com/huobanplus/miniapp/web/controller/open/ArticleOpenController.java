@@ -1,6 +1,7 @@
 package com.huobanplus.miniapp.web.controller.open;
 
 import com.huobanplus.miniapp.web.common.ApiResult;
+import com.huobanplus.miniapp.web.common.ArticleType;
 import com.huobanplus.miniapp.web.common.ResultCode;
 import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.model.ArticleModel;
@@ -43,7 +44,8 @@ public class ArticleOpenController {
                                  @RequestParam(defaultValue = "1") int pageIndex,
                                  @RequestParam(defaultValue = "50") int pageSize,
                                  Model model) {
-        articleSearch.setEnabled(true);
+        articleSearch.setEnabled(true);// 未删除
+        articleSearch.setArticleStatus(ArticleType.ArticleStatus.RELEASE);// 已发布
         Page<Article> articlePage = articleService.findAll(articleSearch, pageIndex, pageSize, new Sort(Sort.Direction.DESC, "updateTime"));
         List<Article> articleList = articlePage.getContent();
         List<ArticleModel> articleModelList = new ArrayList<>();
@@ -90,7 +92,8 @@ public class ArticleOpenController {
     @RequestMapping(value = "/banners")
     @ResponseBody
     public ApiResult bannerList(ArticleSearch articleSearch) {
-        articleSearch.setEnabled(true);
+        articleSearch.setEnabled(true);// 未删除
+        articleSearch.setArticleStatus(ArticleType.ArticleStatus.RELEASE);// 已发布
         Page<Article> articlePage = articleService.findAll(articleSearch, 1, 4, new Sort(Sort.Direction.DESC, "updateTime"));// 取前面四篇的最新文章
         List<Article> articleList = articlePage.getContent();
         List<BannerArticle> bannerArticleList = new ArrayList<>();

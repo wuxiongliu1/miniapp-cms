@@ -11,6 +11,8 @@ import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.service.ArticleService;
 import com.huobanplus.miniapp.web.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -34,6 +36,8 @@ import java.util.List;
  */
 @Controller
 public class IndexController {
+    private static final Log log = LogFactory.getLog(IndexController.class);
+
 
     @Autowired
     private UserService userService;
