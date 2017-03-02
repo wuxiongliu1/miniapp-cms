@@ -68,7 +68,7 @@ public class ArticleServiceImpl implements ArticleService {
     public ApiResult addArticle(User user, ArticleModel articleModel) {
         Article article = new Article();
         article.setTitle(articleModel.getTitle());
-        article.setArticleStatus(ArticleType.ArticleStatus.UNRELEASE);
+        article.setArticleStatus(articleModel.getArticleStatus());
         article.setSummary(articleModel.getSummary());
         article.setContent(articleModel.getContent());
         article.setAuthor(articleModel.getAuthor());
@@ -200,7 +200,7 @@ public class ArticleServiceImpl implements ArticleService {
                 break;
             }
             case OFFRELEASE: {// 取消发布
-                article.setArticleStatus(ArticleType.ArticleStatus.OFFRELEASE);
+                article.setArticleStatus(ArticleType.ArticleStatus.UNRELEASE);
                 break;
             }
             default: {

@@ -168,23 +168,6 @@
                                              </button>
                                         </span>
 
-                                        <span th:if="${article.articleStatus.getCode()}==2"> <!--已下架按钮组-->
-                                             <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
-                                                     title="发布"
-                                                     onclick="operateArticle(this, 520, 1)"
-                                                     th:onclick="|operateArticle(this,'${article.id}', 1)|">
-                                                 <i class="layui-icon">&#xe609;</i>
-                                                 <span>发布</span>
-                                             </button>
-                                            <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
-                                                    title="删除"
-                                                    onclick="operateArticle(this, 520, 0)"
-                                                    th:onclick="|operateArticle(this, ${article.id}, 0)|">
-                                                <i class="layui-icon">&#xe640;</i>
-                                                <span>删除</span>
-                                            </button>
-                                        </span>
-
                                         <a th:href="@{/article/{id}(id=${article.id})}"
                                            class="layui-btn layui-btn-primary layui-btn-small"
                                                 title="查看">

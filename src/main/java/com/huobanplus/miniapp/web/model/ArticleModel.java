@@ -53,8 +53,22 @@ public class ArticleModel {
      * 布局类型
      * {@link ArticleType}
      */
-    private ArticleType.LayoutEnum layoutType = ArticleType.LayoutEnum.NO_PIC;// 默认无图
+    private ArticleType.LayoutEnum layoutType;
 
+    /**
+     * 布局类型码
+     */
+    private int layoutCode;
+
+    /**
+     * 文章状态
+     */
+    private ArticleType.ArticleStatus articleStatus;
+
+    /**
+     * 文章状态码
+     */
+    private int statusCode;
 
     private String[] newsFiles;
 

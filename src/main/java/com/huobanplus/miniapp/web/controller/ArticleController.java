@@ -117,7 +117,8 @@ public class ArticleController {
     @ResponseBody
     public ApiResult addArticle(@UserAuthenticationPrincipal User user, String newsTittle, String newsSummary,
                                 String newsAuthor, String editorValue,
-                                boolean isBanner, int newsType, @RequestParam("newsFiles[]") String[] newsFiles) {
+                                boolean isBanner, int newsType, @RequestParam("newsFiles[]") String[] newsFiles,
+                                @RequestParam(defaultValue = "0") int code) {
 
         ArticleModel articleModel = new ArticleModel();
         articleModel.setTitle(newsTittle);
@@ -127,6 +128,7 @@ public class ArticleController {
         articleModel.setTopHead(isBanner);
         articleModel.setNewsFiles(newsFiles);
         articleModel.setLayoutType(EnumHelper.getEnumType(ArticleType.LayoutEnum.class, newsType));
+        articleModel.setArticleStatus(EnumHelper.getEnumType(ArticleType.ArticleStatus.class, code));
 
         return articleService.addArticle(user, articleModel);
     }

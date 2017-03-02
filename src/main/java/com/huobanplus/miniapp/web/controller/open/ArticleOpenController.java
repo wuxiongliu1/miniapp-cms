@@ -56,6 +56,7 @@ public class ArticleOpenController {
             articleModel.setNewsFiles(article.getPreviewImage());
             articleModel.setTopHead(article.isTopHead());
             articleModel.setLayoutType(article.getLayoutType());
+            articleModel.setLayoutCode(article.getLayoutType().getCode());
             articleModel.setSummary(article.getSummary());
             articleModel.setCreateTime(article.getCreateTime());
             articleModel.setUpdateTime(article.getUpdateTime());
