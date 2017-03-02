@@ -228,14 +228,34 @@
     background-size: contain;
     box-sizing: border-box;
 }
+
 .preview-wrapper .back-btn {
     position: absolute;
-    left: 186px;
-    bottom: 22px;
+    left: 185px;
+    bottom: 24px;
     width: 60px;
     height: 60px;
+    border: 1px solid transparent;
     border-radius: 50%;
-    background-color: red;
+    cursor: pointer;
+    animation: breathe 2s ease-in-out infinite alternate;
+    box-sizing: border-box;
+}
+
+@keyframes breathe {
+    0% {
+        opacity: .2;
+        box-shadow: 0 1px 2px rgba(255, 255, 255, .1);
+    }
+    100% {
+        opacity: 1;
+        box-shadow: 0 1px 30px rgba(255, 255, 255, .5);
+    }
+}
+.preview-wrapper .back-guide {
+    position: absolute;
+    right: -110px;
+    bottom: 16px;
 }
 #js-previewBox {
     display: none;

@@ -48,8 +48,8 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;">新闻管理</a>
                     <dl class="layui-nav-child">
-                        <dd class="layui-this">
-                            <a href="javascript:;" th:href="@{/index}" class="list-items">
+                        <dd>
+                            <a href="index.html" th:href="@{/index}" class="list-items">
                                 <i class="layui-icon">&#xe62d;</i>
                                 <cite>新闻列表</cite>
                             </a>
@@ -98,4 +98,18 @@
 </body>
 <script src="http://resali.huobanplus.com/cdn/jquery/2.2.4/jquery.min.js"></script>
 <script src="http://resali.huobanplus.com/cdn/layui/1.0.9/lay/dest/layui.all.js"></script>
+<script>
+    $('.preview-wrapper').find('.back-btn').on({
+        mouseenter: function () {
+            var that = this;
+            layer.tips('Home 键也可以返回~', that, {
+                tips: 1
+            });
+        },
+        click: function () {
+            window.history.back();
+        }
+    });
+
+</script>
 </html>

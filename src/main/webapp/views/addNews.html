@@ -289,7 +289,7 @@
         if ($(this).attr('id') == 'js-btn-preview') {
             var getTpl = previewHtml.innerHTML;
 
-            laytpl(getTpl).render(newsData, function (html) {
+            laytpl(getTpl).render(POST_DATA, function (html) {
                 previewBox.innerHTML = html;
             });
 
