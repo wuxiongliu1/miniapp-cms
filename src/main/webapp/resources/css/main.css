@@ -82,6 +82,7 @@
 .layui-reset .layui-btn {
     width: 120px;
 }
+
 .layui-layout-admin .layui-custom {
     color: #fff;
     background-color: #fff;
@@ -162,9 +163,11 @@
 .layui-table-custom {
     padding: 0 30px;
 }
+
 .layui-table-custom .layui-table-wrapper {
     min-height: 391px;
 }
+
 .layui-table-custom table {
     table-layout: fixed;
 }
@@ -174,9 +177,11 @@
     overflow: hidden;
     white-space: nowrap;
 }
+
 .newsTable-title a {
     display: block;
 }
+
 .layui-pageNav-custom {
     text-align: right;
 }
@@ -208,12 +213,14 @@
 .layui-form-item .layui-input-submit-custom {
     width: 90px;
 }
+
 .layui-input-no-left {
     margin-left: 110px;
 }
 
 .preview-wrapper {
-    display: inline-block;
+    position: relative;
+    margin: 0 auto;
     padding: 98px 28px 102px;
     width: 431px;
     height: 867px;
@@ -221,9 +228,19 @@
     background-size: contain;
     box-sizing: border-box;
 }
+.preview-wrapper .back-btn {
+    position: absolute;
+    left: 186px;
+    bottom: 22px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: red;
+}
 #js-previewBox {
     display: none;
 }
+
 #previewBox {
     padding: 16px 3% 10px;
     width: 100%;
@@ -273,18 +290,22 @@
     max-width: 100%;
     height: auto;
 }
+
 .layui-form-item .layui-input-file-custom {
     width: auto;
 }
+
 .preview-list-item {
     display: inline-block;
     margin-right: 20px;
     width: 192px;
     min-height: 108px;
 }
+
 .preview-list-item:last-of-type {
     margin-right: 0;
 }
+
 .MINI-Upload {
     display: block;
     width: 100%;
@@ -292,40 +313,47 @@
     border-radius: 5px;
     vertical-align: top;
 }
+
 .MINI-Delete {
     display: none;
 }
+
 /*重写上传插件样式*/
 .file-upload-reset {
     padding: 0;
 }
+
 .ajax-file-upload-container {
     margin-top: 15px;
 }
+
 .ajax-file-upload-statusbar {
     position: relative;
     display: inline-block;
     margin-right: 20px;
     min-height: 108px;
 }
+
 .ajax-file-upload-preview {
     border: 1px solid #e6e6e6;
     border-radius: 5px;
 }
+
 .ajax-file-upload-filename {
     display: none;
 }
+
 .ajax-file-upload-cancel {
     position: absolute;
     top: 5px;
     right: 5px;
 
     outline: 0;
-    -webkit-transition: border-color .3s cubic-bezier(.65,.05,.35,.5);
-    transition: border-color .3s cubic-bezier(.65,.05,.35,.5);
-    -webkit-box-sizing: border-box!important;
-    -moz-box-sizing: border-box!important;
-    box-sizing: border-box!important;
+    -webkit-transition: border-color .3s cubic-bezier(.65, .05, .35, .5);
+    transition: border-color .3s cubic-bezier(.65, .05, .35, .5);
+    -webkit-box-sizing: border-box !important;
+    -moz-box-sizing: border-box !important;
+    box-sizing: border-box !important;
 
     display: none !important;
     background-color: #FF5722;
@@ -343,14 +371,17 @@
     padding: 0 5px;
     font-size: 12px;
 }
+
 .ajax-file-upload-cancel:hover {
     opacity: .8;
     filter: alpha(opacity=80);
     color: #fff;
 }
+
 .ajax-file-upload-statusbar:hover .ajax-file-upload-cancel {
     display: inline-block !important;
 }
+
 .ajax-file-upload ~ div > .ajax-file-upload-error {
     margin-top: 4px;
     padding: 6px;
@@ -358,27 +389,34 @@
     border-left: 5px solid #FF5722;
     background-color: #f2f2f2;
 }
+
 .layui-textarea {
     resize: none;
 }
+
 .layui-checkbox-custom .layui-word-aux {
     display: inline-block;
     vertical-align: sub;
 }
+
 .newsType-list {
     padding: 10px 10px 0 10px;
     height: 110px;
 }
+
 .newsType-list .list-items {
     display: none;
     float: left;
 }
+
 .newsType-list .show {
     display: block;
 }
+
 #layui-mainUpload {
     position: relative;
 }
+
 #js-coverUpload {
     display: none;
     position: absolute;
@@ -387,7 +425,7 @@
     left: 0;
     right: 0;
     width: 111px;
-    background-color: rgba(226,226,226, .6);
+    background-color: rgba(226, 226, 226, .6);
     z-index: 999;
     cursor: not-allowed;
 }

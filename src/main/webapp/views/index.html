@@ -193,23 +193,6 @@
                                         </a>
                                     </td>
                                 </tr>
-                                <!--<tr th:each="article,articleStat:${articleList}">-->
-                                <!--<td class="newsTable-title">-->
-                                <!--<a th:href="@{/article/{id}(id=${article.id})}"-->
-                                <!--href="previewPage.html">-->
-                                <!--<span th:text="${article.title}">title</span>-->
-                                <!--</a>-->
-                                <!--</td>-->
-                                <!--<td th:text="${article.summary}">summary</td>-->
-                                <!--<td th:text="${article.author}">author</td>-->
-                                <!--<td th:text="${article.createTime}">2016-02-16 13:32:06</td>-->
-                                <!--<td>-->
-                                <!--<span th:if="${article.articleStatus.getCode()==1}">-->
-
-                                <!--</span>-->
-
-                                <!--</td>-->
-                                <!--</tr>-->
                                 </tbody>
                             </table>
                         </div>
@@ -262,7 +245,6 @@
     function operateArticle(ele, id, code) {
         var URL = '/article/operate/' + id + '?code=' + code;
         var msg = $(ele).attr('title');
-        console.log(msg, URL)
 
         layer.confirm('你是否要' + msg + '该条新闻？', {
             btn: ['确定', '取消']
