@@ -141,26 +141,45 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">展示图片</label>
                             <div class="layui-input-block" id="layui-mainUpload">
+                                <!--阻止按钮点击-->
                                 <div id="js-coverUpload"></div>
                                 <div id="js-imageUpload"></div>
                             </div>
                         </div>
-                        <!--<div class="layui-form-item">-->
-                        <!--<div class="layui-input-block">-->
-                        <!--<ul class="preview-list">-->
-                        <!--<li class="preview-list-item">-->
-                        <!--<img src="../resources/images/placeholder.png"-->
-                        <!--data-img="../resources/images/placeholder.png" class="MINI-Upload"-->
-                        <!--alt="Cover">-->
-                        <!--<button type="button"-->
-                        <!--class="layui-btn layui-btn-small layui-btn-danger MINI-Delete"><i-->
-                        <!--class="layui-icon">&#xe640;</i>删除-->
-                        <!--</button>-->
-                        <!--</li>-->
-                        <!--</ul>-->
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <ul class="preview-list">
+                                    <li class="preview-list-item">
+                                        <img src="../resources/images/placeholder.png"
+                                             data-img="../resources/images/placeholder.png" class="MINI-Upload"
+                                             alt="Cover">
+                                        <button type="button"
+                                                class="layui-btn layui-btn-small layui-btn-danger MINI-Delete"><i
+                                                class="layui-icon">&#xe640;</i>
+                                        </button>
+                                    </li>
+                                    <!--<li class="preview-list-item">-->
+                                        <!--<img src="../resources/images/placeholder.png"-->
+                                             <!--data-img="../resources/images/placeholder.png" class="MINI-Upload"-->
+                                             <!--alt="Cover">-->
+                                        <!--<button type="button"-->
+                                                <!--class="layui-btn layui-btn-small layui-btn-danger MINI-Delete"><i-->
+                                                <!--class="layui-icon">&#xe640;</i>-->
+                                        <!--</button>-->
+                                    <!--</li>-->
+                                    <!--<li class="preview-list-item">-->
+                                        <!--<img src="../resources/images/placeholder.png"-->
+                                             <!--data-img="../resources/images/placeholder.png" class="MINI-Upload"-->
+                                             <!--alt="Cover">-->
+                                        <!--<button type="button"-->
+                                                <!--class="layui-btn layui-btn-small layui-btn-danger MINI-Delete"><i-->
+                                                <!--class="layui-icon">&#xe640;</i>-->
+                                        <!--</button>-->
+                                    <!--</li>-->
+                                </ul>
 
-                        <!--</div>-->
-                        <!--</div>-->
+                            </div>
+                        </div>
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">新闻简介</label>
                             <div class="layui-input-block">
@@ -427,7 +446,13 @@
         POST_DATA = data.field;
         if (verifyType()) {
             loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
-            uploadObj.startUpload();
+           if(!imageNumber) {
+               POST_DATA.newsFiles = imageList;
+               ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
+           } else {
+               uploadObj.startUpload();
+           }
+
         }
         return false;
     });
@@ -448,6 +473,7 @@
     }
 
     function ajaxSubmitNews(postURL, postData, geToURL) {
+        console.log(postData)
         $.ajax({
             type: 'POST',
             url: postURL,
