@@ -213,6 +213,7 @@
 </script>
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
+    'use strict';
 
     var verify = {
         required: [/[\S]+/, '必填项不能为空']
@@ -236,7 +237,7 @@
         serverUrl: "/ueditor/upload"
     });
 
-    ue.ready(function() {
+    ue.ready(function () {
         ue.setContent('<p>new text</p>');
     });
 
@@ -302,12 +303,14 @@
                 content: clone
             });
         }
-        if ( $(this).attr('id') == 'js-btn-publish' ) {
-            if(verifyType())
+        if ($(this).attr('id') == 'js-btn-publish') {
+            if (verifyType()) {
                 POST_DATA.isBanner = $('input[name="isBanner"]').is(':checked');
                 POST_DATA.code = 1;
+                POST_DATA.newsType = $('input[name="newsType"]:checked').val();
                 loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
                 uploadObj.startUpload();
+            }
         }
     });
 
@@ -359,7 +362,6 @@
                 });
 
                 POST_DATA.newsFiles = imageList;
-                console.log(POST_DATA)
                 ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
             },
             onError: function (files, status, errMsg, pd) {
@@ -423,27 +425,28 @@
 
     form.on('submit(*)', function (data) {
         POST_DATA = data.field;
-        if(verifyType())
+        if (verifyType()) {
             loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
             uploadObj.startUpload();
+        }
         return false;
     });
 
 
     function verifyType() {
         var len = $('.ajax-file-upload-statusbar').length;
-        if( len !== imageNumber) {
-            if(imageNumber === 4) {
+        if (len !== imageNumber) {
+            if (imageNumber === 4) {
                 layer.msg('请选择一个新闻类型', {icon: 2});
             } else {
-                layer.msg('该新闻类型需要<b style="color: #FF5722;"> ' + imageNumber +' </b>张展示图', {icon: 2});
+                layer.msg('该新闻类型需要<b style="color: #FF5722;"> ' + imageNumber + ' </b>张展示图', {icon: 2});
             }
             return false;
         } else {
             return true;
         }
     }
-    
+
     function ajaxSubmitNews(postURL, postData, geToURL) {
         $.ajax({
             type: 'POST',
