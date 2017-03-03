@@ -12,7 +12,7 @@
     <title>小程序管理平台 - 添加新闻</title>
 
     <link rel="stylesheet" href="http://resali.huobanplus.com/cdn/layui/1.0.9/css/layui.css" media="all"/>
-    <link rel="stylesheet" href="../resources/css/main.css" media="all"/>
+    <link rel="stylesheet" th:href="@{/resources/css/main.css}" href="../resources/css/main.css" media="all"/>
 
 </head>
 <body>
@@ -89,21 +89,22 @@
                             <div class="layui-input-block">
                                 <input type="text" name="newsTittle" lay-verify="required" autocomplete="off"
                                        placeholder="请输入标题（必填）"
-                                       class="layui-input"/>
+                                       class="layui-input" th:value="${article.title}"/>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">新闻作者</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="newsAuthor" autocomplete="off"
-                                       placeholder="请输入作者" class="layui-input"/>
+                                       placeholder="请输入作者" class="layui-input" th:value="${article.author}"/>
                             </div>
                             <div class="layui-form-mid layui-word-aux">可选</div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">是否置顶</label>
                             <div class="layui-input-block layui-checkbox-custom">
-                                <input type="checkbox" name="isBanner" lay-skin="switch" value="1" lay-text="是|否"/>
+                                <input type="checkbox" name="isBanner" lay-skin="switch" value="0" lay-text="是|否"
+                                       th:checked="${article.topHead}"/>
                                 <div class="layui-word-aux">以轮播图形式使用最新的前五条展示</div>
                             </div>
                         </div>
@@ -111,11 +112,13 @@
                             <label class="layui-form-label">新闻类型</label>
                             <div class="layui-input-block">
                                 <input type="radio" name="newsType" value="1" title="小图" data-length="1"
-                                       checked="checked"/>
-                                <input type="radio" name="newsType" value="2" title="大图" data-length="1"/>
-                                <input type="radio" name="newsType" value="3" title="多图" data-length="3"/>
+                                       th:checked="${article.layoutCode==1}"/>
+                                <input type="radio" name="newsType" value="2" title="大图" data-length="1"
+                                       th:checked="${article.layoutCode==2}"/>
+                                <input type="radio" name="newsType" value="3" title="多图" data-length="3"
+                                       th:checked="${article.layoutCode==3}"/>
                                 <input type="radio" id="noneImage" name="newsType" value="0" title="无图"
-                                       data-length="0"/>
+                                       data-length="0" th:checked="${article.layoutCode==0}"/>
                             </div>
 
                         </div>
@@ -123,17 +126,22 @@
                             <label class="layui-form-label">布局结构</label>
                             <div class="layui-input-block">
                                 <ul class="newsType-list">
-                                    <li class="list-items show" data-id="1">
-                                        <img src="../resources/images/small.png"/>
+                                    <li th:class="${article.layoutCode}==1?'list-items show':'list-items'"
+                                        class="list-items show" data-id="1">
+                                        <img th:src="@{/resources/images/small.png}"
+                                             src="../resources/images/small.png"/>
                                     </li>
-                                    <li class="list-items" data-id="2">
-                                        <img src="../resources/images/big.png"/>
+                                    <li th:class="${article.layoutCode}==2?'list-items show':'list-items'"
+                                        class="list-items" data-id="2">
+                                        <img th:src="@{/resources/images/big.png}" src="../resources/images/big.png"/>
                                     </li>
-                                    <li class="list-items" data-id="3">
-                                        <img src="../resources/images/more.png"/>
+                                    <li th:class="${article.layoutCode}==3?'list-items show':'list-items'"
+                                        class="list-items" data-id="3">
+                                        <img th:src="@{/resources/images/more.png}" src="../resources/images/more.png"/>
                                     </li>
-                                    <li class="list-items" data-id="0">
-                                        <img src="../resources/images/none.png"/>
+                                    <li th:class="${article.layoutCode}==0?'list-items show':'list-items'"
+                                        class="list-items" data-id="0">
+                                        <img th:src="@{/resources/images/none.png}" src="../resources/images/none.png"/>
                                     </li>
                                 </ul>
                                 <blockquote class="layui-elem-quote">支持格式 *.png *.jpg *.jpeg，推荐尺寸 480x270 （相似比例尺寸）
@@ -144,15 +152,15 @@
                             <label class="layui-form-label">展示图片</label>
                             <div class="layui-input-block" id="layui-mainUpload">
                                 <!--阻止按钮点击-->
-                                <div id="js-coverUpload"></div>
+                                <div id="js-coverUpload" style="display: block;"></div>
                                 <div id="js-imageUpload"></div>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <div class="layui-input-block">
                                 <ul class="preview-list">
-                                    <li class="preview-list-item">
-                                        <img src="../resources/images/placeholder.png"
+                                    <li class="preview-list-item" th:each="img : ${article.newsFiles}">
+                                        <img th:src="${img}" src="../resources/images/placeholder.png"
                                              class="MINI-Upload"
                                              alt="Cover"/>
                                         <button type="button"
@@ -167,7 +175,8 @@
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">新闻简介</label>
                             <div class="layui-input-block">
-                                <textarea placeholder="请输入内容（可选）" name="newsSummary" class="layui-textarea"></textarea>
+                                <textarea placeholder="请输入内容（可选）" name="newsSummary" class="layui-textarea"
+                                          th:text="${article.summary}"></textarea>
                             </div>
                         </div>
                         <div class="layui-form-item layui-form-text">
@@ -204,8 +213,8 @@
 <script src="http://resali.huobanplus.com/cdn/jquery-form/3.51/jquery.form.min.js"></script>
 <script src="http://resali.huobanplus.com/cdn/layui/1.0.9/lay/dest/layui.all.js"></script>
 <script src="http://resali.huobanplus.com/cdn/upload-file/4.0.10/jquery.uploadfile.min.js"></script>
-<script src="../resources/ueditor/ueditor.config.js"></script>
-<script src="../resources/ueditor/ueditor.all.min.js"></script>
+<script th:src="@{/resources/ueditor/ueditor.config.js}" src="../resources/ueditor/ueditor.config.js"></script>
+<script th:src="@{/resources/ueditor/ueditor.all.min.js}" src="../resources/ueditor/ueditor.all.min.js"></script>
 <script src="http://resali.huobanplus.com/cdn/ueditor/1.4.3.3/lang/zh-cn/zh-cn.js"></script>
 <script id="previewHtml" type="text/html">
     <h3>{{ d.newsTittle }}</h3>
@@ -217,6 +226,8 @@
 <script type="text/javascript" th:inline="javascript">
     /*<![CDATA[*/
     'use strict';
+
+    var content = /*[[${article.content}]]*/ "";
 
     var verify = {
         required: [/[\S]+/, '必填项不能为空']
@@ -241,11 +252,11 @@
     });
 
     ue.ready(function () {
-        ue.setContent('<p>new text</p>');
+        ue.setContent(content);
     });
 
     var laytpl = layui.laytpl,
-        form = layui.form();
+            form = layui.form();
 
 
     /**
@@ -322,20 +333,17 @@
      */
     var imageUploadURL = /*[[@{/res/upload}]]*/ '../mock/uploadImage.json';
     // 上传图片列表
-    var imageList = [];
+    var imageList = /*[[${article.newsFiles}]]*/ [];
     // 图片可上传数量
     var imageNumber = getNeedLength(parseInt($('input[name="newsType"]:checked').data('length')));
     // loading 遮罩
     var loading = null;
     // 添加新闻接口
-    var OPER_News = /*[[@{/article/add}]]*/ '../mock/uploadImage.json';
+    var OPER_News = /*[[@{/article/{id}(id=${article.id})}]]*/ '../mock/uploadImage.json';
     // 跳转页面接口
     var GOTO_PAGE = /*[[@{/index}]]*/ './index.html';
     // 提交参数收集容器
     var POST_DATA = {};
-
-    //TODO
-    initIsBanner(false);
 
     function options(count) {
         return {
@@ -381,30 +389,23 @@
      * checkbox操作与无图单选联动
      */
     form.on('switch', function (data) {
-        initIsBanner(data.elem.checked)
-    });
-
-    /**
-     *  初始化无图单选框
-     */
-    function initIsBanner(val) {
-        var len = $('input[name="newsType"]:checked').length;
-        if (val) {
+        if (data.elem.checked) {
             $('#noneImage')
-                .removeAttr('checked')
-                .attr('disabled', true)
-                .next()
-                .addClass('layui-radio-disbaled layui-disabled')
-                .removeClass('layui-form-radioed')
-                .find('i').text('');
-            imageNumber = len === 0 ? 4 : imageNumber;
+                    .removeAttr('checked')
+                    .attr('disabled', true)
+                    .next()
+                    .addClass('layui-radio-disbaled layui-disabled')
+                    .removeClass('layui-form-radioed')
+                    .find('i').text('');
+            imageNumber = imageNumber === 0 ? 4 : imageNumber;
         } else {
             $('#noneImage')
-                .attr('disabled', false)
-                .next()
-                .removeClass('layui-radio-disbaled layui-disabled');
+                    .attr('disabled', false)
+                    .next()
+                    .removeClass('layui-radio-disbaled layui-disabled');
         }
-    }
+    });
+
     /**
      * radio操作与展示图联动
      */
@@ -450,7 +451,6 @@
             loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
             if (!imageNumber) {
                 POST_DATA.newsFiles = imageList;
-                console.log(POST_DATA)
                 ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
             } else {
                 uploadObj.startUpload();
@@ -478,9 +478,8 @@
     }
 
     function ajaxSubmitNews(postURL, postData, geToURL) {
-        console.log(postData);
         $.ajax({
-            type: 'POST',
+            type: 'PUT',
             url: postURL,
             data: postData,
             dataType: 'json',

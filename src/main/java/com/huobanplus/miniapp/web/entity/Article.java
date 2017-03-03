@@ -97,6 +97,7 @@ public class Article {
     @Column(name = "preivew_img")
     private String[] previewImage;
 
+
     /**
      * 是否头条
      * true： 是 需要上传头条轮播图片[从预览图片的第一张获取]

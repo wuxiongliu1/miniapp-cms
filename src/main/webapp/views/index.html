@@ -144,11 +144,12 @@
                                                 <i class="layui-icon">&#xe609;</i>
                                                 <span>发布</span>
                                             </button>
-                                            <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
-                                                    title="编辑">
+                                            <a th:href="@{/article/edit/{id}(id=${article.id})}"
+                                               class="layui-btn layui-btn-primary layui-btn-small"
+                                               title="编辑">
                                                 <i class="layui-icon">&#xe642;</i>
                                                 <span>编辑</span>
-                                            </button>
+                                            </a>
                                             <button type="button" class="layui-btn layui-btn-primary layui-btn-small"
                                                     title="删除"
                                                     onclick="operateArticle(this, 520, 0)"

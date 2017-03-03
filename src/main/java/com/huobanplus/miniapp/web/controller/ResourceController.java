@@ -37,6 +37,8 @@ public class ResourceController {
     @ResponseBody
     public ApiResult upload2(@UserAuthenticationPrincipal(value = "user") User user, HttpServletRequest request) throws Exception {
 
+        String prefixUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+
         String relativePathPrefix = generateFilePath(user.getUsername());
         String relativePath = "";
 
@@ -55,7 +57,7 @@ public class ResourceController {
             }
             item.write(new File(targetFile, fileName));
         }
-        return ApiResult.resultWith(ResultCode.SUCCESS, relativePath);
+        return ApiResult.resultWith(ResultCode.SUCCESS, prefixUrl + relativePath);
     }
 
     /**

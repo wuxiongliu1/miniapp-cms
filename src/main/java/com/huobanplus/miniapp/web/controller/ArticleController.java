@@ -83,8 +83,10 @@ public class ArticleController {
         articleModel.setAuthor(article.getAuthor());
         articleModel.setLayoutType(article.getLayoutType());
         articleModel.setNewsFiles(article.getPreviewImage());
-        model.addAttribute("articleModel", articleModel);
-        return "ArticleEdit";
+        articleModel.setTopHead(article.isTopHead());
+        articleModel.setLayoutCode(article.getLayoutType().getCode());
+        model.addAttribute("article", articleModel);
+        return "editNews";
     }
 
     /**
@@ -117,7 +119,7 @@ public class ArticleController {
     @ResponseBody
     public ApiResult addArticle(@UserAuthenticationPrincipal User user, String newsTittle, String newsSummary,
                                 String newsAuthor, String editorValue,
-                                boolean isBanner, int newsType, @RequestParam("newsFiles[]") String[] newsFiles,
+                                boolean isBanner, int newsType, @RequestParam(value = "newsFiles[]", defaultValue = "") String[] newsFiles,
                                 @RequestParam(defaultValue = "0") int code) {
 
         ArticleModel articleModel = new ArticleModel();
@@ -151,7 +153,7 @@ public class ArticleController {
     public ApiResult updateArticle(@PathVariable(value = "id") Long articleId, String newsTittle, String newsSummary,
                                    String newsAuthor, String editorValue,
                                    boolean isBanner, int newsType,
-                                   @RequestParam("newsFiles[]") String[] newsFiles,
+                                   @RequestParam(value = "newsFiles[]", defaultValue = "") String[] newsFiles,
                                    HttpServletRequest request) {
 
         ArticleModel articleModel = new ArticleModel();
