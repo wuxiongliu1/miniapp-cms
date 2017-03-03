@@ -450,6 +450,7 @@
             loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
             if (!imageNumber) {
                 POST_DATA.newsFiles = imageList;
+                console.log(POST_DATA)
                 ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
             } else {
                 uploadObj.startUpload();
@@ -480,7 +481,7 @@
         $.ajax({
             type: 'POST',
             url: postURL,
-            data: postData,
+            data: JSON.stringify(postData),
             dataType: 'json',
             success: function (data) {
                 if (data.resultCode !== 200) {
