@@ -1,7 +1,5 @@
 {
   "resultCode": 200,
   "resultMsg": "图片上传成功",
-  "data": {
-  "src": "https://dummyimage.com/480x270/000/fff&text=Like"
-}
+  "data": "https://dummyimage.com/480x270/000/fff&text=Like"
 }

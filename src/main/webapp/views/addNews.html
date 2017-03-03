@@ -110,10 +110,12 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">新闻类型</label>
                             <div class="layui-input-block">
-                                <input type="radio" name="newsType" value="1" title="小图" checked="checked"/>
-                                <input type="radio" name="newsType" value="2" title="大图"/>
-                                <input type="radio" name="newsType" value="3" title="多图"/>
-                                <input type="radio" id="noneImage" name="newsType" value="0" title="无图"/>
+                                <input type="radio" name="newsType" value="1" title="小图" data-length="1"
+                                       checked="checked"/>
+                                <input type="radio" name="newsType" value="2" title="大图" data-length="1"/>
+                                <input type="radio" name="newsType" value="3" title="多图" data-length="3"/>
+                                <input type="radio" id="noneImage" name="newsType" value="0" title="无图"
+                                       data-length="0"/>
                             </div>
 
                         </div>
@@ -151,31 +153,13 @@
                                 <ul class="preview-list">
                                     <li class="preview-list-item">
                                         <img src="../resources/images/placeholder.png"
-                                             data-img="../resources/images/placeholder.png" class="MINI-Upload"
+                                             class="MINI-Upload"
                                              alt="Cover"/>
                                         <button type="button"
                                                 class="layui-btn layui-btn-small layui-btn-danger MINI-Delete"><i
                                                 class="layui-icon">&#xe640;</i>
                                         </button>
                                     </li>
-                                    <!--<li class="preview-list-item">-->
-                                        <!--<img src="../resources/images/placeholder.png"-->
-                                             <!--data-img="../resources/images/placeholder.png" class="MINI-Upload"-->
-                                             <!--alt="Cover">-->
-                                        <!--<button type="button"-->
-                                                <!--class="layui-btn layui-btn-small layui-btn-danger MINI-Delete"><i-->
-                                                <!--class="layui-icon">&#xe640;</i>-->
-                                        <!--</button>-->
-                                    <!--</li>-->
-                                    <!--<li class="preview-list-item">-->
-                                        <!--<img src="../resources/images/placeholder.png"-->
-                                             <!--data-img="../resources/images/placeholder.png" class="MINI-Upload"-->
-                                             <!--alt="Cover">-->
-                                        <!--<button type="button"-->
-                                                <!--class="layui-btn layui-btn-small layui-btn-danger MINI-Delete"><i-->
-                                                <!--class="layui-icon">&#xe640;</i>-->
-                                        <!--</button>-->
-                                    <!--</li>-->
                                 </ul>
 
                             </div>
@@ -220,8 +204,6 @@
 <script src="http://resali.huobanplus.com/cdn/jquery-form/3.51/jquery.form.min.js"></script>
 <script src="http://resali.huobanplus.com/cdn/layui/1.0.9/lay/dest/layui.all.js"></script>
 <script src="http://resali.huobanplus.com/cdn/upload-file/4.0.10/jquery.uploadfile.min.js"></script>
-<!--<script src="http://resali.huobanplus.com/cdn/ueditor/1.4.3.3/ueditor.config.js"></script>-->
-<!--<script src="http://resali.huobanplus.com/cdn/ueditor/1.4.3.3/ueditor.all.min.js"></script>-->
 <script src="../resources/ueditor/ueditor.config.js"></script>
 <script src="../resources/ueditor/ueditor.all.min.js"></script>
 <script src="http://resali.huobanplus.com/cdn/ueditor/1.4.3.3/lang/zh-cn/zh-cn.js"></script>
@@ -342,7 +324,7 @@
     // 上传图片列表
     var imageList = [];
     // 图片可上传数量
-    var imageNumber = 1;
+    var imageNumber = getNeedLength(parseInt($('input[name="newsType"]:checked').data('length')));
     // loading 遮罩
     var loading = null;
     // 添加新闻接口
@@ -379,7 +361,7 @@
                 layer.close(loading);
                 var data = obj.getResponses();
                 data.forEach(function (v, i) {
-                    imageList[i] = v.data;
+                    imageList.push(v.data);
                 });
 
                 POST_DATA.newsFiles = imageList;
@@ -426,19 +408,27 @@
             }
         });
         if (value == 1 || value == 2) {
-            imageNumber = 1;
-            uploadObj.reset();
-            uploadObj = $("#js-imageUpload").uploadFile(options(imageNumber));
-            $('#js-coverUpload').hide();
+            imageNumber = getNeedLength(1);
+            if (imageNumber > 0) {
+                uploadObj.reset();
+                uploadObj = $("#js-imageUpload").uploadFile(options(imageNumber));
+                $('#js-coverUpload').hide();
+            } else {
+                $('#js-coverUpload').show();
+            }
         }
         if (value == 3) {
-            imageNumber = 3;
-            uploadObj.reset();
-            uploadObj = $("#js-imageUpload").uploadFile(options(imageNumber));
-            $('#js-coverUpload').hide();
+            imageNumber = getNeedLength(3);
+            if (imageNumber > 0) {
+                uploadObj.reset();
+                uploadObj = $("#js-imageUpload").uploadFile(options(imageNumber));
+                $('#js-coverUpload').hide();
+            } else {
+                $('#js-coverUpload').show();
+            }
         }
         if (value == 0) {
-            imageNumber = 0;
+            imageNumber = getNeedLength(0);
             $('#js-coverUpload').show();
         }
     });
@@ -448,12 +438,12 @@
         POST_DATA = data.field;
         if (verifyType()) {
             loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
-           if(!imageNumber) {
-               POST_DATA.newsFiles = imageList;
-               ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
-           } else {
-               uploadObj.startUpload();
-           }
+            if (!imageNumber) {
+                POST_DATA.newsFiles = imageList;
+                ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
+            } else {
+                uploadObj.startUpload();
+            }
 
         }
         return false;
@@ -465,6 +455,8 @@
         if (len !== imageNumber) {
             if (imageNumber === 4) {
                 layer.msg('请选择一个新闻类型', {icon: 2});
+            } else if (imageNumber < 0) {
+                layer.msg('超出该新闻类型<b style="color: #FF5722;"> ' + -imageNumber + ' </b>张展示图', {icon: 2});
             } else {
                 layer.msg('该新闻类型需要<b style="color: #FF5722;"> ' + imageNumber + ' </b>张展示图', {icon: 2});
             }
@@ -475,7 +467,6 @@
     }
 
     function ajaxSubmitNews(postURL, postData, geToURL) {
-        console.log(postData)
         $.ajax({
             type: 'POST',
             url: postURL,
@@ -494,7 +485,19 @@
         });
     }
 
+    function getNeedLength(need) {
+        return need - imageList.length;
+    }
 
+    $('.preview-list').on('click', '.MINI-Delete', function () {
+        var i = $('.preview-list').find('.MINI-Delete').index(this);
+        $(this).parent().remove();
+        imageList.splice(i, 1);
+        imageNumber = getNeedLength(parseInt($('input[name="newsType"]:checked').data('length')))
+        if (imageNumber > 0) {
+            $('#js-coverUpload').hide();
+        }
+    });
     /*]]>*/
 </script>
 </html>
