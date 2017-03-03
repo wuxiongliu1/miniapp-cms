@@ -334,6 +334,9 @@
     // 提交参数收集容器
     var POST_DATA = {};
 
+    //TODO
+    initIsBanner(val);
+
     function options(count) {
         return {
             url: imageUploadURL,
@@ -378,7 +381,14 @@
      * checkbox操作与无图单选联动
      */
     form.on('switch', function (data) {
-        if (data.elem.checked) {
+        initIsBanner(data.elem.checked)
+    });
+
+    /**
+     *  初始化无图单选框
+     */
+    function initIsBanner(val) {
+        if (val) {
             $('#noneImage')
                 .removeAttr('checked')
                 .attr('disabled', true)
@@ -393,8 +403,7 @@
                 .next()
                 .removeClass('layui-radio-disbaled layui-disabled');
         }
-    });
-
+    }
     /**
      * radio操作与展示图联动
      */
