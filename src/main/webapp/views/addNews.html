@@ -335,7 +335,7 @@
     var POST_DATA = {};
 
     //TODO
-    initIsBanner(val);
+    initIsBanner(false);
 
     function options(count) {
         return {
@@ -388,6 +388,7 @@
      *  初始化无图单选框
      */
     function initIsBanner(val) {
+        var len = $('input[name="newsType"]:checked').length;
         if (val) {
             $('#noneImage')
                 .removeAttr('checked')
@@ -396,7 +397,7 @@
                 .addClass('layui-radio-disbaled layui-disabled')
                 .removeClass('layui-form-radioed')
                 .find('i').text('');
-            imageNumber = imageNumber === 0 ? 4 : imageNumber;
+            imageNumber = len === 0 ? 4 : imageNumber;
         } else {
             $('#noneImage')
                 .attr('disabled', false)
