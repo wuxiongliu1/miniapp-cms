@@ -103,7 +103,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">是否置顶</label>
                             <div class="layui-input-block layui-checkbox-custom">
-                                <input type="checkbox" name="isBanner" lay-skin="switch" value="0" lay-text="是|否"
+                                <input type="checkbox" name="isBanner" lay-skin="switch" value="1" lay-text="是|否"
                                        th:checked="${article.topHead}"/>
                                 <div class="layui-word-aux">以轮播图形式使用最新的前五条展示</div>
                             </div>
@@ -228,6 +228,7 @@
     'use strict';
 
     var content = /*[[${article.content}]]*/ "";
+    var isBanner = /*[[${article.topHead}]]*/ false;
 
     var verify = {
         required: [/[\S]+/, '必填项不能为空']
@@ -323,7 +324,13 @@
                 POST_DATA.code = 1;
                 POST_DATA.newsType = $('input[name="newsType"]:checked').val();
                 loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
-                uploadObj.startUpload();
+                if (!imageNumber) {
+                    POST_DATA.newsFiles = imageList;
+                    console.log(POST_DATA)
+                    ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
+                } else {
+                    uploadObj.startUpload();
+                }
             }
         }
     });
@@ -344,6 +351,7 @@
     var GOTO_PAGE = /*[[@{/index}]]*/ './index.html';
     // 提交参数收集容器
     var POST_DATA = {};
+    initIsBanner(isBanner);
 
     function options(count) {
         return {
@@ -389,7 +397,15 @@
      * checkbox操作与无图单选联动
      */
     form.on('switch', function (data) {
-        if (data.elem.checked) {
+        initIsBanner(data.elem.checked)
+    });
+
+    /**
+     *  初始化无图单选框
+     */
+    function initIsBanner(val) {
+        var len = $('input[name="newsType"]:checked').length;
+        if (val) {
             $('#noneImage')
                     .removeAttr('checked')
                     .attr('disabled', true)
@@ -397,15 +413,14 @@
                     .addClass('layui-radio-disbaled layui-disabled')
                     .removeClass('layui-form-radioed')
                     .find('i').text('');
-            imageNumber = imageNumber === 0 ? 4 : imageNumber;
+            imageNumber = len === 0 ? 4 : imageNumber;
         } else {
             $('#noneImage')
                     .attr('disabled', false)
                     .next()
                     .removeClass('layui-radio-disbaled layui-disabled');
         }
-    });
-
+    }
     /**
      * radio操作与展示图联动
      */
@@ -451,6 +466,7 @@
             loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
             if (!imageNumber) {
                 POST_DATA.newsFiles = imageList;
+                console.log(POST_DATA)
                 ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
             } else {
                 uploadObj.startUpload();

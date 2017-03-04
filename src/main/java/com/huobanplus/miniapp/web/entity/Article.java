@@ -94,7 +94,7 @@ public class Article {
     /**
      * 预览图片url数组
      */
-    @Column(name = "preivew_img")
+    @Column(name = "preivew_img", columnDefinition = "blob")
     private String[] previewImage;
 
 

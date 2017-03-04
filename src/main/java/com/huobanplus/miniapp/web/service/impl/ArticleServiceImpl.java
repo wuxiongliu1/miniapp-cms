@@ -114,15 +114,16 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ApiResult updateArticle(ArticleModel articleModel) {
         Article article = articleRepository.findOne(articleModel.getId());
-        String oldContent = article.getContent();
-        String[] oldImgs = article.getPreviewImage();
 
         if (article == null) {
             return ApiResult.resultWith(ResultCode.NO_ARTICLE);
         }
+        String oldContent = article.getContent();
+        String[] oldImgs = article.getPreviewImage();
 
 
         article.setTitle(articleModel.getTitle());
+        article.setTopHead(articleModel.isTopHead());
         article.setSummary(articleModel.getSummary());
         article.setContent(articleModel.getContent());
         article.setUpdateTime(StringUtil.DateFormat(new Date(), StringUtil.TIME_PATTERN));
