@@ -4,6 +4,7 @@ import com.huobanplus.miniapp.web.annotations.UserAuthenticationPrincipal;
 import com.huobanplus.miniapp.web.common.ApiResult;
 import com.huobanplus.miniapp.web.common.ResultCode;
 import com.huobanplus.miniapp.web.entity.User;
+import com.huobanplus.miniapp.web.service.StaticResourceService;
 import com.huobanplus.miniapp.web.util.StringUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -11,6 +12,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
@@ -33,31 +36,39 @@ public class ResourceController {
 
     private static final Log log = LogFactory.getLog(ResourceController.class);
 
+    @RequestMapping(value = "/toUpload")
+    public String toUpload() {
+        return "test/upload";
+    }
+
+    @Autowired
+    private StaticResourceService resourceServer;
+
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ResponseBody
     public ApiResult upload2(@UserAuthenticationPrincipal(value = "user") User user, HttpServletRequest request) throws Exception {
 
-        String prefixUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-
-        String relativePathPrefix = generateFilePath(user.getUsername());
+        Date now = new Date();
+        String relativePathPrefix = generateFilePath("test");
         String relativePath = "";
 
         DiskFileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
         List<FileItem> items = upload.parseRequest(request);
+        URI uri = null;
         for (FileItem item : items) {
+
             String originalFilename = item.getName();
-            String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String fileName = new Date().getTime() + RandomStringUtils.randomNumeric(6) + fileSuffix;
-            String realPath = request.getSession().getServletContext().getRealPath(relativePathPrefix);
-            relativePath = relativePathPrefix + fileName;
-            File targetFile = new File(realPath);
-            if (!targetFile.exists()) {
-                targetFile.mkdirs();
-            }
-            item.write(new File(targetFile, fileName));
+            String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+
+            String path = StaticResourceService.INVOICE_IMG + StringUtil.DateFormat(now, "yyyyMMdd") + "/"
+                    + StringUtil.DateFormat(now, "yyyyMMddHHmmSS") + "." + fileSuffix;
+
+            uri = resourceServer.uploadResource(path, item.getInputStream());
+
         }
-        return ApiResult.resultWith(ResultCode.SUCCESS, prefixUrl + relativePath);
+
+        return ApiResult.resultWith(ResultCode.SUCCESS, uri.toString());
     }
 
     /**
@@ -122,4 +133,5 @@ public class ResourceController {
                 .append("/");
         return sb.toString();
     }
+
 }

@@ -17,6 +17,11 @@ public class ArticleSearch {
     private ArticleType.ArticleStatus articleStatus;
 
     /**
+     *  是否头条
+     */
+    private Boolean topHead;
+
+    /**
      * 文章是否已删除
      */
     private Boolean enabled;

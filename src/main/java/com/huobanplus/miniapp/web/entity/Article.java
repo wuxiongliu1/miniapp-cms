@@ -103,7 +103,7 @@ public class Article {
      * true： 是 需要上传头条轮播图片[从预览图片的第一张获取]
      * false：否
      */
-    private boolean topHead;
+    private Boolean topHead;
 
 
     /**

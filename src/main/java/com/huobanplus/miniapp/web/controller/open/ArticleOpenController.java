@@ -74,7 +74,7 @@ public class ArticleOpenController {
                 completeImgUrl[i] = prefixUrl + previewImage[i];
             }
             articleModel.setNewsFiles(completeImgUrl);
-            articleModel.setTopHead(article.isTopHead());
+            articleModel.setTopHead(article.getTopHead());
 //            articleModel.setLayoutType(article.getLayoutType());
             articleModel.setLayoutCode(article.getLayoutType().getCode());
             articleModel.setSummary(article.getSummary());
@@ -132,7 +132,9 @@ public class ArticleOpenController {
     public ApiResult bannerList(ArticleSearch articleSearch, HttpServletRequest request) {
         String prefixUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
         articleSearch.setEnabled(true);// 未删除
+        articleSearch.setTopHead(true);
         articleSearch.setArticleStatus(ArticleType.ArticleStatus.RELEASE);// 已发布
+
         Page<Article> articlePage = articleService.findAll(articleSearch, 1, 4, new Sort(Sort.Direction.DESC, "updateTime"));// 取前面四篇的最新文章
         List<Article> articleList = articlePage.getContent();
         List<BannerArticle> bannerArticleList = new ArrayList<>();

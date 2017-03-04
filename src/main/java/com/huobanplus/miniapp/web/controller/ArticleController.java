@@ -83,7 +83,7 @@ public class ArticleController {
         articleModel.setAuthor(article.getAuthor());
         articleModel.setLayoutType(article.getLayoutType());
         articleModel.setNewsFiles(article.getPreviewImage());
-        articleModel.setTopHead(article.isTopHead());
+        articleModel.setTopHead(article.getTopHead());
         articleModel.setLayoutCode(article.getLayoutType().getCode());
         model.addAttribute("article", articleModel);
         return "editNews";

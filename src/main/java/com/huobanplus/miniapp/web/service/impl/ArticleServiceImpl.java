@@ -152,6 +152,9 @@ public class ArticleServiceImpl implements ArticleService {
             if (articleSearch.getEnabled() != null) {
                 predicates.add(cb.equal(root.get("enabled").as(Boolean.class), articleSearch.getEnabled()));
             }
+            if (articleSearch.getTopHead() != null) {
+                predicates.add(cb.equal(root.get("topHead").as(Boolean.class), articleSearch.getTopHead()));
+            }
             if (!StringUtils.isEmpty(articleSearch.getArticleStatus())) {
                 predicates.add(cb.equal(root.get("articleStatus").as(ArticleType.ArticleStatus.class), articleSearch.getArticleStatus()));
             }

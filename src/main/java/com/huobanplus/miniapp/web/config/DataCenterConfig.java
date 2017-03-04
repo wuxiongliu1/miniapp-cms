@@ -16,6 +16,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         entityManagerFactoryRef = "entityManagerFactory",
         transactionManagerRef = "transactionManager"
 )
-@ImportResource(value = {"classpath:datasources.xml"})
+@ImportResource({"classpath:miniapp_config_prod.xml", "classpath:miniapp_config_test.xml"})
 public class DataCenterConfig {
 }
