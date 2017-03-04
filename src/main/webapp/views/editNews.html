@@ -323,7 +323,12 @@
                 POST_DATA.code = 1;
                 POST_DATA.newsType = $('input[name="newsType"]:checked').val();
                 loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
-                uploadObj.startUpload();
+                if (!imageNumber) {
+                    POST_DATA.newsFiles = imageList;
+                    ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
+                } else {
+                    uploadObj.startUpload();
+                }
             }
         }
     });
