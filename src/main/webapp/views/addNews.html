@@ -148,22 +148,6 @@
                                 <div id="js-imageUpload"></div>
                             </div>
                         </div>
-                        <div class="layui-form-item">
-                            <div class="layui-input-block">
-                                <ul class="preview-list">
-                                    <li class="preview-list-item">
-                                        <img src="../resources/images/placeholder.png"
-                                             class="MINI-Upload"
-                                             alt="Cover"/>
-                                        <button type="button"
-                                                class="layui-btn layui-btn-small layui-btn-danger MINI-Delete"><i
-                                                class="layui-icon">&#xe640;</i>
-                                        </button>
-                                    </li>
-                                </ul>
-
-                            </div>
-                        </div>
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">新闻简介</label>
                             <div class="layui-input-block">
@@ -240,10 +224,6 @@
         serverUrl: "/ueditor/upload"
     });
 
-    ue.ready(function () {
-        ue.setContent('<p>new text</p>');
-    });
-
     var laytpl = layui.laytpl,
         form = layui.form();
 
@@ -312,7 +292,12 @@
                 POST_DATA.code = 1;
                 POST_DATA.newsType = $('input[name="newsType"]:checked').val();
                 loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
-                uploadObj.startUpload();
+                if (!imageNumber) {
+                    POST_DATA.newsFiles = imageList;
+                    ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
+                } else {
+                    uploadObj.startUpload();
+                }
             }
         }
     });
@@ -450,7 +435,6 @@
             loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
             if (!imageNumber) {
                 POST_DATA.newsFiles = imageList;
-                console.log(POST_DATA)
                 ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
             } else {
                 uploadObj.startUpload();

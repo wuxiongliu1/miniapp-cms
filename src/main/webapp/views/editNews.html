@@ -157,6 +157,7 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
+                            <label class="layui-form-label">原始图片</label>
                             <div class="layui-input-block">
                                 <ul class="preview-list">
                                     <li class="preview-list-item" th:each="img : ${article.newsFiles}">
@@ -326,7 +327,6 @@
                 loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
                 if (!imageNumber) {
                     POST_DATA.newsFiles = imageList;
-                    console.log(POST_DATA)
                     ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
                 } else {
                     uploadObj.startUpload();
@@ -466,7 +466,6 @@
             loading = layer.msg('图片上传中', {icon: 16, shade: 0.5});
             if (!imageNumber) {
                 POST_DATA.newsFiles = imageList;
-                console.log(POST_DATA)
                 ajaxSubmitNews(OPER_News, POST_DATA, GOTO_PAGE);
             } else {
                 uploadObj.startUpload();
