@@ -22,6 +22,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
@@ -49,8 +50,6 @@ public class ResourceController {
     public ApiResult upload2(@UserAuthenticationPrincipal(value = "user") User user, HttpServletRequest request) throws Exception {
 
         Date now = new Date();
-        String relativePathPrefix = generateFilePath("test");
-        String relativePath = "";
 
         DiskFileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
@@ -61,11 +60,9 @@ public class ResourceController {
             String originalFilename = item.getName();
             String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
 
-            String path = StaticResourceService.INVOICE_IMG + StringUtil.DateFormat(now, "yyyyMMdd") + "/"
+            String path = StaticResourceService.ARTICLE_IMG + StringUtil.DateFormat(now, "yyyyMMdd") + "/"
                     + StringUtil.DateFormat(now, "yyyyMMddHHmmSS") + "." + fileSuffix;
-
             uri = resourceServer.uploadResource(path, item.getInputStream());
-
         }
 
         return ApiResult.resultWith(ResultCode.SUCCESS, uri.toString());
@@ -81,8 +78,6 @@ public class ResourceController {
     public ApiResult upload(@UserAuthenticationPrincipal(value = "user") User user, @RequestParam CommonsMultipartFile myfile, HttpServletRequest request) {
 
         String relativePathPrefix = generateFilePath(user.getUsername());
-
-
         String originalFilename = myfile.getOriginalFilename();
         String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf("."));
         String fileName = new Date().getTime() + RandomStringUtils.randomNumeric(6) + fileSuffix;
@@ -107,15 +102,9 @@ public class ResourceController {
      */
     @RequestMapping(value = "/remove")
     @ResponseBody
-    public ApiResult remove(String filePath, HttpServletRequest request) {
-        String realPath = request.getSession().getServletContext().getRealPath(filePath);
-        File file = new File(realPath);
-        if (file.exists()) {
-            file.delete();
-            return ApiResult.resultWith(ResultCode.SUCCESS);
-        } else {
-            return ApiResult.resultWith(ResultCode.NO_FILE);
-        }
+    public ApiResult remove(String filePath, HttpServletRequest request) throws IOException {
+        resourceServer.deleteResource(filePath);
+        return ApiResult.resultWith(ResultCode.SUCCESS);
     }
 
     /**

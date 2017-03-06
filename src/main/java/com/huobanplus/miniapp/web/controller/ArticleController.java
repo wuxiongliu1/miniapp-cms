@@ -10,6 +10,7 @@ import com.huobanplus.miniapp.web.model.ArticleModel;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.service.ArticleService;
 import com.huobanplus.miniapp.web.service.ResourceService;
+import com.huobanplus.miniapp.web.service.StaticResourceService;
 import com.huobanplus.miniapp.web.util.ContentUtil;
 import com.huobanplus.miniapp.web.util.EnumHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -34,6 +38,8 @@ public class ArticleController {
     private ArticleService articleService;
     @Autowired
     private ResourceService resourceService;
+    @Autowired
+    private StaticResourceService resourceServer;
 
     /**
      * 获取文章列表
@@ -154,7 +160,7 @@ public class ArticleController {
                                    String newsAuthor, String editorValue,
                                    boolean isBanner, int newsType,
                                    @RequestParam(value = "newsFiles[]", defaultValue = "") String[] newsFiles,
-                                   HttpServletRequest request) {
+                                   HttpServletRequest request) throws URISyntaxException, IOException {
 
         ArticleModel articleModel = new ArticleModel();
         articleModel.setId(articleId);
@@ -178,7 +184,7 @@ public class ArticleController {
                 if (oldPreviewImgs != null) {
                     for (String oldPreviewImg : oldPreviewImgs) {
                         if (!containsImg(oldPreviewImg, articleModel.getNewsFiles())) {
-                            resourceService.removeRes(servletContext.getRealPath(oldPreviewImg));
+                            resourceServer.deleteResource(new URI(oldPreviewImg));
                         }
                     }
                 }
@@ -186,7 +192,7 @@ public class ArticleController {
                 if (oldContentImgs != null) {
                     for (String oldContentImg : oldContentImgs) {
                         if (!containsImg(oldContentImg, ContentUtil.captureImgUrls(articleModel.getContent()))) {
-                            resourceService.removeRes(servletContext.getRealPath(oldContentImg));
+                            resourceServer.deleteResource(new URI(oldContentImg));
                         }
                     }
                 }

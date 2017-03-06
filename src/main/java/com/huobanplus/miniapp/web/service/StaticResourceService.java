@@ -25,7 +25,9 @@ public interface StaticResourceService {
     /**
      * 商品图片
      */
-    String GOODS_IMG = "image/goods/";
+    String ARTICLE_IMG = "image/article/";
+
+    String CONTENT_IMG = "image/content/";
 
     String INVOICE_IMG = "image/invoice/";
 

@@ -9,6 +9,7 @@ import com.huobanplus.miniapp.web.entity.Article;
 import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.service.ArticleService;
+import com.huobanplus.miniapp.web.service.StaticResourceService;
 import com.huobanplus.miniapp.web.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
@@ -43,6 +44,8 @@ public class IndexController {
     private UserService userService;
     @Autowired
     private ArticleService articleService;
+    @Autowired
+    private StaticResourceService resourceServer;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String toLogin(HttpServletRequest request, Model model) {
@@ -128,7 +131,6 @@ public class IndexController {
 
         request.setCharacterEncoding("utf-8");
         response.setHeader("Content-Type", "text/html");
-
         WebApplicationContext webApplicationContext = ContextLoader.getCurrentWebApplicationContext();
         ServletContext application = webApplicationContext.getServletContext();
         String rootPath = application.getRealPath("/");

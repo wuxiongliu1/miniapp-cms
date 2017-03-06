@@ -38,7 +38,7 @@
 
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName">
-            <value>jdbc/miniapp_prod</value>
+            <value>jdbc/miniapp_cms</value>
         </property>
         <property name="resourceRef">
             <value>true</value>
