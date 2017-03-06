@@ -28,7 +28,7 @@
                 <li class="layui-nav-item layui-this">
                     <a href="javascript:;">
                         <!--如果有头像的话-->
-                        <img src="../resources/images/avatar.jpg" th:src="@{/resources/images/page/avatar.jpg}"
+                        <img src="../resources/images/avatar.jpg" th:src="@{/resources/images/avatar.jpg}"
                              class="img-avatar"/>
                         <span th:text="${user.username}">Neo Chang</span>
                     </a>
@@ -360,7 +360,8 @@
             }
         }
     }
-    var uploadObj = $("#js-imageUpload").uploadFile(options(1));
+    // TODO 暂时无法解决，初始化先为3
+    var uploadObj = $("#js-imageUpload").uploadFile(options(3));
 
     /**
      * checkbox操作与无图单选联动
