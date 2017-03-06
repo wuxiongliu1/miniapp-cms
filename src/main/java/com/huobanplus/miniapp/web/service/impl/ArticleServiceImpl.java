@@ -131,6 +131,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setLayoutType(articleModel.getLayoutType());
         article.setAuthor(articleModel.getAuthor());
         article.setPreviewImage(articleModel.getNewsFiles());
+        article.setArticleStatus(articleModel.getArticleStatus());
 //        article.setContentImage(ContentUtil.captureImgUrls(articleModel.getContent()));
 
         article = articleRepository.save(article);

@@ -55,17 +55,18 @@ public class ResourceController {
         ServletFileUpload upload = new ServletFileUpload(factory);
         List<FileItem> items = upload.parseRequest(request);
         URI uri = null;
+        String path = "";
         for (FileItem item : items) {
 
             String originalFilename = item.getName();
             String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
 
-            String path = StaticResourceService.ARTICLE_IMG + StringUtil.DateFormat(now, "yyyyMMdd") + "/"
+            path = StaticResourceService.ARTICLE_IMG + StringUtil.DateFormat(now, "yyyyMMdd") + "/"
                     + StringUtil.DateFormat(now, "yyyyMMddHHmmSS") + "." + fileSuffix;
-            uri = resourceServer.uploadResource(path, item.getInputStream());
+            resourceServer.uploadResource(path, item.getInputStream());
         }
 
-        return ApiResult.resultWith(ResultCode.SUCCESS, uri.toString());
+        return ApiResult.resultWith(ResultCode.SUCCESS, path);
     }
 
     /**

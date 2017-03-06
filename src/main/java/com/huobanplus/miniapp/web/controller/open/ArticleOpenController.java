@@ -8,6 +8,7 @@ import com.huobanplus.miniapp.web.model.ArticleModel;
 import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.model.BannerArticle;
 import com.huobanplus.miniapp.web.service.ArticleService;
+import com.huobanplus.miniapp.web.service.StaticResourceService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,8 @@ public class ArticleOpenController {
 
     @Autowired
     private ArticleService articleService;
+    @Autowired
+    private StaticResourceService resourceServer;
 
     @RequestMapping(value = "testurl")
     @ResponseBody
@@ -53,8 +57,7 @@ public class ArticleOpenController {
     public ApiResult articleList(ArticleSearch articleSearch,
                                  @RequestParam(defaultValue = "1") int pageIndex,
                                  @RequestParam(defaultValue = "50") int pageSize,
-                                 Model model, HttpServletRequest request) {
-        String prefixUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+                                 Model model, HttpServletRequest request) throws URISyntaxException {
 
         articleSearch.setEnabled(true);// 未删除
         articleSearch.setArticleStatus(ArticleType.ArticleStatus.RELEASE);// 已发布
@@ -68,12 +71,12 @@ public class ArticleOpenController {
             articleModel.setAuthor(article.getAuthor());
 //            articleModel.setContent(article.getContent());
 
-            String[] completeImgUrl = new String[article.getPreviewImage().length];
-            String[] previewImage = article.getPreviewImage();
-            for (int i = 0; i < previewImage.length; i++) {
-                completeImgUrl[i] = prefixUrl + previewImage[i];
+            String[] previewImgs = article.getPreviewImage();
+            for (int i = 0; i < previewImgs.length; i++) {
+                previewImgs[i] = resourceServer.getResource(previewImgs[i]).toString();
             }
-            articleModel.setNewsFiles(completeImgUrl);
+
+            articleModel.setNewsFiles(previewImgs);
             articleModel.setTopHead(article.getTopHead());
 //            articleModel.setLayoutType(article.getLayoutType());
             articleModel.setLayoutCode(article.getLayoutType().getCode());
@@ -93,7 +96,7 @@ public class ArticleOpenController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public ApiResult articleDetail(@PathVariable(value = "id") Long id, HttpServletRequest request) {
+    public ApiResult articleDetail(@PathVariable(value = "id") Long id, HttpServletRequest request) throws URISyntaxException {
         String prefixUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
         Article article = articleService.findArticle(id);// todo 判断文章状态
         if (article == null) {
@@ -103,6 +106,12 @@ public class ArticleOpenController {
         if (!article.getEnabled()) {
             return ApiResult.resultWith(ResultCode.NO_ARTICLE);
         }
+
+        String[] previewImgs = article.getPreviewImage();
+        for (int i = 0; i < previewImgs.length; i++) {
+            previewImgs[i] = resourceServer.getResource(previewImgs[i]).toString();
+        }
+        article.setPreviewImage(previewImgs);
 
         article.setUser(null);
         // 需要将文章中的所有图片地址设置为url
@@ -117,7 +126,7 @@ public class ArticleOpenController {
                 e.attr("src", prefixUrl + dataSrc);
             }
         }
-        article.setContent(document.toString());
+        article.setContent(document.body().children().toString());
 
         return ApiResult.resultWith(ResultCode.SUCCESS, article);
     }
@@ -129,8 +138,7 @@ public class ArticleOpenController {
      */
     @RequestMapping(value = "/banners")
     @ResponseBody
-    public ApiResult bannerList(ArticleSearch articleSearch, HttpServletRequest request) {
-        String prefixUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+    public ApiResult bannerList(ArticleSearch articleSearch, HttpServletRequest request) throws URISyntaxException {
         articleSearch.setEnabled(true);// 未删除
         articleSearch.setTopHead(true);
         articleSearch.setArticleStatus(ArticleType.ArticleStatus.RELEASE);// 已发布
@@ -138,19 +146,21 @@ public class ArticleOpenController {
         Page<Article> articlePage = articleService.findAll(articleSearch, 1, 4, new Sort(Sort.Direction.DESC, "updateTime"));// 取前面四篇的最新文章
         List<Article> articleList = articlePage.getContent();
         List<BannerArticle> bannerArticleList = new ArrayList<>();
-        articleList.forEach(article -> {
+        for (Article article : articleList) {
+
             BannerArticle bannerArticle = new BannerArticle();
             bannerArticle.setId(article.getId());
             bannerArticle.setTitle(article.getTitle());
             bannerArticle.setLayoutType(article.getLayoutType().getCode());
             String[] previewImgs = article.getPreviewImage();
             if (previewImgs != null && previewImgs.length > 0) {
-                bannerArticle.setImgSrc(prefixUrl + previewImgs[0]);// 取第一张图
+                bannerArticle.setImgSrc(resourceServer.getResource(previewImgs[0]).toString());// 取第一张图
             } else {
                 bannerArticle.setImgSrc("");// 照一张默认的？？
             }
             bannerArticleList.add(bannerArticle);
-        });
+        }
+        ;
         return ApiResult.resultWith(ResultCode.SUCCESS, bannerArticleList);
     }
 }

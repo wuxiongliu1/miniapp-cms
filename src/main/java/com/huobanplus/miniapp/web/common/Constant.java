@@ -5,5 +5,5 @@ package com.huobanplus.miniapp.web.common;
  */
 public class Constant {
 
-    public final static int PAGE_SIZE = 15;
+    public final static int PAGE_SIZE = 12;
 }

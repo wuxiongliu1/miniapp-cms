@@ -160,7 +160,8 @@ public class ArticleController {
                                    String newsAuthor, String editorValue,
                                    boolean isBanner, int newsType,
                                    @RequestParam(value = "newsFiles[]", defaultValue = "") String[] newsFiles,
-                                   HttpServletRequest request) throws URISyntaxException, IOException {
+                                   HttpServletRequest request,
+                                   int code) throws URISyntaxException, IOException {
 
         ArticleModel articleModel = new ArticleModel();
         articleModel.setId(articleId);
@@ -171,6 +172,7 @@ public class ArticleController {
         articleModel.setTopHead(isBanner);
         articleModel.setNewsFiles(newsFiles);
         articleModel.setLayoutType(EnumHelper.getEnumType(ArticleType.LayoutEnum.class, newsType));
+        articleModel.setArticleStatus(EnumHelper.getEnumType(ArticleType.ArticleStatus.class, code));
 
         ApiResult apiResult = articleService.updateArticle(articleModel);
         if (apiResult.getResultCode() == ResultCode.SUCCESS.getResultCode()) {
@@ -215,6 +217,11 @@ public class ArticleController {
         if (article == null) {
             throw new Exception("未找到该文章");
         }
+        String[] previewImgs = article.getPreviewImage();
+        for (int i = 0; i < previewImgs.length; i++) {
+            previewImgs[i] = resourceServer.getResource(previewImgs[i]).toString();
+        }
+        article.setPreviewImage(previewImgs);
         model.addAttribute("article", article);
         return "previewPage";
     }
