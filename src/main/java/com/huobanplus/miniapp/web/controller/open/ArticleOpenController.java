@@ -52,7 +52,7 @@ public class ArticleOpenController {
     @ResponseBody
     public ApiResult articleList(ArticleSearch articleSearch,
                                  @RequestParam(defaultValue = "1") int pageIndex,
-                                 @RequestParam(defaultValue = "50") int pageSize,
+                                 @RequestParam(defaultValue = "10") int pageSize,
                                  Model model, HttpServletRequest request) throws URISyntaxException {
 
         articleSearch.setEnabled(true);// 未删除
@@ -139,7 +139,7 @@ public class ArticleOpenController {
         articleSearch.setTopHead(true);
         articleSearch.setArticleStatus(ArticleType.ArticleStatus.RELEASE);// 已发布
 
-        Page<Article> articlePage = articleService.findAll(articleSearch, 1, 4, new Sort(Sort.Direction.DESC, "updateTime"));// 取前面四篇的最新文章
+        Page<Article> articlePage = articleService.findAll(articleSearch, 1, 5, new Sort(Sort.Direction.DESC, "updateTime"));// 取前面四篇的最新文章
         List<Article> articleList = articlePage.getContent();
         List<BannerArticle> bannerArticleList = new ArrayList<>();
         for (Article article : articleList) {
