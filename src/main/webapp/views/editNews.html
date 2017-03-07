@@ -507,7 +507,7 @@
                 window.location.href = geToURL;
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                layer.msg(errorThrown, {icon: 2});
+                console.error(errorThrown);
             }
         });
     }
