@@ -88,7 +88,12 @@ public class ArticleController {
         articleModel.setPublicDate(article.getPublicDate());
         articleModel.setAuthor(article.getAuthor());
         articleModel.setLayoutType(article.getLayoutType());
-        articleModel.setNewsFiles(article.getPreviewImage());
+        String[] previewImgs = article.getPreviewImage();
+        for (int i = 0; i < previewImgs.length; i++) {
+            previewImgs[i] = resourceServer.getResource(previewImgs[i]).toString();
+        }
+
+        articleModel.setNewsFiles(previewImgs);
         articleModel.setTopHead(article.getTopHead());
         articleModel.setLayoutCode(article.getLayoutType().getCode());
         model.addAttribute("article", articleModel);
@@ -186,7 +191,7 @@ public class ArticleController {
                 if (oldPreviewImgs != null) {
                     for (String oldPreviewImg : oldPreviewImgs) {
                         if (!containsImg(oldPreviewImg, articleModel.getNewsFiles())) {
-                            resourceServer.deleteResource(new URI(oldPreviewImg));
+                            resourceServer.deleteResource(resourceServer.getResource(oldPreviewImg));
                         }
                     }
                 }
