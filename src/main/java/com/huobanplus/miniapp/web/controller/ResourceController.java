@@ -6,9 +6,6 @@ import com.huobanplus.miniapp.web.common.ResultCode;
 import com.huobanplus.miniapp.web.entity.User;
 import com.huobanplus.miniapp.web.service.StaticResourceService;
 import com.huobanplus.miniapp.web.util.StringUtil;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by wuxiongliu on 2017-02-20.
@@ -51,20 +48,14 @@ public class ResourceController {
 
         Date now = new Date();
 
-        DiskFileItemFactory factory = new DiskFileItemFactory();
-        ServletFileUpload upload = new ServletFileUpload(factory);
-        List<FileItem> items = upload.parseRequest(request);
-        URI uri = null;
-        String path = "";
-        for (FileItem item : items) {
+        MultipartHttpServletRequest multipartReq = (MultipartHttpServletRequest) request;
+        MultipartFile file = multipartReq.getFile("files");
 
-            String originalFilename = item.getName();
-            String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-
-            path = StaticResourceService.ARTICLE_IMG + StringUtil.DateFormat(now, "yyyyMMdd") + "/"
-                    + StringUtil.DateFormat(now, "yyyyMMddHHmmSS") + "." + fileSuffix;
-            resourceServer.uploadResource(path, item.getInputStream());
-        }
+        String originalFilename = file.getOriginalFilename();
+        String fileSuffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        String path = StaticResourceService.ARTICLE_IMG + StringUtil.DateFormat(now, "yyyyMMdd") + "/"
+                + StringUtil.DateFormat(now, "yyyyMMddHHmmSS") + "." + fileSuffix;
+        resourceServer.uploadResource(path, file.getInputStream());
 
         return ApiResult.resultWith(ResultCode.SUCCESS, path);
     }

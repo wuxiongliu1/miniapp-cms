@@ -161,7 +161,7 @@ public class ArticleController {
                                    boolean isBanner, int newsType,
                                    @RequestParam(value = "newsFiles[]", defaultValue = "") String[] newsFiles,
                                    HttpServletRequest request,
-                                   int code) throws URISyntaxException, IOException {
+                                   @RequestParam(defaultValue = "0") Integer code) throws URISyntaxException, IOException {
 
         ArticleModel articleModel = new ArticleModel();
         articleModel.setId(articleId);

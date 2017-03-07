@@ -9,10 +9,6 @@ import com.huobanplus.miniapp.web.model.ArticleSearch;
 import com.huobanplus.miniapp.web.model.BannerArticle;
 import com.huobanplus.miniapp.web.service.ArticleService;
 import com.huobanplus.miniapp.web.service.StaticResourceService;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -114,19 +110,19 @@ public class ArticleOpenController {
         article.setPreviewImage(previewImgs);
 
         article.setUser(null);
-        // 需要将文章中的所有图片地址设置为url
-        String content = article.getContent();
-        Document document = Jsoup.parseBodyFragment(content);
-        Elements nodes = document.select("img");
-        int nodeLenth = nodes.size();
-        for (int i = 0; i < nodeLenth; i++) {
-            Element e = nodes.get(i);
-            String dataSrc = e.attr("src");
-            if (!dataSrc.startsWith("http")) {
-                e.attr("src", prefixUrl + dataSrc);
-            }
-        }
-        article.setContent(document.body().children().toString());
+//        // 需要将文章中的所有图片地址设置为url
+//        String content = article.getContent();
+//        Document document = Jsoup.parseBodyFragment(content);
+//        Elements nodes = document.select("img");
+//        int nodeLenth = nodes.size();
+//        for (int i = 0; i < nodeLenth; i++) {
+//            Element e = nodes.get(i);
+//            String dataSrc = e.attr("src");
+//            if (!dataSrc.startsWith("http")) {
+//                e.attr("src", prefixUrl + dataSrc);
+//            }
+//        }
+//        article.setContent(document.body().children().toString());
 
         return ApiResult.resultWith(ResultCode.SUCCESS, article);
     }
