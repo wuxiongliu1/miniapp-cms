@@ -88,12 +88,15 @@ public class ArticleController {
         articleModel.setPublicDate(article.getPublicDate());
         articleModel.setAuthor(article.getAuthor());
         articleModel.setLayoutType(article.getLayoutType());
+        articleModel.setNewsFiles(article.getPreviewImage());// 相对路径
         String[] previewImgs = article.getPreviewImage();
+        String[] resImgs = new String[previewImgs.length];
         for (int i = 0; i < previewImgs.length; i++) {
-            previewImgs[i] = resourceServer.getResource(previewImgs[i]).toString();
+            resImgs[i] = resourceServer.getResource(previewImgs[i]).toString();
         }
+        articleModel.setPreviewImgs(resImgs);// 绝对路径
 
-        articleModel.setNewsFiles(previewImgs);
+
         articleModel.setTopHead(article.getTopHead());
         articleModel.setLayoutCode(article.getLayoutType().getCode());
         model.addAttribute("article", articleModel);

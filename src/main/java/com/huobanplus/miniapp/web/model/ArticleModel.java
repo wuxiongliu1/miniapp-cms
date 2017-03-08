@@ -72,6 +72,8 @@ public class ArticleModel {
 
     private String[] newsFiles;
 
+    private String[] previewImgs;
+
     private String createTime;
 
     private String updateTime;
